@@ -1,7 +1,6 @@
 import streamlit as st
 import pandas as pd
 import requests
-import yfinance as yf
 from pymongo import MongoClient
 import datetime
 from bokeh.plotting import figure
