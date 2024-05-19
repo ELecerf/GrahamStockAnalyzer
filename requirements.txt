@@ -1,0 +1,6 @@
+pandas as pd
+requests
+pymongo
+datetime
+bokeh
+os
