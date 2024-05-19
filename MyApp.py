@@ -12,7 +12,7 @@ import os
 # API Keys
 FINNHUB_API_KEY = 'your_finnhub_api_key'
 EOD_API_KEY = st.secrets["EOD_API_KEY"]
-MONGO_DB = st.secrets["MONGODB"]
+MONGO_DB = st.secrets["MONGO_DB"]
 
 # Establish a connection to MongoDB
 client = MongoClient(MONGO_DB)
