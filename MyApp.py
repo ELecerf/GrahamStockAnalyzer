@@ -235,7 +235,7 @@ def main():
 
     # License key check
     if 'license_valid' not in st.session_state:
-        license_key = st.sidebar.text_input("Enter your license key", "")
+        license_key = st.sidebar.text_input("Enter your license key", type="password",autocomplete="license-key")
         if st.sidebar.button('Validate License'):
             if check_license(license_key):
                 st.session_state['license_valid'] = True
