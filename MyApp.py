@@ -245,7 +245,7 @@ def display_graph():
 
 def main():
     st.title('Graham Stock Analyzer')
-    st.header('accelerate your stock picking process with graphs')
+    st.header('Accelerate your stock picking process with graphs')
     st.sidebar.header('Settings')
 	
     st.sidebar.link_button('I get my License Key','https://vysse.gumroad.com/l/ZeUmF')
