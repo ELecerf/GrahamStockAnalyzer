@@ -232,7 +232,7 @@ def display_graph():
 def main():
     st.title('ValeurGraph')
     st.sidebar.header('Settings')
-
+    st.sidebar.link_button('I get my License Key',https://vysse.gumroad.com/l/ZeUmF')
     # License key check
     if 'license_valid' not in st.session_state:
         license_key = st.sidebar.text_input("Enter your license key", type="password",autocomplete="license-key")
@@ -242,7 +242,7 @@ def main():
                 st.experimental_rerun()
             else:
                 st.sidebar.error('Invalid License Key')
-
+		    
     if st.session_state.get('license_valid', False):
         with st.form("Search"):
           search_command()
