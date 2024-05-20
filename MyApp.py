@@ -45,17 +45,17 @@ def check_license(key):
     if key == 'daubasses':
         return True
 
-    # Otherwise, verify the key using the Gumroad API
-    PRODUCT_ID = "noBcgvvPwQDKj5lH5qZzDw=="  # Replace with your actual product ID
-    params = {
-        "product_id": PRODUCT_ID,
-        "license_key": key
-    }
-    response = requests.post(GUMROAD_API_URL, data=params)
-    result = response.json()
-
-    # Check if the Gumroad response was successful
-    return result.get("success", False)
+    else:
+        # Otherwise, verify the key using the Gumroad API
+      GUMROAD_API_URL = "https://api.gumroad.com/v2/licenses/verify"
+      PRODUCT_ID = "noBcgvvPwQDKj5lH5qZzDw=="  # Replace with your actual product ID
+      params = {
+          "product_id": PRODUCT_ID,
+          "license_key": key
+      }
+      response = requests.post(GUMROAD_API_URL, data=params)
+      result = response.json()
+      return result.get("success", False)
 
 # Function to fetch financial data
 
