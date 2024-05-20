@@ -13,6 +13,7 @@ import os
 FINNHUB_API_KEY = 'your_finnhub_api_key'
 EOD_API_KEY = st.secrets["EOD_API_KEY"]
 MONGO_DB = st.secrets["MONGO_DB"]
+GUMROAD_API_URL = st.secrets["GUMROAD_API_URL"]
 
 # Establish a connection to MongoDB
 client = MongoClient(MONGO_DB)
@@ -40,8 +41,21 @@ def load_data(exchanges=['TSE']):
 
 # License check
 def check_license(key):
-    # Placeholder for license check
-    return key == 'daubasses'
+    # Check if the key is the hardcoded special keyword
+    if key == 'daubasses':
+        return True
+
+    # Otherwise, verify the key using the Gumroad API
+    PRODUCT_ID = "noBcgvvPwQDKj5lH5qZzDw=="  # Replace with your actual product ID
+    params = {
+        "product_id": PRODUCT_ID,
+        "license_key": key
+    }
+    response = requests.post(GUMROAD_API_URL, data=params)
+    result = response.json()
+
+    # Check if the Gumroad response was successful
+    return result.get("success", False)
 
 # Function to fetch financial data
 
