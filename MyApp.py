@@ -245,7 +245,7 @@ def display_graph():
 
 def main():
     st.title('Graham Stock Analyzer')
-    st.header('"The person that turns over the most rocks wins the game. And that's always been my philosophy."')
+    st.header('The person that turns over the most rocks win the game.')
     st.sidebar.header('Settings')
 	
     st.sidebar.link_button('I get my License Key','https://vysse.gumroad.com/l/ZeUmF')
