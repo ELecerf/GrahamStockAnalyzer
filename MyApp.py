@@ -256,8 +256,6 @@ def create_bokeh_chart(stock,df_fundamentals, df_stock):
     p.legend.click_policy="hide"
     return p
 
-def query_tick():
-    
 
 def display_graph():
     st.title('Value vs. Price graph')
