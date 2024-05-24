@@ -224,10 +224,10 @@ def display_screener():
             
             # Check if any row is selected and display the details
             if display_row_button:
-                if selected_rows and 'selected_rows' in selected_rows:
-                    selected_index = selected_rows['selected_rows'][0]  # Get the index of the selected row
+                if selected_rows and 'rows' in selected_rows.selection:
+                    selected_index = selected_rows.selection['rows'][0]  # Get the index of the selected row
                     selected_row = df.iloc[selected_index]  # Retrieve the selected row data
-                    st.write(f"Code: {selected_row['Code']}, Exchange: {selected_row['Exchange']}")
+                    st.write(f"{selected_row['Code']}.{selected_row['Exchange']}")
                 else:
                     st.write("No row selected")
                     selected_rows.selection
