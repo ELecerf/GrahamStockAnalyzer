@@ -216,6 +216,7 @@ def display_screener():
                 df,
                 hide_index=False,
                 selection_mode='single-row',
+		on_select='rerun',
                 key='dataframe'
             )
             display_row_button = st.form_submit_button("Display Selected Row Details")
