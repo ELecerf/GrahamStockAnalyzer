@@ -178,21 +178,17 @@ def search_command():
 
 def display_screener():
     st.title('Screener')
-    df = load_data()
-    #df = df[columns]
-    if 'selected_columns' not in st.session_state:
-        st.session_state['selected_columns'] = df.columns.tolist()
-
-    with st.form("Column Selector"):
-        selected_columns = st.multiselect('Select columns to display:',
-        df.columns.tolist(),df.columns.tolist())
-        submitted = st.form_submit_button("Update Columns")
-
+    # Form for exchange selection and data loading
+    with st.form("Exchange Selector"):
+        # Dropdown to select an exchange
+        exchanges = ['PA', 'TSE', 'MI', 'AS']
+        selected_exchange = st.selectbox('Select an exchange:', exchanges)
+        # Submit button for the form
+        submitted = st.form_submit_button("Load Data")
+        
         if submitted:
-            st.write(selected_columns)
-            st.session_state['selected_columns'] = selected_columns
-        filtered_df = df[st.session_state['selected_columns']]
-        st.dataframe(filtered_df)
+            df = load_data(selected_exchange)
+            st.dataframe(df)  # Display the loaded data
 
 def create_bokeh_chart(stock,df_fundamentals, df_stock):
     # Prepare data sources
