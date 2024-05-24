@@ -259,7 +259,7 @@ def create_bokeh_chart(stock,df_fundamentals, df_stock):
 
 def display_graph():
     st.title('Value vs. Price graph')
-    query = st.text_input("Enter a stock ticker", st.session_state.tick)
+    query = st.text_input("Enter a stock ticker",'')
     if st.form_submit_button("Plot"):
       user_input = query
       with st.spinner('loading graph...'):
@@ -298,7 +298,6 @@ def main():
                 st.sidebar.error('Invalid License Key')
 		    
     if st.session_state.get('license_valid', False):
-        st.session_state.tick = ''
         with st.form("Search"):
           search_command()
         with st.form("Plot"):
