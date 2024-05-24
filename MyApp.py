@@ -22,7 +22,7 @@ db = client.valeurgraphDB
 Collection = db["data"]
 # Load data function
 @st.cache_data
-def load_data(exchanges='TSE'):
+def load_data(exchanges=['TSE']):
     with st.spinner('loading data'):
         # Check if a list of exchanges is provided
         if exchanges:
@@ -182,7 +182,7 @@ def display_screener():
     with st.form("Exchange Selector"):
         # Dropdown to select an exchange
         exchanges = ['PA', 'TSE', 'MI', 'AS']
-        selected_exchange = st.selectbox('Select an exchange:', exchanges)
+        selected_exchange = list(st.selectbox('Select an exchange:', exchanges))
         # Submit button for the form
         submitted = st.form_submit_button("Load Data")
         
