@@ -38,7 +38,6 @@ def load_data(exchanges=['TSE']):
         columns = ['Name', 'Exchange', 'Code', 'close', 'GrahamNumberToPrice', 'NCAV_0toMarketCap']
         return df[columns]
 
-
 # License check
 def check_license(key):
     # Check if the key is the hardcoded special keyword
@@ -175,7 +174,7 @@ def search_command():
         else:
             st.info("Please enter a query to search for stocks.")
 # Main application
-
+"""
 def display_screener():
     st.title('Screener')
     # Form for exchange selection and data loading
@@ -188,7 +187,36 @@ def display_screener():
         
         if submitted:
             df = load_data([selected_exchange])
-            st.dataframe(df)  # Display the loaded data
+            selected_row = st.dataframe(df, selection_mode = 'single_row', on_select = 'rerun')# Display the loaded data
+"""
+def display_screener():
+    st.title('Screener')
+
+    # List of exchanges
+    exchanges = ['PA', 'TSE', 'MI', 'AS']
+    
+    # Dropdown to select an exchange
+    selected_exchange = st.selectbox('Select an exchange:', exchanges)
+    
+    # Load data button
+    if st.button('Load Data'):
+        df = load_data([selected_exchange])
+        st.session_state['df'] = df  # Store the dataframe in session state to maintain state across reruns
+        
+        # Display the dataframe with selectable rows
+        selected_rows = st.dataframe(df, selection_mode='single-row', key='dataframe')
+        st.session_state['selected_rows'] = selected_rows
+
+    # Check if dataframe and selected rows exist in session state
+    if 'df' in st.session_state and 'selected_rows' in st.session_state:
+        selected_rows = st.session_state['selected_rows']
+        
+        if selected_rows:
+            # Button to display selected row details
+            if st.button('Display Selected Row Details'):
+                selected_index = selected_rows['selected_indices'][0]
+                selected_row = st.session_state['df'].iloc[selected_index]
+                st.write(f"Code: {selected_row['Code']}, Exchange: {selected_row['Exchange']}")
 
 def create_bokeh_chart(stock,df_fundamentals, df_stock):
     # Prepare data sources
