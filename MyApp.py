@@ -182,12 +182,12 @@ def display_screener():
     with st.form("Exchange Selector"):
         # Dropdown to select an exchange
         exchanges = ['PA', 'TSE', 'MI', 'AS']
-        selected_exchange = list(st.selectbox('Select an exchange:', exchanges))
+        selected_exchange = st.selectbox('Select an exchange:', exchanges)
         # Submit button for the form
         submitted = st.form_submit_button("Load Data")
         
         if submitted:
-            df = load_data(['PA'])
+            df = load_data([selected_exchange])
             st.dataframe(df)  # Display the loaded data
 
 def create_bokeh_chart(stock,df_fundamentals, df_stock):
