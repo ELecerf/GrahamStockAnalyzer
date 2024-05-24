@@ -217,20 +217,21 @@ def display_screener():
                 use_container_width=True,
                 hide_index=False,
                 selection_mode='single-row',
-		on_select='rerun',
+                on_select='rerun',
                 key='dataframe'
             )
             display_row_button = st.form_submit_button("Display Selected Row Details")
             
             # Check if any row is selected and display the details
             if display_row_button:
-                if selected_rows and 'rows' in selected_rows:
-                    selected_index = selected_rows['rows'][0]  # Get the index of the selected row
+                if selected_rows and 'selected_rows' in selected_rows:
+                    selected_index = selected_rows['selected_rows'][0]  # Get the index of the selected row
                     selected_row = df.iloc[selected_index]  # Retrieve the selected row data
                     st.write(f"Code: {selected_row['Code']}, Exchange: {selected_row['Exchange']}")
                 else:
                     st.write("No row selected")
                     selected_rows.selection
+                    selected_rows
 
 def create_bokeh_chart(stock,df_fundamentals, df_stock):
     # Prepare data sources
