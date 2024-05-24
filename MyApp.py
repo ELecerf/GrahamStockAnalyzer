@@ -230,8 +230,6 @@ def display_screener():
                     st.write(f"{selected_row['Code']}.{selected_row['Exchange']}")
                 else:
                     st.write("No row selected")
-                    selected_rows.selection
-                    selected_rows
 
 def create_bokeh_chart(stock,df_fundamentals, df_stock):
     # Prepare data sources
