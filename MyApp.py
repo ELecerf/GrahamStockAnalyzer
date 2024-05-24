@@ -195,28 +195,43 @@ def display_screener():
     # List of exchanges
     exchanges = ['PA', 'TSE', 'MI', 'AS']
     
-    # Dropdown to select an exchange
-    selected_exchange = st.selectbox('Select an exchange:', exchanges)
-    
-    # Load data button
-    if st.button('Load Data'):
+    # Form for selecting an exchange and loading data
+    with st.form("Exchange Selector"):
+        selected_exchange = st.selectbox('Select an exchange:', exchanges)
+        load_data_button = st.form_submit_button("Load Data")
+
+    # If the form is submitted, load the data
+    if load_data_button:
         df = load_data([selected_exchange])
         st.session_state['df'] = df  # Store the dataframe in session state to maintain state across reruns
+
+    # Check if dataframe exists in session state
+    if 'df' in st.session_state:
+        df = st.session_state['df']
         
         # Display the dataframe with selectable rows
-        selected_rows = st.dataframe(df, selection_mode='single-row', key='dataframe')
-        st.session_state['selected_rows'] = selected_rows
+        selected_rows = st.dataframe(
+            df,
+            use_container_width=True,
+            hide_index=False,
+            num_rows="fixed",
+            selection_mode='single-row',
+			on_select = 'rerun',
+            key='dataframe'
+        )
 
-    # Check if dataframe and selected rows exist in session state
-    if 'df' in st.session_state and 'selected_rows' in st.session_state:
-        selected_rows = st.session_state['selected_rows']
-        
-        if selected_rows:
-            # Button to display selected row details
-            if st.button('Display Selected Row Details'):
-                selected_index = selected_rows['selected_indices'][0]
-                selected_row = st.session_state['df'].iloc[selected_index]
-                st.write(f"Code: {selected_row['Code']}, Exchange: {selected_row['Exchange']}")
+        # Form for displaying selected row details
+        with st.form("Row Selector"):
+            display_row_button = st.form_submit_button("Display Selected Row Details")
+            
+            # Check if any row is selected and display the details
+            if display_row_button:
+                if 'selected_rows' in selected_rows and selected_rows['selected_rows']:
+                    selected_index = selected_rows['selected_rows'][0]  # Get the index of the selected row
+                    selected_row = df.iloc[selected_index]  # Retrieve the selected row data
+                    st.write(f"Code: {selected_row['Code']}, Exchange: {selected_row['Exchange']}")
+                else:
+                    st.write("No row selected")
 
 def create_bokeh_chart(stock,df_fundamentals, df_stock):
     # Prepare data sources
