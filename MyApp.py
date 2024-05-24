@@ -219,7 +219,7 @@ def display_screener():
 	    on_select = 'rerun',
             key='dataframe'
         )
-
+"""
         # Form for displaying selected row details
         with st.form("Row Selector"):
             display_row_button = st.form_submit_button("Display Selected Row Details")
@@ -232,7 +232,7 @@ def display_screener():
                     st.write(f"Code: {selected_row['Code']}, Exchange: {selected_row['Exchange']}")
                 else:
                     st.write("No row selected")
-
+"""
 def create_bokeh_chart(stock,df_fundamentals, df_stock):
     # Prepare data sources
     s1 = ColumnDataSource(df_fundamentals)
