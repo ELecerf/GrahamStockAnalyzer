@@ -214,7 +214,6 @@ def display_screener():
             # Display the dataframe with selectable rows
             selected_rows = st.dataframe(
                 df,
-                use_container_width=True,
                 hide_index=False,
                 selection_mode='single-row',
                 key='dataframe'
