@@ -22,7 +22,7 @@ db = client.valeurgraphDB
 Collection = db["data"]
 # Load data function
 @st.cache_data
-def load_data(exchanges=['TSE']):
+def load_data(exchanges='TSE'):
     with st.spinner('loading data'):
         # Check if a list of exchanges is provided
         if exchanges:
