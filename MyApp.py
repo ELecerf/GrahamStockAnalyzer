@@ -225,14 +225,12 @@ def display_screener():
             # Check if any row is selected and display the details
             if display_row_button:
                 if selected_rows and 'rows' in selected_rows.selection:
-                    if selected_rows.selection['rows']:  # Check if any row is actually selected
-                        selected_index = selected_rows.selection['rows'][0]  # Get the index of the selected row
-                        selected_row = df.iloc[selected_index]  # Retrieve the selected row data
-                        st.write(f"{selected_row['Code']}.{selected_row['Exchange']}")
-                    else:
-                        st.write("No row selected")
+                    selected_index = selected_rows.selection['rows'][0]  # Get the index of the selected row
+                    selected_row = df.iloc[selected_index]  # Retrieve the selected row data
+                    st.session_state.tick = f"{selected_row['Code']}.{selected_row['Exchange']}"
+                    st.write(st.session_state.tick)
                 else:
-                    st.write("Selection data not available")
+                    st.write("No row selected")
 
 def create_bokeh_chart(stock,df_fundamentals, df_stock):
     # Prepare data sources
@@ -258,9 +256,12 @@ def create_bokeh_chart(stock,df_fundamentals, df_stock):
     p.legend.click_policy="hide"
     return p
 
+def query_tick():
+    
+
 def display_graph():
     st.title('Value vs. Price graph')
-    query = st.text_input("Enter a stock ticker", "")
+    query = st.text_input("Enter a stock ticker", st.session_state.tick)
     if st.form_submit_button("Plot"):
       user_input = query
       with st.spinner('loading graph...'):
