@@ -174,21 +174,7 @@ def search_command():
         else:
             st.info("Please enter a query to search for stocks.")
 # Main application
-"""
-def display_screener():
-    st.title('Screener')
-    # Form for exchange selection and data loading
-    with st.form("Exchange Selector"):
-        # Dropdown to select an exchange
-        exchanges = ['PA', 'TSE', 'MI', 'AS']
-        selected_exchange = st.selectbox('Select an exchange:', exchanges)
-        # Submit button for the form
-        submitted = st.form_submit_button("Load Data")
-        
-        if submitted:
-            df = load_data([selected_exchange])
-            selected_row = st.dataframe(df, selection_mode = 'single_row', on_select = 'rerun')# Display the loaded data
-"""
+
 def display_screener():
     st.title('Screener')
 
