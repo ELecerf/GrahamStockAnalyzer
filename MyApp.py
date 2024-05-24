@@ -255,7 +255,7 @@ def create_bokeh_chart(stock,df_fundamentals, df_stock):
     p.legend.background_fill_alpha = 0.2
     p.legend.click_policy="hide"
     return p
-
+    
 
 def display_graph():
     st.title('Value vs. Price graph')
@@ -281,7 +281,6 @@ def display_graph():
         st.bokeh_chart(bokeh_chart, use_container_width=True)
 
 
-
 def main():
     st.title('Graham Stock Analyzer')
     st.header('"The person that turns over the most rocks wins the game."')
@@ -299,7 +298,7 @@ def main():
                 st.sidebar.error('Invalid License Key')
 		    
     if st.session_state.get('license_valid', False):
-	st.session_state.tick = ''
+        st.session_state.tick = ''
         with st.form("Search"):
           search_command()
         with st.form("Plot"):
