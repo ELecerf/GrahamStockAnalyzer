@@ -229,7 +229,6 @@ def display_screener():
                         selected_index = selected_rows.selection['rows'][0]
                         selected_row = df.iloc[selected_index]
                         st.write(f"Selected: {selected_row['Code']}.{selected_row['Exchange']}")
-                        plot_data(df, selected_index)  # Call the plot function with the selected row
                     else:
                         st.write("No row selected")
                 else:
