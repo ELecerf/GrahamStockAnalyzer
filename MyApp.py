@@ -216,7 +216,7 @@ def display_screener():
             hide_index=False,
             num_rows="fixed",
             selection_mode='single-row',
-			on_select = 'rerun',
+	    on_select = 'rerun',
             key='dataframe'
         )
 
