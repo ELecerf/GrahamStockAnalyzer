@@ -225,11 +225,15 @@ def display_screener():
             # Check if any row is selected and display the details
             if display_row_button:
                 if selected_rows and 'rows' in selected_rows.selection:
-                    selected_index = selected_rows.selection['rows'][0]  # Get the index of the selected row
-                    selected_row = df.iloc[selected_index]  # Retrieve the selected row data
-                    st.write(f"{selected_row['Code']}.{selected_row['Exchange']}")
+                    if selected_rows.selection['rows']:  # Check if any row is actually selected
+                        selected_index = selected_rows.selection['rows'][0]
+                        selected_row = df.iloc[selected_index]
+                        st.write(f"Selected: {selected_row['Code']}.{selected_row['Exchange']}")
+                        plot_data(df, selected_index)  # Call the plot function with the selected row
+                    else:
+                        st.write("No row selected")
                 else:
-                    st.write("No row selected")
+                    st.write("Selection data not available")
 
 def create_bokeh_chart(stock,df_fundamentals, df_stock):
     # Prepare data sources
