@@ -187,7 +187,7 @@ def display_screener():
         submitted = st.form_submit_button("Load Data")
         
         if submitted:
-            df = load_data(selected_exchange)
+            df = load_data(['PA'])
             st.dataframe(df)  # Display the loaded data
 
 def create_bokeh_chart(stock,df_fundamentals, df_stock):
