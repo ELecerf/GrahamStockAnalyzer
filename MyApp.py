@@ -299,6 +299,7 @@ def main():
                 st.sidebar.error('Invalid License Key')
 		    
     if st.session_state.get('license_valid', False):
+	st.session_state.tick = ''
         with st.form("Search"):
           search_command()
         with st.form("Plot"):
