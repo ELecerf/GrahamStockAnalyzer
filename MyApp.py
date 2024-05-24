@@ -209,21 +209,21 @@ def display_screener():
     if 'df' in st.session_state:
         df = st.session_state['df']
         
-        # Display the dataframe with selectable rows
-        selected_rows = st.dataframe(
-            df,
-            hide_index=False,
-            selection_mode='single-row',
-	    on_select = 'rerun',
-            key='dataframe'
-        )
-        # Form for displaying selected row details
+        # Form for row selection and displaying selected row details
         with st.form("Row Selector"):
+            # Display the dataframe with selectable rows
+            selected_rows = st.dataframe(
+                df,
+                use_container_width=True,
+                hide_index=False,
+                selection_mode='single-row',
+                key='dataframe'
+            )
             display_row_button = st.form_submit_button("Display Selected Row Details")
             
             # Check if any row is selected and display the details
             if display_row_button:
-                if 'selected_rows' in selected_rows and selected_rows['selected_rows']:
+                if selected_rows and 'selected_rows' in selected_rows:
                     selected_index = selected_rows['selected_rows'][0]  # Get the index of the selected row
                     selected_row = df.iloc[selected_index]  # Retrieve the selected row data
                     st.write(f"Code: {selected_row['Code']}, Exchange: {selected_row['Exchange']}")
