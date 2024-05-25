@@ -274,13 +274,12 @@ def main():
     # Loading Image using PIL
     im = Image.open('32.jpg')
     # Adding Image to web app
-    st.set_page_config(page_title="Graham Stock Analyzer", page_icon = "📌")
+    st.set_page_config(page_title="Graham Stock Analyzer", page_icon = "🤌")
     hide_default_format = """
     <style>
     #MainMenu {visibility: hidden; }
     footer {visibility: hidden;}
     header {visibility: hidden;}
-    a[class*="viewerBadge_container"] {display: none;}
     </style>
     """
     st.markdown(hide_default_format, unsafe_allow_html=True)
@@ -291,6 +290,9 @@ def main():
     st.sidebar.header('Settings')
 	
     st.sidebar.link_button('I get my License Key','https://vysse.gumroad.com/l/ZeUmF')
+    gumcode = """<script src="https://gumroad.com/js/gumroad.js"></script>
+    <a class="gumroad-button" href="https://vysse.gumroad.com/l/ZeUmF">I get my key with</a>"""
+    st.sidebar.markdown(gumcode, unsafe_allow_html=True)
     # License key check
     if 'license_valid' not in st.session_state:
         license_key = st.sidebar.text_input("Enter your license key", type="password",autocomplete="license-key")
