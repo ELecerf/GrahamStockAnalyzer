@@ -280,6 +280,7 @@ def main():
     #MainMenu {visibility: hidden; }
     footer {visibility: hidden;}
     header {visibility: visible;}
+    .viewerBadge_link__qRIco {display: none;}
     </style>
     """
     st.markdown(hide_default_format, unsafe_allow_html=True)
