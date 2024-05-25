@@ -274,7 +274,7 @@ def main():
     # Loading Image using PIL
     im = Image.open('GrahamStockAnalyzer.ico')
     # Adding Image to web app
-    st.set_page_config(page_title="Graham Stock Analyzer", page_icon = im)
+    st.set_page_config(page_title="Graham Stock Analyzer", page_icon = "chart_with_upwards_trend")
     hide_default_format = """
     <style>
     #MainMenu {visibility: hidden; }
