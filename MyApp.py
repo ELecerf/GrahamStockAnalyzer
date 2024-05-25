@@ -288,8 +288,8 @@ def main():
     
     st.title('Graham Stock Analyzer')
     st.header('"The person that turns over the most rocks wins the game."')
-    gumcode = """<script src="https://gumroad.com/js/gumroad.js"></script>
-    <a class="gumroad-button" href="https://vysse.gumroad.com/l/ZeUmF">I get my key with</a>"""
+    gumcode = """<script src="https://gumroad.com/js/gumroad-embed.js"></script>
+    <div class="gumroad-product-embed"><a href="https://vysse.gumroad.com/l/ZeUmF">Loading...</a></div>"""
     with st.sidebar:
         st.header('Settings')
         components.html(gumcode)
