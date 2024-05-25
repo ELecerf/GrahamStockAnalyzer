@@ -290,20 +290,19 @@ def main():
     st.header('"The person that turns over the most rocks wins the game."')
     gumcode = """<script src="https://gumroad.com/js/gumroad.js"></script>
     <a class="gumroad-button" href="https://vysse.gumroad.com/l/ZeUmF" data-gumroad-overlay-checkout="true">Buy on</a>"""
-    
     #st.sidebar.link_button('I get my License Key','https://vysse.gumroad.com/l/ZeUmF')
     with st.sidebar:
         st.header('Settings')
         components.html(gumcode,height=600)
     # License key check
     if 'license_valid' not in st.session_state:
-        license_key = st.text_input("Enter your license key", type="password",autocomplete="license-key")
+        license_key = st.sidebar.text_input("Enter your license key", type="password",autocomplete="license-key")
         if st.button('Validate License'):
             if check_license(license_key):
                 st.session_state['license_valid'] = True
                 st.rerun()
             else:
-                st.error('Invalid License Key')
+                st.sidebar.error('Invalid License Key')
 		    
     if st.session_state.get('license_valid', False):
         with st.form("Search"):
