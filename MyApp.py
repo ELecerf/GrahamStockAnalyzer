@@ -279,17 +279,12 @@ def main():
     <style>
     #MainMenu {visibility: hidden; }
     footer {visibility: hidden;}
+    GithubIcon {visibility: hidden;}
     </style>
     """
     st.markdown(hide_default_format, unsafe_allow_html=True)
     # Add custom CSS to hide the GitHub icon
-    hide_github_icon = """
-    #GithubIcon {
-      visibility: hidden;
-    }
-    """
-    st.markdown(hide_github_icon, unsafe_allow_html=True)
-
+    
     st.title('Graham Stock Analyzer')
     st.header('"The person that turns over the most rocks wins the game."')
     st.sidebar.header('Settings')
