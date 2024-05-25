@@ -297,13 +297,13 @@ def main():
         st.link_button('I get my License Key','https://vysse.gumroad.com/l/ZeUmF')
     # License key check
     if 'license_valid' not in st.session_state:
-        license_key = st.text_input("Enter your license key", type="password",autocomplete="license-key")
-        if st.button('Validate License'):
+        license_key = st.sidebar.text_input("Enter your license key", type="password",autocomplete="license-key")
+        if st.sidebar.button('Validate License'):
             if check_license(license_key):
                 st.session_state['license_valid'] = True
                 st.rerun()
             else:
-                st.error('Invalid License Key')
+                st.sidebar.error('Invalid License Key')
 		    
     if st.session_state.get('license_valid', False):
         with st.form("Search"):
