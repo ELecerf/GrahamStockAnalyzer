@@ -280,7 +280,7 @@ def main():
     #MainMenu {visibility: hidden; }
     footer {visibility: hidden;}
     header {visibility: visible;}
-    a.viewerBadge_container__r5tak {display: none;}
+    a.viewerBadge_container__r5tak {visibility: hidden;}
     </style>
     """
     st.markdown(hide_default_format, unsafe_allow_html=True)
