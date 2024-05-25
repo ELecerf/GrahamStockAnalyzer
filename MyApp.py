@@ -279,7 +279,7 @@ def main():
     <style>
     #MainMenu {visibility: hidden; }
     footer {visibility: hidden;}
-    header {visibility: visible;}
+    header {visibility: hidden;}
     a.viewerBadge_container__r5tak {visibility: hidden;}
     </style>
     """
