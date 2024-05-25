@@ -200,8 +200,8 @@ def display_screener():
             # Display the dataframe with selectable rows
             selected_rows = st.dataframe(
                 df,
-                use_container_width=True,
-                hide_index=False,use_container_width=False,
+                use_container_width=False,
+                hide_index=False,
                 selection_mode='single-row',
                 on_select='rerun',
                 key='dataframe'
