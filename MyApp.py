@@ -6,6 +6,7 @@ import datetime
 from bokeh.plotting import figure
 from bokeh.models import ColumnDataSource
 import os
+import streamlit.components.v1 as components
 
 
 
@@ -289,7 +290,7 @@ def main():
     st.header('"The person that turns over the most rocks wins the game."')
     gumcode = """<script src="https://gumroad.com/js/gumroad.js"></script>
     <a class="gumroad-button" href="https://vysse.gumroad.com/l/ZeUmF">I get my key with</a>"""
-    st.markdown(gumcode, unsafe_allow_html=True)
+    components.html(gumcode)
     st.sidebar.header('Settings')
 	
     st.sidebar.link_button('I get my License Key','https://vysse.gumroad.com/l/ZeUmF')
