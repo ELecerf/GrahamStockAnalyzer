@@ -270,6 +270,11 @@ def display_graph():
 
 
 def main():
+	from PIL import Image
+	# Loading Image using PIL
+	im = Image.open('32.png')
+	# Adding Image to web app
+	st.set_page_config(page_title="Graham Stock Analyzer", page_icon = im)
     st.title('Graham Stock Analyzer')
     st.header('"The person that turns over the most rocks wins the game."')
     st.sidebar.header('Settings')
