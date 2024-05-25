@@ -279,7 +279,7 @@ def main():
     <style>
     #MainMenu {visibility: hidden; }
     footer {visibility: hidden;}
-    GithubIcon {visibility: hidden;}
+    header {visibility: hidden;}
     </style>
     """
     st.markdown(hide_default_format, unsafe_allow_html=True)
