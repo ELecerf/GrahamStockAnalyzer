@@ -287,12 +287,12 @@ def main():
     
     st.title('Graham Stock Analyzer')
     st.header('"The person that turns over the most rocks wins the game."')
+        gumcode = """<script src="https://gumroad.com/js/gumroad.js"></script>
+    <a class="gumroad-button" href="https://vysse.gumroad.com/l/ZeUmF">I get my key with</a>"""
+    st.markdown(gumcode, unsafe_allow_html=True)
     st.sidebar.header('Settings')
 	
     st.sidebar.link_button('I get my License Key','https://vysse.gumroad.com/l/ZeUmF')
-    gumcode = """<script src="https://gumroad.com/js/gumroad.js"></script>
-    <a class="gumroad-button" href="https://vysse.gumroad.com/l/ZeUmF">I get my key with</a>"""
-    st.sidebar.markdown(gumcode, unsafe_allow_html=True)
     # License key check
     if 'license_valid' not in st.session_state:
         license_key = st.sidebar.text_input("Enter your license key", type="password",autocomplete="license-key")
