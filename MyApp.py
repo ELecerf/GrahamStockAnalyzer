@@ -281,7 +281,7 @@ def main():
         if st.sidebar.button('Validate License'):
             if check_license(license_key):
                 st.session_state['license_valid'] = True
-                st.experimental_rerun()
+                st.rerun()
             else:
                 st.sidebar.error('Invalid License Key')
 		    
