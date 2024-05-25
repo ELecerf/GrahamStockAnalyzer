@@ -201,7 +201,7 @@ def display_screener():
             selected_rows = st.dataframe(
                 df,
                 use_container_width=True,
-                hide_index=False,
+                hide_index=False,use_container_width=False,
                 selection_mode='single-row',
                 on_select='rerun',
                 key='dataframe'
