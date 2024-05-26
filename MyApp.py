@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 import requests
 from pymongo import MongoClient
-import datetime
+from datetime import datetime, timedelta
 from bokeh.plotting import figure
 from bokeh.models import ColumnDataSource
 import os
@@ -304,7 +304,7 @@ def main():
     
     with st.sidebar:
         st.header('Settings')
-        st.link_button('I get my License Key','https://vysse.gumroad.com/l/ZeUmF')
+        st.markdown("[Get your License Key](https://vysse.gumroad.com/l/ZeUmF)")
     
     # License key check
     if 'license_valid' not in st.session_state:
@@ -315,7 +315,7 @@ def main():
                 st.session_state['license_valid'] = True
                 st.session_state['remaining_days'] = remaining_days
                 st.sidebar.success(f'Your license will expire in {remaining_days} days')
-                st.rerun()
+                st.experimental_rerun()
             else:
                 st.session_state['license_valid'] = False
                 if expiration_date:
