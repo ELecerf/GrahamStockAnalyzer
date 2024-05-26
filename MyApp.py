@@ -304,7 +304,7 @@ def main():
     
     with st.sidebar:
         st.header('Settings')
-        st.markdown("[Get your License Key](https://vysse.gumroad.com/l/ZeUmF)")
+        st.link_button('I get my License Key','https://vysse.gumroad.com/l/ZeUmF')
     
     # License key check
     if 'license_valid' not in st.session_state:
