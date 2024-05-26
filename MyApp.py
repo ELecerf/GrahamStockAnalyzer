@@ -43,19 +43,29 @@ def load_data(exchanges=['TSE']):
 def check_license(key):
     # Check if the key is the hardcoded special keyword
     if key == 'daubasses':
-        return True
+        return True, None, None
 
-    else:
-        # Otherwise, verify the key using the Gumroad API
-      GUMROAD_API_URL = "https://api.gumroad.com/v2/licenses/verify"
-      PRODUCT_ID = "noBcgvvPwQDKj5lH5qZzDw=="  # Replace with your actual product ID
-      params = {
-          "product_id": PRODUCT_ID,
-          "license_key": key
-      }
-      response = requests.post(GUMROAD_API_URL, data=params)
-      result = response.json()
-      return result.get("success", False)
+    # Verify the key using the Gumroad API
+    GUMROAD_API_URL = "https://api.gumroad.com/v2/licenses/verify"
+    PRODUCT_ID = "noBcgvvPwQDKj5lH5qZzDw=="  # Replace with your actual product ID
+    params = {
+        "product_id": PRODUCT_ID,
+        "license_key": key
+    }
+    response = requests.post(GUMROAD_API_URL, data=params)
+    result = response.json()
+
+    if result.get("success", False):
+        purchase_date_str = result.get("purchase", {}).get("created_at")
+        if purchase_date_str:
+            purchase_date = datetime.strptime(purchase_date_str, "%Y-%m-%dT%H:%M:%SZ")
+            expiration_date = purchase_date + timedelta(days=30)
+            if datetime.now() <= expiration_date:
+                remaining_days = (expiration_date - datetime.now()).days
+                return True, remaining_days, expiration_date
+            else:
+                return False, None, expiration_date
+    return False, None, None
 
 # Function to fetch financial data
 
@@ -272,10 +282,13 @@ def display_graph():
 
 def main():
     from PIL import Image
+    import streamlit as st
+    import streamlit.components.v1 as components
+
     # Loading Image using PIL
     im = Image.open('32.jpg')
     # Adding Image to web app
-    st.set_page_config(page_title="Graham Stock Analyzer", page_icon = "🤌")
+    st.set_page_config(page_title="Graham Stock Analyzer", page_icon="🤌")
     hide_default_format = """
     <style>
     #MainMenu {visibility: hidden; }
@@ -284,35 +297,42 @@ def main():
     </style>
     """
     st.markdown(hide_default_format, unsafe_allow_html=True)
-    # Add custom CSS to hide the GitHub icon
-    
     st.title('Graham Stock Analyzer')
     st.header('"The person that turns over the most rocks wins the game."')
     gumcode = """<script src="https://gumroad.com/js/gumroad.js"></script>
     <a class="gumroad-button" href="https://vysse.gumroad.com/l/ZeUmF" data-gumroad-overlay-checkout="true">Buy on</a>"""
     
-    
     with st.sidebar:
         st.header('Settings')
-        st.link_button('I get my License Key','https://vysse.gumroad.com/l/ZeUmF')
+        st.markdown("[Get your License Key](https://vysse.gumroad.com/l/ZeUmF)")
+    
     # License key check
     if 'license_valid' not in st.session_state:
-        license_key = st.sidebar.text_input("Enter your license key", type="password",autocomplete="license-key")
+        license_key = st.sidebar.text_input("Enter your license key", type="password", autocomplete="license-key")
         if st.sidebar.button('Validate License'):
-            if check_license(license_key):
+            valid, remaining_days, expiration_date = check_license(license_key)
+            if valid:
                 st.session_state['license_valid'] = True
-                st.rerun()
+                st.session_state['remaining_days'] = remaining_days
+                st.sidebar.success(f'Your license will expire in {remaining_days} days')
+                st.experimental_rerun()
             else:
-                st.sidebar.error('Invalid License Key')
-		    
+                st.session_state['license_valid'] = False
+                if expiration_date:
+                    st.sidebar.error(f'License expired on {expiration_date.strftime("%Y-%m-%d")}')
+                else:
+                    st.sidebar.error('Invalid License Key')
+
     if st.session_state.get('license_valid', False):
         with st.form("Search"):
-          search_command()
+            search_command()
         with st.form("Plot"):
-          display_graph()
+            display_graph()
         with st.spinner("load dataframe"):
-          display_screener()
-    components.html(gumcode,height=600)
+            display_screener()
+    else:
+        components.html(gumcode, height=600)
+
 # Run the app
 if __name__ == "__main__":
     main()
