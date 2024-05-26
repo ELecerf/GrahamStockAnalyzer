@@ -257,27 +257,36 @@ def create_bokeh_chart(stock,df_fundamentals, df_stock):
     
 
 def display_graph():
+    import streamlit as st
+    
     st.title('Value vs. Price graph')
     query = st.text_input("Enter a stock ticker", "")
     if st.form_submit_button("Plot"):
-      user_input = query
-      with st.spinner('loading graph...'):
-        data = fetch_financials(user_input)
-        #Basic data display
-        name = data.get('General', {}).get('Name')
-        st.write("Company Name:", name)
-        ex = data.get('General', {}).get('Exchange')
-        st.write("Exchange:", ex)   # Plotting stock price
-        df_stock = get_price_eod(user_input)
-        df_fundamentals = get_fundamentals(user_input)
-        #remove the duplicate indexes
-        #df_fundamentals = df_fundamentals[~df_fundamentals.index.duplicated(keep='first')]
-        #fill missing values with the last valid value for fundamentals
-        #combined_df = pd.concat([df_fundamentals, df_stock], axis=1)
-        #combined_df = combined_df.fillna(method='ffill')
-        #st.line_chart(combined_df)
-        bokeh_chart = create_bokeh_chart(name,df_fundamentals, df_stock)
-        st.bokeh_chart(bokeh_chart, use_container_width=True)
+        user_input = query
+        try:
+            with st.spinner('Loading graph...'):
+                data = fetch_financials(user_input)
+                
+                if not data or 'General' not in data or not data['General'].get('Name'):
+                    raise ValueError("Invalid ticker or data not found")
+
+                # Basic data display
+                name = data['General'].get('Name')
+                st.write("Company Name:", name)
+                ex = data['General'].get('Exchange')
+                st.write("Exchange:", ex)
+
+                # Plotting stock price
+                df_stock = get_price_eod(user_input)
+                df_fundamentals = get_fundamentals(user_input)
+
+                if df_stock.empty or df_fundamentals.empty:
+                    raise ValueError("No stock or fundamental data found")
+
+                bokeh_chart = create_bokeh_chart(name, df_fundamentals, df_stock)
+                st.bokeh_chart(bokeh_chart, use_container_width=True)
+        except Exception as e:
+            st.error(f"An error occurred: {str(e)}")
 
 
 def main():
