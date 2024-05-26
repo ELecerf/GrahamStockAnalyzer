@@ -288,7 +288,6 @@ def display_graph():
         except Exception as e:
             st.error(f"An error occurred: {str(e)}")
 
-
 def main():
     from PIL import Image
     import streamlit as st
