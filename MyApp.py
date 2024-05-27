@@ -18,6 +18,7 @@ FINNHUB_API_KEY = 'your_finnhub_api_key'
 EOD_API_KEY = st.secrets["EOD_API_KEY"]
 MONGO_DB = st.secrets["MONGO_DB"]
 GUMROAD_API_URL = st.secrets["GUMROAD_API_URL"]
+PRODUCT_ID = st.secrets["PRODUCT_ID"]
 
 # Establish a connection to MongoDB
 client = MongoClient(MONGO_DB)
@@ -49,8 +50,8 @@ def check_license(key):
         return True, None, None
 
     # Verify the key using the Gumroad API
-    GUMROAD_API_URL = "https://api.gumroad.com/v2/licenses/verify"
-    PRODUCT_ID = "noBcgvvPwQDKj5lH5qZzDw=="  # Replace with your actual product ID
+    #GUMROAD_API_URL = "https://api.gumroad.com/v2/licenses/verify"
+    #PRODUCT_ID = "noBcgvvPwQDKj5lH5qZzDw=="  # Replace with your actual product ID
     params = {
         "product_id": PRODUCT_ID,
         "license_key": key
