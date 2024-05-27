@@ -134,7 +134,7 @@ def get_fundamentals(tick):
 
 
 def get_price_eod(tick):
-	end = datetime.now()
+	end = datetime.date.today()
 	start = end - datetime.timedelta(days=3653)
 	url = "https://eodhistoricaldata.com/api/eod/%s"%tick
 	params = {'api_token': EOD_API_KEY, 'from':start,'to':end,'fmt':'json'}
