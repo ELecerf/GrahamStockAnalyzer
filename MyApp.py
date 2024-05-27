@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 import requests
 from pymongo import MongoClient
-from datetime import datetime, timedelta, today
+from datetime import datetime, timedelta
 from bokeh.plotting import figure
 from bokeh.models import ColumnDataSource
 import os
@@ -134,7 +134,7 @@ def get_fundamentals(tick):
 
 
 def get_price_eod(tick):
-	end = date.today()
+	end = datetime.now()
 	start = end - datetime.timedelta(days=3653)
 	url = "https://eodhistoricaldata.com/api/eod/%s"%tick
 	params = {'api_token': EOD_API_KEY, 'from':start,'to':end,'fmt':'json'}
