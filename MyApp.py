@@ -2,7 +2,6 @@ import streamlit as st
 import pandas as pd
 import requests
 from pymongo import MongoClient
-
 from datetime import datetime, timedelta
 from bokeh.plotting import figure
 from bokeh.models import ColumnDataSource
