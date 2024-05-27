@@ -2,7 +2,8 @@ import streamlit as st
 import pandas as pd
 import requests
 from pymongo import MongoClient
-from datetime import datetime, timedelta
+import datetime
+#from datetime import datetime, timedelta
 from bokeh.plotting import figure
 from bokeh.models import ColumnDataSource
 import os
@@ -60,10 +61,10 @@ def check_license(key):
     if result.get("success", False):
         purchase_date_str = result.get("purchase", {}).get("created_at")
         if purchase_date_str:
-            purchase_date = datetime.strptime(purchase_date_str, "%Y-%m-%dT%H:%M:%SZ")
+            purchase_date = datetime.datetime.strptime(purchase_date_str, "%Y-%m-%dT%H:%M:%SZ")
             expiration_date = purchase_date + timedelta(days=30)
-            if datetime.now() <= expiration_date:
-                remaining_days = (expiration_date - datetime.now()).days
+            if datetime.datetime.now() <= expiration_date:
+                remaining_days = (expiration_date - datetime.datetime.now()).days
                 return True, remaining_days, expiration_date
             else:
                 return False, None, expiration_date
@@ -136,7 +137,7 @@ def get_fundamentals(tick):
 
 
 def get_price_eod(tick):
-	end = datetime.date.today()
+	end = datetime.datetime.now()
 	start = end - datetime.timedelta(days=3653)
 	url = "https://eodhistoricaldata.com/api/eod/%s"%tick
 	params = {'api_token': EOD_API_KEY, 'from':start,'to':end,'fmt':'json'}
