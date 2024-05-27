@@ -6,6 +6,8 @@ from datetime import datetime, timedelta
 from bokeh.plotting import figure
 from bokeh.models import ColumnDataSource
 import os
+
+from PIL import Image
 import streamlit.components.v1 as components
 
 
@@ -257,7 +259,6 @@ def create_bokeh_chart(stock,df_fundamentals, df_stock):
     
 
 def display_graph():
-    import streamlit as st
     
     st.title('Value vs. Price graph')
     query = st.text_input("Enter a stock ticker", "")
@@ -289,9 +290,8 @@ def display_graph():
             st.error(f"An error occurred: your input is not valid. Ticker format is CODE.EXCHANGE")
 
 def main():
-    from PIL import Image
-    import streamlit as st
-    import streamlit.components.v1 as components
+
+
 
     # Loading Image using PIL
     im = Image.open('32.jpg')
