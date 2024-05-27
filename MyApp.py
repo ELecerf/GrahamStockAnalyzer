@@ -286,7 +286,7 @@ def display_graph():
                 bokeh_chart = create_bokeh_chart(name, df_fundamentals, df_stock)
                 st.bokeh_chart(bokeh_chart, use_container_width=True)
         except Exception as e:
-            st.error(f"An error occurred: your input is not valid. Ticker format is CODE.EXCHANGE")
+            st.error(f"An error occurred: {e}. Your input is not valid. Ticker format is CODE.EXCHANGE")
 
 def main():
     from PIL import Image
