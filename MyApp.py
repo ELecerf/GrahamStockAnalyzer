@@ -342,7 +342,7 @@ def main():
             display_screener()
     else:
         #components.html(gumcode, height=600)
-	st.write('Coming soon')
+        st.write('Coming soon')
 
 # Run the app
 if __name__ == "__main__":
