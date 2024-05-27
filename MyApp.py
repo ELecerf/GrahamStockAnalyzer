@@ -3,7 +3,7 @@ import pandas as pd
 import requests
 from pymongo import MongoClient
 import datetime
-from datetime import date, datetime, timedelta
+from datetime import datetime, timedelta
 from bokeh.plotting import figure
 from bokeh.models import ColumnDataSource
 import os
