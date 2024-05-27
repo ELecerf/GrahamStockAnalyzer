@@ -341,7 +341,8 @@ def main():
         with st.spinner("load dataframe"):
             display_screener()
     else:
-        components.html(gumcode, height=600)
+        #components.html(gumcode, height=600)
+	st.write('Coming soon')
 
 # Run the app
 if __name__ == "__main__":
