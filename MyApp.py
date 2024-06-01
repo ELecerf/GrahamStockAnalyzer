@@ -316,6 +316,11 @@ def main():
         background-image: linear-gradient(to right top, #338877, #569b7d, #78ad84, #9abf8d, #bdd197, #c7dca5, #d1e6b3, #dcf1c1, #d5f6d4, #d5f9e5, #ddfaf2, #e9fbfa);
         background-size: cover;
     }
+    .stForm {
+        background-color: white;
+        padding: 20px;
+        border-radius: 10px;
+    }
     </style>
     """
     st.markdown(custom_css, unsafe_allow_html=True)
