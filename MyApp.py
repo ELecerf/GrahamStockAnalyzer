@@ -322,6 +322,9 @@ def main():
         border-radius: 10px;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     }
+    [data-testid="stForm"] {
+    background-color: white !important
+    }
     .stForm > div {
         background-color: white !important;
     }
