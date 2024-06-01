@@ -316,15 +316,18 @@ def main():
         background-image: linear-gradient(to right top, #338877, #569b7d, #78ad84, #9abf8d, #bdd197, #c7dca5, #d1e6b3, #dcf1c1, #d5f6d4, #d5f9e5, #ddfaf2, #e9fbfa);
         background-size: cover;
     }
-    .stForm {
-        background-color: white;
+    .stForm, .stTextInput, .stButton {
+        background-color: white !important;
         padding: 20px;
         border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    .stForm > div {
+        background-color: white !important;
     }
     </style>
     """
     st.markdown(custom_css, unsafe_allow_html=True)
-    
     with st.sidebar:
         st.header('Settings')
         st.link_button('I get my License Key','https://vysse.gumroad.com/l/ZeUmF')
