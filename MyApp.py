@@ -313,7 +313,7 @@ def main():
     custom_css = """
     <style>
     .stApp {
-        background-image: linear-gradient(to right top, #1f4b4c, #2a7868, #57a673, #9ed273, #f9f871);
+        background-image: linear-gradient(to right top, #338877, #569b7d, #78ad84, #9abf8d, #bdd197, #c7dca5, #d1e6b3, #dcf1c1, #d5f6d4, #d5f9e5, #ddfaf2, #e9fbfa);
         background-size: cover;
     }
     </style>
