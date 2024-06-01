@@ -314,6 +314,7 @@ def main():
     <style>
     .stApp {
         background-image: linear-gradient(to right top, #1f4b4c, #2a7868, #57a673, #9ed273, #f9f871);
+        background-size: cover;
     }
     </style>
     """
