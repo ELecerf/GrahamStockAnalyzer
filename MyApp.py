@@ -309,6 +309,15 @@ def main():
     st.header('"The person that turns over the most rocks wins the game."')
     gumcode = """<script src="https://gumroad.com/js/gumroad.js"></script>
     <a class="gumroad-button" href="https://vysse.gumroad.com/l/ZeUmF" data-gumroad-overlay-checkout="true">Buy on</a>"""
+
+    custom_css = """
+    <style>
+    body {
+        background-image: linear-gradient(to right top, #1f4b4c, #2a7868, #57a673, #9ed273, #f9f871);
+    }
+    </style>
+    """
+    st.markdown(custom_css, unsafe_allow_html=True)
     
     with st.sidebar:
         st.header('Settings')
