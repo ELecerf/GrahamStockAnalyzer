@@ -233,11 +233,15 @@ def display_screener():
                         st.session_state['selected_ticker'] = ticker
                         st.session_state['trigger_plot'] = True
                         st.write(f"Selected: {ticker}")
+                        # Reset the selection
+                        st.session_state['df'].at[selected_index, 'selected'] = False
                         
                     else:
                         st.write("No row selected")
                 else:
                     st.write("Selection data not available")
+                    # Reset the selection
+                    st.session_state['df'].at[selected_index, 'selected'] = False
 
 def create_bokeh_chart(stock,df_fundamentals, df_stock):
     # Prepare data sources
