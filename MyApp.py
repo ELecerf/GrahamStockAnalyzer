@@ -357,16 +357,20 @@ def main():
             if valid:
                 st.session_state['license_valid'] = True
                 st.session_state['remaining_days'] = remaining_days
-                st.rerun()
+                
                 if remaining_days is not None:
                     st.sidebar.success(f'✅ Your license will expire in {remaining_days} days on {expiration_date.strftime("%Y-%m-%d")}')
+                    st.rerun()
                 st.sidebar.success(f'✅ Your license is valid')
+                st.rerun()
             else:
                 st.session_state['license_valid'] = False
                 if expiration_date:
                     st.sidebar.error(f'😢 Your license expired on {expiration_date.strftime("%Y-%m-%d")}, get a new one')
+                    st.rerun()
                 else:
                     st.sidebar.error('Invalid License Key')
+                    st.rerun()
 
     if st.session_state.get('license_valid', False):
         with st.form("Search"):
