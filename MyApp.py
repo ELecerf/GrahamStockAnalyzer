@@ -342,12 +342,27 @@ def main():
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     }
+    .custom-header {
+    background-color: #2a7868;
+    color: white;
+    padding: 10px;
+    text-align: center;
+    font-size: 32px;
+    font-weight: bold;
+    }
+    .stApp {
     .stForm > div {
         background-color: white !important;
     }
     </style>
     """
     st.markdown(custom_css, unsafe_allow_html=True)
+    header_html = """
+    <div class="custom-header">
+        ValeurGraph
+    </div>
+    """
+    st.markdown(header_html, unsafe_allow_html=True)
     with st.sidebar:
         st.header('Settings')
         st.link_button('I get my License Key','https://vysse.gumroad.com/l/ZeUmF')
