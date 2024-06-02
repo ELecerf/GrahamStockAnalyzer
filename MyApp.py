@@ -343,8 +343,7 @@ def main():
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     }
     .stHeader {
-    background-color: #2a7868;
-    color: white;
+    color: black;
     padding: 10px;
     text-align: center;
     font-size: 32px;
@@ -352,7 +351,6 @@ def main():
     width: 100%;
     position: fixed;
     top: 0;
-    z-index: 1000;
     }
     .stApp {
     .stForm > div {
