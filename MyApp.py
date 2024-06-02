@@ -270,7 +270,7 @@ def create_bokeh_chart(stock,df_fundamentals, df_stock):
 
 def display_graph():
     ticker = st.session_state.get('selected_ticker', "")
-    st.title(f'Value graph {ticker}')
+    st.title(f'Value graph')
     query = st.text_input("Enter a stock ticker", ticker)
     if st.form_submit_button("Plot") or st.session_state.get('trigger_plot', False):
         user_input = query
@@ -282,7 +282,6 @@ def display_graph():
                     raise ValueError("Invalid ticker or data not found")
 
                 # Basic data display
-                st.title(f'Value graph {ticker}')
                 name = data['General'].get('Name')
                 st.write("Company Name:", name)
                 ex = data['General'].get('Exchange')
