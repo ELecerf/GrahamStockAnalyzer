@@ -229,7 +229,10 @@ def display_screener():
                     if selected_rows.selection['rows']:  # Check if any row is actually selected
                         selected_index = selected_rows.selection['rows'][0]
                         selected_row = df.iloc[selected_index]
-                        st.write(f"Selected: {selected_row['Code']}.{selected_row['Exchange']}")
+                        ticker = f"{selected_row['Code']}.{selected_row['Exchange']}"
+                        st.session_state['selected_ticker'] = ticker
+                        st.write(f"Selected: {ticker}")
+                        
                     else:
                         st.write("No row selected")
                 else:
@@ -263,7 +266,8 @@ def create_bokeh_chart(stock,df_fundamentals, df_stock):
 def display_graph():
     
     st.title('Value vs. Price graph')
-    query = st.text_input("Enter a stock ticker", "")
+    ticker = st.session_state.get('selected_ticker', "")
+    query = st.text_input("Enter a stock ticker", ticker)
     if st.form_submit_button("Plot"):
         user_input = query
         try:
