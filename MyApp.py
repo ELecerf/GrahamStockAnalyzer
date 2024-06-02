@@ -327,7 +327,7 @@ def main():
     custom_css = """
     <style>
     .stApp {
-        background-image: linear-gradient(to right top, #338877, #569b7d, #78ad84, #9abf8d, #bdd197, #c7dca5, #d1e6b3, #dcf1c1, #d5f6d4, #d5f9e5, #ddfaf2, #e9fbfa);
+        background-image: linear-gradient(to top, #c8e0ff, #c4e7ff, #c3eeff, #c5f4fe, #caf9fb, #d0fbfc, #d7fdfe, #ddffff, #e7feff, #f2fdff, #fbfdff, #ffffff);
         background-size: cover;
     }
     [data-testid="stForm"] {
