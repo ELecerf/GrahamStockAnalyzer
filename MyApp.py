@@ -272,10 +272,10 @@ def display_graph():
     ticker = st.session_state.get('selected_ticker', "")
     st.title(f'Value graph')
     query = st.text_input("Enter a stock ticker", ticker)
+    user_input = query
     if st.session_state.get('trigger_plot', False):
         user_input = ticker
-    if st.form_submit_button("Plot"):
-        user_input = query
+    if st.form_submit_button("Plot")or st.session_state.get('trigger_plot', False):
         st.session_state['trigger_plot'] = False
         try:
             with st.spinner('Loading graph...'):
