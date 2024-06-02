@@ -311,9 +311,6 @@ def main():
     hide_default_format = """
     <style>
     #MainMenu {visibility: hidden; }
-    [data-testid="baseButton-header"]{
-    visibility: hidden;
-    }
     footer {visibility: hidden;}
     header {visibility: visible;}
     </style>
