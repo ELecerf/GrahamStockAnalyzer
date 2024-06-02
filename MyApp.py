@@ -312,7 +312,7 @@ def main():
     <style>
     #MainMenu {visibility: hidden; }
     footer {visibility: hidden;}
-    header {visibility: hidden;}
+    header {visibility: visible;}
     </style>
     """
     st.markdown(hide_default_format, unsafe_allow_html=True)
