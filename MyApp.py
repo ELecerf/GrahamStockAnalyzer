@@ -375,7 +375,7 @@ def main():
                 else:
                     #st.rerun()
                     st.sidebar.error('Invalid License Key')
-                    
+              
 
     if st.session_state.get('license_valid', False):
         with st.form("Search"):
@@ -388,7 +388,11 @@ def main():
     else:
         #components.html(gumcode, height=600)
         st.write('Coming soon')
-
+    twitter_html = """
+    <a class="twitter-timeline" href="https://twitter.com/Vysse36?ref_src=twsrc%5Etfw">Tweets by Vysse36</a> 
+    <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+    """
+    st.components.v1.html(twitter_html, height=600)
 # Run the app
 if __name__ == "__main__":
     main()
