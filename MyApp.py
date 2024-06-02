@@ -364,10 +364,11 @@ def main():
     if st.session_state.get('license_valid', False):
         with st.form("Search"):
             search_command()
-        with st.form("Plot"):
-            display_graph()
         with st.spinner("load dataframe"):
             display_screener()
+        with st.form("Plot"):
+            display_graph()
+
     else:
         #components.html(gumcode, height=600)
         st.write('Coming soon')
