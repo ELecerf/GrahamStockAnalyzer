@@ -315,7 +315,7 @@ def main():
     visibility: hidden;
     }
     footer {visibility: hidden;}
-    header {visibility: visible;}
+    header {visibility: hidden;}
     </style>
     """
     st.markdown(hide_default_format, unsafe_allow_html=True)
@@ -342,16 +342,6 @@ def main():
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     }
-    .stHeader {
-    color: black;
-    padding: 10px;
-    text-align: center;
-    font-size: 32px;
-    font-weight: bold;
-    width: 100%;
-    position: fixed;
-    top: 0;
-    }
     .stApp {
     .stForm > div {
         background-color: white !important;
@@ -359,12 +349,6 @@ def main():
     </style>
     """
     st.markdown(custom_css, unsafe_allow_html=True)
-    header_html = """
-    <div class="stHeader">
-        ValeurGraph
-    </div>
-    """
-    st.markdown(header_html, unsafe_allow_html=True)
     with st.sidebar:
         st.header('Settings')
         st.link_button('I get my License Key','https://vysse.gumroad.com/l/ZeUmF')
