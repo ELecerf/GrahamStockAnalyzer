@@ -391,7 +391,7 @@ def main():
     twitter_html = """
     <a class="twitter-follow-button"
     href="https://twitter.com/Vysse36"
-    data-size="large" data-show-screen-name="false"> Follow ValeurGraph</a>
+    data-size="large" data-show-screen-name="false"> Follow @Vysse36</a>
     """
     st.components.v1.html(twitter_html, height=600)
 # Run the app
