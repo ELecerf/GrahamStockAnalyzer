@@ -63,7 +63,7 @@ def check_license(key):
         purchase_date_str = result.get("purchase", {}).get("created_at")
         if purchase_date_str:
             purchase_date = datetime.datetime.strptime(purchase_date_str, "%Y-%m-%dT%H:%M:%SZ")
-            expiration_date = purchase_date + timedelta(days=30)
+            expiration_date = purchase_date + datetime.timedelta(days=30)
             if datetime.datetime.now() <= expiration_date:
                 remaining_days = (expiration_date - datetime.datetime.now()).days
                 return True, remaining_days, expiration_date
