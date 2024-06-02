@@ -344,11 +344,15 @@ def main():
     }
     .stHeader {
     background-color: #2a7868;
-    color: black;
+    color: white;
     padding: 10px;
     text-align: center;
     font-size: 32px;
     font-weight: bold;
+    width: 100%;
+    position: fixed;
+    top: 0;
+    z-index: 1000;
     }
     .stApp {
     .stForm > div {
