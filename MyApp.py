@@ -389,10 +389,7 @@ def main():
         #components.html(gumcode, height=600)
         st.write('Coming soon')
     twitter_html = """
-    <a class="twitter-follow-button"
-    href="https://twitter.com/TwitterDev"
-    data-size="large">
-    Follow @TwitterDev</a>
+    <a href="https://twitter.com/x?ref_src=twsrc%5Etfw" class="twitter-follow-button" data-show-count="false">Follow @x</a><script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
     """
     st.components.v1.html(twitter_html, height=600)
 # Run the app
