@@ -348,7 +348,7 @@ def main():
     }
     </style>
     """
-    st.markdown(custom_css, unsafe_allow_html=True)
+    #st.markdown(custom_css, unsafe_allow_html=True)
     with st.sidebar:
         st.header('Settings')
         st.link_button('I get my License Key','https://vysse.gumroad.com/l/ZeUmF')
