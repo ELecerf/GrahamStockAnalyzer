@@ -389,8 +389,9 @@ def main():
         #components.html(gumcode, height=600)
         st.write('Coming soon')
     twitter_html = """
-    <a class="twitter-timeline" href="https://twitter.com/Vysse36?ref_src=twsrc%5Etfw">Tweets by Vysse36</a> 
-    <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+    <a class="twitter-follow-button"
+    href="https://twitter.com/Vysse36"
+    data-size="large" data-show-screen-name="false"> Follow ValeurGraph</a>
     """
     st.components.v1.html(twitter_html, height=600)
 # Run the app
