@@ -342,7 +342,7 @@ def main():
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     }
-    .custom-header {
+    .stHeader {
     background-color: #2a7868;
     color: black;
     padding: 10px;
@@ -358,7 +358,7 @@ def main():
     """
     st.markdown(custom_css, unsafe_allow_html=True)
     header_html = """
-    <div class="custom-header">
+    <div class="stHeader">
         ValeurGraph
     </div>
     """
