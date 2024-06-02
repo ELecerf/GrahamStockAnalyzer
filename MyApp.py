@@ -272,7 +272,9 @@ def display_graph():
     ticker = st.session_state.get('selected_ticker', "")
     st.title(f'Value graph')
     query = st.text_input("Enter a stock ticker", ticker)
-    if st.form_submit_button("Plot") or st.session_state.get('trigger_plot', False):
+    if st.session_state.get('trigger_plot', False):
+        user_input = ticker
+    if st.form_submit_button("Plot"):
         user_input = query
         st.session_state['trigger_plot'] = False
         try:
