@@ -359,20 +359,20 @@ def main():
                 st.session_state['remaining_days'] = remaining_days
                 
                 if remaining_days is not None:
-                    st.rerun()
+                    #st.rerun()
                     st.sidebar.success(f'✅ Your license will expire in {remaining_days} days on {expiration_date.strftime("%Y-%m-%d")}')
                     
                 else:
-                    st.rerun()
+                    #st.rerun()
                     st.sidebar.success(f'✅ Your license is valid')
             else:
                 st.session_state['license_valid'] = False
                 if expiration_date:
-                    st.rerun()
+                    #st.rerun()
                     st.sidebar.error(f'😢 Your license expired on {expiration_date.strftime("%Y-%m-%d")}, get a new one')
                     
                 else:
-                    st.rerun()
+                    #st.rerun()
                     st.sidebar.error('Invalid License Key')
                     
 
