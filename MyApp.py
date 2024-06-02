@@ -221,10 +221,10 @@ def display_screener():
                 on_select='rerun',
                 key='dataframe'
             )
-            display_row_button = st.form_submit_button("Display Selected Row Details")
+            plot_button = st.form_submit_button("Plot selection")
             
             # Check if any row is selected and display the details
-            if display_row_button:
+            if plot_button:
                 if selected_rows and 'rows' in selected_rows.selection:
                     if selected_rows.selection['rows']:  # Check if any row is actually selected
                         selected_index = selected_rows.selection['rows'][0]
