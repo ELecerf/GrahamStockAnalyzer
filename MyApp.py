@@ -390,8 +390,9 @@ def main():
         st.write('Coming soon')
     twitter_html = """
     <a class="twitter-follow-button"
-    href="https://twitter.com/Vysse36"
-    data-size="large" data-show-screen-name="false"> Follow @Vysse36</a>
+    href="https://twitter.com/TwitterDev"
+    data-size="large">
+    Follow @TwitterDev</a>
     """
     st.components.v1.html(twitter_html, height=600)
 # Run the app
