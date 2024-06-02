@@ -311,6 +311,9 @@ def main():
     hide_default_format = """
     <style>
     #MainMenu {visibility: hidden; }
+    [data-testid="stToolbar"]{
+    visibility: hidden;
+    }
     footer {visibility: hidden;}
     header {visibility: visible;}
     </style>
