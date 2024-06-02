@@ -234,14 +234,14 @@ def display_screener():
                         st.session_state['trigger_plot'] = True
                         st.write(f"Selected: {ticker}")
                         # Reset the selection
-                        st.session_state['df'].at[selected_index, 'selected'] = False
+                        #st.session_state['df'].at[selected_index, 'selected'] = False
                         
                     else:
                         st.write("No row selected")
                 else:
                     st.write("Selection data not available")
                     # Reset the selection
-                    st.session_state['df'].at[selected_index, 'selected'] = False
+                    #st.session_state['df'].at[selected_index, 'selected'] = False
 
 def create_bokeh_chart(stock,df_fundamentals, df_stock):
     # Prepare data sources
@@ -282,6 +282,7 @@ def display_graph():
                     raise ValueError("Invalid ticker or data not found")
 
                 # Basic data display
+                st.title(f'Value graph {ticker}')
                 name = data['General'].get('Name')
                 st.write("Company Name:", name)
                 ex = data['General'].get('Exchange')
