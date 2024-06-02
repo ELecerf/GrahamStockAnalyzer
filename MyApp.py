@@ -311,7 +311,7 @@ def main():
     hide_default_format = """
     <style>
     #MainMenu {visibility: hidden; }
-    #GithubIcon {
+    [data-testid="baseButton-header"]{
     visibility: hidden;
     }
     footer {visibility: hidden;}
