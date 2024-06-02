@@ -231,6 +231,7 @@ def display_screener():
                         selected_row = df.iloc[selected_index]
                         ticker = f"{selected_row['Code']}.{selected_row['Exchange']}"
                         st.session_state['selected_ticker'] = ticker
+                        st.session_state['trigger_plot'] = True
                         st.write(f"Selected: {ticker}")
                         
                     else:
@@ -267,7 +268,7 @@ def display_graph():
     ticker = st.session_state.get('selected_ticker', "")
     st.title(f'Value graph {ticker}')
     query = st.text_input("Enter a stock ticker", ticker)
-    if st.form_submit_button("Plot"):
+    if st.form_submit_button("Plot") or st.session_state.get('trigger_plot', False):
         user_input = query
         try:
             with st.spinner('Loading graph...'):
