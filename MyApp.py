@@ -344,7 +344,7 @@ def main():
     }
     .custom-header {
     background-color: #2a7868;
-    color: white;
+    color: black;
     padding: 10px;
     text-align: center;
     font-size: 32px;
