@@ -191,13 +191,13 @@ def search_command():
 # Main application
 
 def display_screener():
-    st.title('Screener')
 
     # List of exchanges
     exchanges = ['PA', 'TSE', 'MI', 'AS']
     
     # Form for selecting an exchange and loading data
     with st.form("Exchange Selector"):
+        st.title('Screener')
         selected_exchange = st.selectbox('Select an exchange:', exchanges)
         load_data_button = st.form_submit_button("Load Data")
 
@@ -368,8 +368,6 @@ def main():
     st.divider()
     st.header('"The person that turns over the most rocks wins the game."')
     st.divider()
-    salespage()
-
     custom_css = """
     <style>
     .stApp {
@@ -454,7 +452,7 @@ def main():
 
     else:
         st.write('Coming soon')
-
+    salespage()
         
 # Run the app
 if __name__ == "__main__":
