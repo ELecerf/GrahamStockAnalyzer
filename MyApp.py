@@ -332,6 +332,14 @@ def main():
         border-radius: 10px;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     }
+    h1 {
+        font-family: 'Lobster', cursive;
+        font-size: 36px;
+        color: #2a7868;
+        text-align: center;
+        margin-top: 20px;
+        text-shadow: 2px 2px #f9f871;
+    }
     [data-testid="collapsedControl"] {
     background-color: white !important;
     padding: 20px;
@@ -382,7 +390,6 @@ def main():
         st.header('Social media')
         components.html(twitter_button_html, height=50)
         st.divider()
-        st.header("Buy")
         gumcode = """<script src="https://gumroad.com/js/gumroad.js"></script>
         <a class="gumroad-button" href="https://vysse.gumroad.com/l/ZeUmF" data-gumroad-overlay-checkout="true">Buy on</a>"""
         #components.html(gumcode, height=600)
