@@ -303,10 +303,6 @@ def display_graph():
             st.error(f"An error occurred: your input is not valid. Ticker format is CODE.EXCHANGE")
 
 def main():
-
-    # Loading Image using PIL
-    im = Image.open('32.jpg')
-    # Adding Image to web app
     st.set_page_config(page_title="ValeurGraph", page_icon="📈")
     hide_default_format = """
     <style>
@@ -321,8 +317,7 @@ def main():
     st.markdown(hide_default_format, unsafe_allow_html=True)
     st.title('Graham Stock Analyzer')
     st.header('"The person that turns over the most rocks wins the game."')
-    gumcode = """<script src="https://gumroad.com/js/gumroad.js"></script>
-    <a class="gumroad-button" href="https://vysse.gumroad.com/l/ZeUmF" data-gumroad-overlay-checkout="true">Buy on</a>"""
+    st.divider()
 
     custom_css = """
     <style>
@@ -352,6 +347,9 @@ def main():
     with st.sidebar:
         st.header('Settings')
         st.link_button('I get my License Key','https://vysse.gumroad.com/l/ZeUmF')
+        gumcode = """<script src="https://gumroad.com/js/gumroad.js"></script>
+        <a class="gumroad-button" href="https://vysse.gumroad.com/l/ZeUmF" data-gumroad-overlay-checkout="true">Buy on</a>"""
+        st.markdown(gumcode, unsafe_allow_html=True)
     
     # License key check
     if 'license_valid' not in st.session_state:
@@ -385,7 +383,6 @@ def main():
         st.divider()
         st.header('Social media')
         components.html(twitter_button_html, height=50)
-
     if st.session_state.get('license_valid', False):
         with st.form("Search"):
             search_command()
