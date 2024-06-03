@@ -388,14 +388,17 @@ def main():
     else:
         #components.html(gumcode, height=600)
         st.write('Coming soon')
-    twitter_html = """
-    <a class="twitter-follow-button"
-    href="https://twitter.com/Vysse36"
-    data-size="large">
-    Follow</a><script async src="https://platform.twitter.com/widgets.js"
-    charset="utf-8"></script>
+    st.title("Follow me on Twitter")
+
+    # HTML code for the Twitter follow button
+    twitter_button = """
+    <a href="https://twitter.com/Vysse36?ref_src=twsrc%5Etfw" class="twitter-follow-button" data-show-count="false">Follow @Vysse36</a>
+    <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
     """
-    st.sidebar.markdown(twitter_html,unsafe_allow_html=True)
+    # Embed the Twitter follow button in the Streamlit app
+    st.sidebar.markdown(twitter_button, unsafe_allow_html=True)
+
+
 # Run the app
 if __name__ == "__main__":
     main()
