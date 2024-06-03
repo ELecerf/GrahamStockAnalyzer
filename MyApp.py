@@ -404,7 +404,7 @@ def main():
     <a href="https://twitter.com/Vysse36?ref_src=twsrc%5Etfw" class="twitter-follow-button" data-show-count="false">Follow @Vysse36</a>
     <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
     """
-    st.sidebar.markdown(components.v1.html(twitter_button_html, height=50))
+    st.sidebar.markdown(components.html(twitter_button_html, height=50))
 # Run the app
 if __name__ == "__main__":
     main()
