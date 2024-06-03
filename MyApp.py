@@ -389,9 +389,10 @@ def main():
         #components.html(gumcode, height=600)
         st.write('Coming soon')
     twitter_html = """
-    <a href="https://twitter.com/Vysse36?ref_src=twsrc%5Etfw"
-    class="twitter-follow-button" data-size="large" data-show-screen-name="false"
-    data-show-count="false">Follow</a><script async src="https://platform.twitter.com/widgets.js"
+    <a class="twitter-follow-button"
+    href="https://twitter.com/Vysse36"
+    data-size="large">
+    Follow</a><script async src="https://platform.twitter.com/widgets.js"
     charset="utf-8"></script>
     """
     st.sidebar.markdown(twitter_html,unsafe_allow_html=True)
