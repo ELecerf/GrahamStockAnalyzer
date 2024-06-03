@@ -315,7 +315,8 @@ def main():
     </style>
     """
     st.markdown(hide_default_format, unsafe_allow_html=True)
-    st.title('Graham Stock Analyzer')
+    st.title('ValeurGraph')
+    st.divider()
     st.header('"The person that turns over the most rocks wins the game."')
     st.divider()
 
