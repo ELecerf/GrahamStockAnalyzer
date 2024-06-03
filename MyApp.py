@@ -346,7 +346,7 @@ def main():
     #st.markdown(custom_css, unsafe_allow_html=True)
     with st.sidebar:
         st.header('Settings')
-        st.link_button('I get my License Key','https://vysse.gumroad.com/l/ZeUmF')
+        st.link_button("Buy License Key",'https://vysse.gumroad.com/l/ZeUmF')
     
     # License key check
     if 'license_valid' not in st.session_state:
@@ -384,7 +384,7 @@ def main():
         st.header("Buy")
         gumcode = """<script src="https://gumroad.com/js/gumroad.js"></script>
         <a class="gumroad-button" href="https://vysse.gumroad.com/l/ZeUmF" data-gumroad-overlay-checkout="true">Buy on</a>"""
-        components.html(gumcode, height=600)
+        #components.html(gumcode, height=600)
     if st.session_state.get('license_valid', False):
         with st.form("Search"):
             search_command()
