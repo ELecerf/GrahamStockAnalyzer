@@ -375,7 +375,16 @@ def main():
                 else:
                     #st.rerun()
                     st.sidebar.error('Invalid License Key')
-              
+    twitter_button_html = """
+    <a href="https://twitter.com/Vysse36?ref_src=twsrc%5Etfw" class="twitter-follow-button" data-show-count="false">Follow @Vysse36</a>
+    <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+    """
+    with st.sidebar:
+        st.divider()
+        st.markdown("Screeners just give a snapshot. Graphs give trends in the blink of the eye.")
+        st.divider()
+        st.header('Social media')
+        components.html(twitter_button_html, height=50)
 
     if st.session_state.get('license_valid', False):
         with st.form("Search"):
@@ -389,12 +398,9 @@ def main():
         #components.html(gumcode, height=600)
         st.write('Coming soon')
 
-    twitter_button_html = """
-    <a href="https://twitter.com/Vysse36?ref_src=twsrc%5Etfw" class="twitter-follow-button" data-show-count="false">Follow @Vysse36</a>
-    <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
-    """
+
     with st.sidebar:
-        components.html(twitter_button_html, height=50)
+        
 # Run the app
 if __name__ == "__main__":
     main()
