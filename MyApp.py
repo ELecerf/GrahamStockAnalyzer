@@ -434,8 +434,7 @@ def main():
     with st.sidebar:
         st.divider()
         st.markdown("""Screeners just give a snapshot. Value Graphs give trends in the blink of the eye.
-                    A value graph combined with a simple Graham Screener enables you
-                    to discover the best bargains in global markets at record speed.""")
+                    Combined with our simplest Graham Screener you discover the best bargains at record speed.""")
         st.divider()
         st.header('Social media')
         components.html(twitter_button_html, height=50)
