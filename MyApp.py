@@ -302,6 +302,55 @@ def display_graph():
         except Exception as e:
             st.error(f"An error occurred: your input is not valid. Ticker format is CODE.EXCHANGE")
 
+def salespage():
+    st.header("Achieve Your Investment Goals")
+    st.markdown("""
+    - **Discover Great Ideas:** Find hidden gems easily. 💡
+    - **Identify Cheap Stocks:** Spot undervalued stocks quickly. 📉
+    - **Fast Analysis:** Use our graphs for rapid insights. 🚀
+    - **Save Time:** Skip hours of screening. ⏳
+    """)
+
+    st.header("Avoid Investment Pitfalls")
+    st.markdown("""
+    - **Be Independent:** Stop depending on others for stock picks. 🤝
+    - **Stay Informed:** Understand trends, not just screeners. 📈
+    - **Seize Opportunities:** Don’t miss out on great investments. 🚪
+    """)
+
+    st.header("Increase Your Success")
+    st.markdown("""
+    - **Proven Approach:** Used by successful value investors. 🏆
+    - **Visualize Safety:** See your margin of safety instantly. 👀
+    - **Be Efficient:** Simplify and acelerate your investment process. 🔧
+    """)
+
+    st.header("Speed and Efficiency")
+    st.markdown("""
+    - **Instant Analysis:** Generate price vs. value graphs in milliseconds. ⚡
+    - **Automated Screening:** Find and focus on bargains quickly. 🔍
+    - **Work Smarter:** Analyze 100 times faster to become autonomous. 🧠
+    """)
+
+    st.header("For You and Your Community")
+    st.markdown("""
+    - **Easy Explanations:** Show your choices visually. 👨‍👩‍👧‍👦
+    - **Share Ideas:** Discuss investments with clear graphs. 🗣️
+    - **Financial Independence:** Gain confidence and control. 🔒
+    """)
+
+    st.header("Why Now?")
+    st.markdown("""
+    - **Understand Your Investments:** Learn from past successes and failures. 📚
+    - **Adopt Value Investing:** Guide your actions with proven principles. 🧭
+    - **Achieve Quality:** Hit your targets with minimal variation. 🎯
+    """)
+
+    st.header("Buy your key")
+    st.markdown("""
+    **Buy your license key today** and unlock the full potential of ValeurGraph. 🗝️
+    """)
+
 def main():
     st.set_page_config(page_title="ValeurGraph", page_icon="📈")
     hide_default_format = """
@@ -319,6 +368,7 @@ def main():
     st.divider()
     st.header('"The person that turns over the most rocks wins the game."')
     st.divider()
+    salespage()
 
     custom_css = """
     <style>
@@ -393,6 +443,7 @@ def main():
         gumcode = """<script src="https://gumroad.com/js/gumroad.js"></script>
         <a class="gumroad-button" href="https://vysse.gumroad.com/l/ZeUmF" data-gumroad-overlay-checkout="true">Buy on</a>"""
         #components.html(gumcode, height=600)
+
     if st.session_state.get('license_valid', False):
         with st.form("Search"):
             search_command()
