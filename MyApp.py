@@ -397,7 +397,9 @@ def main():
     """
     # Embed the Twitter follow button in the Streamlit app
     st.sidebar.markdown(twitter_button, unsafe_allow_html=True)
-
+    st.components.v1.html("""
+    <iframe src="twitter_button.html" width="300" height="50" frameborder="0"></iframe>
+    """, height=100)
 
 # Run the app
 if __name__ == "__main__":
