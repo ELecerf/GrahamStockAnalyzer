@@ -441,7 +441,7 @@ def main():
         st.divider()
         gumcode = """<script src="https://gumroad.com/js/gumroad.js"></script>
         <a class="gumroad-button" href="https://vysse.gumroad.com/l/ZeUmF" data-gumroad-overlay-checkout="true">Buy on</a>"""
-        components.html(gumcode, height=600)
+        #components.html(gumcode, height=600)
 
     if st.session_state.get('license_valid', False):
         with st.form("Search"):
@@ -454,7 +454,7 @@ def main():
     else:
         st.write('Coming soon')
     salespage()
-    components.html(gumcode, height=700)
+    #components.html(gumcode, height=700)
         
 # Run the app
 if __name__ == "__main__":
