@@ -400,7 +400,11 @@ def main():
 
     # Embed the Twitter follow button in the Streamlit app
     st.markdown(twitter_button, unsafe_allow_html=True)
-
+    twitter_button_html = """
+    <a href="https://twitter.com/Vysse36?ref_src=twsrc%5Etfw" class="twitter-follow-button" data-show-count="false">Follow @Vysse36</a>
+    <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+    """
+    components.html(twitter_button_html, height=50)
 # Run the app
 if __name__ == "__main__":
     main()
