@@ -392,12 +392,14 @@ def main():
 
     # HTML code for the Twitter follow button
     twitter_button = """
+    <div id="twitter-button-container">
     <a href="https://twitter.com/Vysse36?ref_src=twsrc%5Etfw" class="twitter-follow-button" data-show-count="false">Follow @Vysse36</a>
+    </div>
     <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
     """
+
     # Embed the Twitter follow button in the Streamlit app
-    st.sidebar.markdown(twitter_button, unsafe_allow_html=True)
-    st.components.v1.html(twitter_button, height=100)
+    st.markdown(twitter_button, unsafe_allow_html=True)
 
 # Run the app
 if __name__ == "__main__":
