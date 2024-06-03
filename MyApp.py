@@ -349,7 +349,7 @@ def main():
         st.link_button('I get my License Key','https://vysse.gumroad.com/l/ZeUmF')
         gumcode = """<script src="https://gumroad.com/js/gumroad.js"></script>
         <a class="gumroad-button" href="https://vysse.gumroad.com/l/ZeUmF" data-gumroad-overlay-checkout="true">Buy on</a>"""
-        components.html(gumcode, height=600)
+        components.html(gumcode, height=200)
     
     # License key check
     if 'license_valid' not in st.session_state:
