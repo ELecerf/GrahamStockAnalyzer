@@ -398,8 +398,6 @@ def main():
         #components.html(gumcode, height=600)
         st.write('Coming soon')
 
-
-    with st.sidebar:
         
 # Run the app
 if __name__ == "__main__":
