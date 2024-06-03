@@ -303,7 +303,7 @@ def display_graph():
             st.error(f"An error occurred: your input is not valid. Ticker format is CODE.EXCHANGE")
 
 def salespage():
-    st.header("Achieve Your Investment Goals")
+    st.header("For deep value investors by a deep value investor")
     st.markdown("""
     - **Discover Great Ideas:** Find hidden gems easily. 💡
     - **Identify Cheap Stocks:** Spot undervalued stocks quickly. 📉
@@ -318,14 +318,14 @@ def salespage():
     - **Seize Opportunities:** Don’t miss out on great investments. 🚪
     """)
 
-    st.header("Increase Your Success")
+    st.header("Improve your process")
     st.markdown("""
     - **Proven Approach:** Used by successful value investors. 🏆
     - **Visualize Safety:** See your margin of safety instantly. 👀
     - **Be Efficient:** Simplify and acelerate your investment process. 🔧
     """)
 
-    st.header("Speed and Efficiency")
+    st.header("Accelerate your process")
     st.markdown("""
     - **Instant Analysis:** Generate price vs. value graphs in milliseconds. ⚡
     - **Automated Screening:** Find and focus on bargains quickly. 🔍
@@ -342,11 +342,11 @@ def salespage():
     st.header("Why Now?")
     st.markdown("""
     - **Understand Your Investments:** Learn from past successes and failures. 📚
-    - **Adopt Value Investing:** Guide your actions with proven principles. 🧭
+    - **Deep Value Investing:** Guide your actions with proven principles. 🧭
     - **Achieve Quality:** Hit your targets with minimal variation. 🎯
     """)
 
-    st.header("Buy your key")
+    st.header("Start now")
     st.markdown("""
     **Buy your license key today** and unlock the full potential of ValeurGraph. 🗝️
     """)
