@@ -391,7 +391,7 @@ def main():
     twitter_html = """
     <a href="https://twitter.com/Vysse36?ref_src=twsrc%5Etfw" class="twitter-follow-button" data-size="large" data-show-screen-name="false" data-show-count="false">Follow @x</a><script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
     """
-    st.sidebar.markdown(twitter_html, height=600)
+    st.sidebar.markdown(twitter_html)
 # Run the app
 if __name__ == "__main__":
     main()
