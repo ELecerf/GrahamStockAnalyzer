@@ -3,9 +3,12 @@ import pandas as pd
 import requests
 from pymongo import MongoClient
 import datetime
+#from datetime import datetime, timedelta
 from bokeh.plotting import figure
 from bokeh.models import ColumnDataSource
 import os
+
+from PIL import Image
 import streamlit.components.v1 as components
 
 
@@ -15,6 +18,7 @@ FINNHUB_API_KEY = 'your_finnhub_api_key'
 EOD_API_KEY = st.secrets["EOD_API_KEY"]
 MONGO_DB = st.secrets["MONGO_DB"]
 GUMROAD_API_URL = st.secrets["GUMROAD_API_URL"]
+PRODUCT_ID = st.secrets["PRODUCT_ID"]
 
 # Establish a connection to MongoDB
 client = MongoClient(MONGO_DB)
@@ -43,19 +47,29 @@ def load_data(exchanges=['TSE']):
 def check_license(key):
     # Check if the key is the hardcoded special keyword
     if key == 'daubasses':
-        return True
+        return True, None, None
 
-    else:
-        # Otherwise, verify the key using the Gumroad API
-      GUMROAD_API_URL = "https://api.gumroad.com/v2/licenses/verify"
-      PRODUCT_ID = "noBcgvvPwQDKj5lH5qZzDw=="  # Replace with your actual product ID
-      params = {
-          "product_id": PRODUCT_ID,
-          "license_key": key
-      }
-      response = requests.post(GUMROAD_API_URL, data=params)
-      result = response.json()
-      return result.get("success", False)
+    # Verify the key using the Gumroad API
+    #GUMROAD_API_URL = "https://api.gumroad.com/v2/licenses/verify"
+    #PRODUCT_ID = "noBcgvvPwQDKj5lH5qZzDw=="  # Replace with your actual product ID
+    params = {
+        "product_id": PRODUCT_ID,
+        "license_key": key
+    }
+    response = requests.post(GUMROAD_API_URL, data=params)
+    result = response.json()
+
+    if result.get("success", False):
+        purchase_date_str = result.get("purchase", {}).get("created_at")
+        if purchase_date_str:
+            purchase_date = datetime.datetime.strptime(purchase_date_str, "%Y-%m-%dT%H:%M:%SZ")
+            expiration_date = purchase_date + datetime.timedelta(days=30)
+            if datetime.datetime.now() <= expiration_date:
+                remaining_days = (expiration_date - datetime.datetime.now()).days
+                return True, remaining_days, expiration_date
+            else:
+                return False, None, expiration_date
+    return False, None, None
 
 # Function to fetch financial data
 
@@ -124,7 +138,7 @@ def get_fundamentals(tick):
 
 
 def get_price_eod(tick):
-	end = datetime.date.today()
+	end = datetime.datetime.now()
 	start = end - datetime.timedelta(days=3653)
 	url = "https://eodhistoricaldata.com/api/eod/%s"%tick
 	params = {'api_token': EOD_API_KEY, 'from':start,'to':end,'fmt':'json'}
@@ -207,19 +221,27 @@ def display_screener():
                 on_select='rerun',
                 key='dataframe'
             )
-            display_row_button = st.form_submit_button("Display Selected Row Details")
+            plot_button = st.form_submit_button("Plot selection")
             
             # Check if any row is selected and display the details
-            if display_row_button:
+            if plot_button:
                 if selected_rows and 'rows' in selected_rows.selection:
                     if selected_rows.selection['rows']:  # Check if any row is actually selected
                         selected_index = selected_rows.selection['rows'][0]
                         selected_row = df.iloc[selected_index]
-                        st.write(f"Selected: {selected_row['Code']}.{selected_row['Exchange']}")
+                        ticker = f"{selected_row['Code']}.{selected_row['Exchange']}"
+                        st.session_state['selected_ticker'] = ticker
+                        st.session_state['trigger_plot'] = True
+                        st.write(f"Selected: {ticker}")
+                        # Reset the selection
+                        #st.session_state['df'].at[selected_index, 'selected'] = False
+                        
                     else:
                         st.write("No row selected")
                 else:
                     st.write("Selection data not available")
+                    # Reset the selection
+                    #st.session_state['df'].at[selected_index, 'selected'] = False
 
 def create_bokeh_chart(stock,df_fundamentals, df_stock):
     # Prepare data sources
@@ -247,72 +269,132 @@ def create_bokeh_chart(stock,df_fundamentals, df_stock):
     
 
 def display_graph():
-    st.title('Value vs. Price graph')
-    query = st.text_input("Enter a stock ticker", "")
-    if st.form_submit_button("Plot"):
-      user_input = query
-      with st.spinner('loading graph...'):
-        data = fetch_financials(user_input)
-        #Basic data display
-        name = data.get('General', {}).get('Name')
-        st.write("Company Name:", name)
-        ex = data.get('General', {}).get('Exchange')
-        st.write("Exchange:", ex)   # Plotting stock price
-        df_stock = get_price_eod(user_input)
-        df_fundamentals = get_fundamentals(user_input)
-        #remove the duplicate indexes
-        #df_fundamentals = df_fundamentals[~df_fundamentals.index.duplicated(keep='first')]
-        #fill missing values with the last valid value for fundamentals
-        #combined_df = pd.concat([df_fundamentals, df_stock], axis=1)
-        #combined_df = combined_df.fillna(method='ffill')
-        #st.line_chart(combined_df)
-        bokeh_chart = create_bokeh_chart(name,df_fundamentals, df_stock)
-        st.bokeh_chart(bokeh_chart, use_container_width=True)
+    ticker = st.session_state.get('selected_ticker', "")
+    st.title(f'Value graph')
+    query = st.text_input("Enter a stock ticker", ticker)
+    user_input = query
+    if st.session_state.get('trigger_plot', False):
+        user_input = ticker
+    if st.form_submit_button("Plot")or st.session_state.get('trigger_plot', False):
+        st.session_state['trigger_plot'] = False
+        try:
+            with st.spinner('Loading graph...'):
+                data = fetch_financials(user_input)
+                
+                if not data or 'General' not in data or not data['General'].get('Name'):
+                    raise ValueError("Invalid ticker or data not found")
 
+                # Basic data display
+                name = data['General'].get('Name')
+                st.write("Company Name:", name)
+                ex = data['General'].get('Exchange')
+                st.write("Exchange:", ex)
+
+                # Plotting stock price
+                df_stock = get_price_eod(user_input)
+                df_fundamentals = get_fundamentals(user_input)
+
+                if df_stock.empty or df_fundamentals.empty:
+                    raise ValueError("No stock or fundamental data found")
+
+                bokeh_chart = create_bokeh_chart(name, df_fundamentals, df_stock)
+                st.bokeh_chart(bokeh_chart, use_container_width=True)
+        except Exception as e:
+            st.error(f"An error occurred: your input is not valid. Ticker format is CODE.EXCHANGE")
 
 def main():
-    from PIL import Image
+
     # Loading Image using PIL
     im = Image.open('32.jpg')
     # Adding Image to web app
-    st.set_page_config(page_title="Graham Stock Analyzer", page_icon = "🤌")
+    st.set_page_config(page_title="ValeurGraph", page_icon="📈")
     hide_default_format = """
     <style>
     #MainMenu {visibility: hidden; }
+    [data-testid="stToolbar"]{
+    visibility: hidden;
+    }
     footer {visibility: hidden;}
     header {visibility: hidden;}
     </style>
     """
     st.markdown(hide_default_format, unsafe_allow_html=True)
-    # Add custom CSS to hide the GitHub icon
-    
     st.title('Graham Stock Analyzer')
     st.header('"The person that turns over the most rocks wins the game."')
     gumcode = """<script src="https://gumroad.com/js/gumroad.js"></script>
     <a class="gumroad-button" href="https://vysse.gumroad.com/l/ZeUmF" data-gumroad-overlay-checkout="true">Buy on</a>"""
-    
-    
+
+    custom_css = """
+    <style>
+    .stApp {
+        background-image: linear-gradient(to top, #c8e0ff, #c4e7ff, #c3eeff, #c5f4fe, #caf9fb, #d0fbfc, #d7fdfe, #ddffff, #e7feff, #f2fdff, #fbfdff, #ffffff);
+        background-size: cover;
+    }
+    [data-testid="stForm"] {
+        background-color: white !important;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    [data-testid="collapsedControl"] {
+    background-color: white !important;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    .stApp {
+    .stForm > div {
+        background-color: white !important;
+    }
+    </style>
+    """
+    #st.markdown(custom_css, unsafe_allow_html=True)
     with st.sidebar:
         st.header('Settings')
         st.link_button('I get my License Key','https://vysse.gumroad.com/l/ZeUmF')
+    
     # License key check
     if 'license_valid' not in st.session_state:
-        license_key = st.sidebar.text_input("Enter your license key", type="password",autocomplete="license-key")
+        license_key = st.sidebar.text_input("Enter your license key", type="password", autocomplete="license-key")
         if st.sidebar.button('Validate License'):
-            if check_license(license_key):
+            valid, remaining_days, expiration_date = check_license(license_key)
+            if valid:
                 st.session_state['license_valid'] = True
-                st.rerun()
+                st.session_state['remaining_days'] = remaining_days
+                if remaining_days is not None:
+                    #st.rerun()
+                    st.sidebar.success(f'✅ Your license will expire in {remaining_days} days on {expiration_date.strftime("%Y-%m-%d")}')   
+                else:
+                    #st.rerun()
+                    st.sidebar.success(f'✅ Your license is valid')
             else:
-                st.sidebar.error('Invalid License Key')
-		    
+                st.session_state['license_valid'] = False
+                if expiration_date:
+                    #st.rerun()
+                    st.sidebar.error(f'😢 Your license expired on {expiration_date.strftime("%Y-%m-%d")}, get a new one')
+                else:
+                    #st.rerun()
+                    st.sidebar.error('Invalid License Key')
+              
+
     if st.session_state.get('license_valid', False):
         with st.form("Search"):
-          search_command()
-        with st.form("Plot"):
-          display_graph()
+            search_command()
         with st.spinner("load dataframe"):
-          display_screener()
-    components.html(gumcode,height=600)
+            display_screener()
+        with st.form("Plot"):
+            display_graph()
+
+    else:
+        #components.html(gumcode, height=600)
+        st.write('Coming soon')
+    twitter_html = """
+    <a href="https://twitter.com/Vysse36?ref_src=twsrc%5Etfw"
+    class="twitter-follow-button" data-size="large" data-show-screen-name="false"
+    data-show-count="false">Follow</a><script async src="https://platform.twitter.com/widgets.js"
+    charset="utf-8"></script>
+    """
+    st.sidebar.markdown(twitter_html,unsafe_allow_html=True)
 # Run the app
 if __name__ == "__main__":
     main()
