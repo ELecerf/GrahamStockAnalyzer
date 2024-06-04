@@ -203,6 +203,7 @@ def search_command():
     
     # Check if there is selected data in session state
     if 'selected_rows' in st.session_state:
+        # Ensure we're not nesting forms by keeping the second form outside the first form's scope
         with st.form("Plot Form"):
             plot_button = st.form_submit_button("Plot selection")
             if plot_button:
