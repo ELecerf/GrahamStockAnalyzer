@@ -173,48 +173,50 @@ def search_stocks(query):
 def search_command():
     st.title("Stock Search Tool")
 
-    # User input for stock symbol
-    query = st.text_input("Enter a stock symbol or name to search:", "")
+    # Form for user input and search
+    with st.form("Search Form"):
+        query = st.text_input("Enter a stock symbol or name to search:", "")
+        search_button = st.form_submit_button("Search")
 
-    # Search button to trigger the search
-    if st.form_submit_button("Search"):
+    # If search button is pressed
+    if search_button:
         if query:
             with st.spinner("Searching for stocks..."):
                 result_df = search_stocks(query)
                 if not result_df.empty:
                     st.write("Search Results:")
-            # Form for row selection and displaying selected row details
-                    with st.form("Row Selector"):
-                        # Display the dataframe with selectable rows
-                        selected_rows = st.dataframe(
-                            result_df,
-                            use_container_width=False,
-                            hide_index=False,
-                            selection_mode='single-row',
-                            on_select='rerun',
-                            key='dataframe'
-                        )
+
+                    # Display the dataframe with selectable rows
+                    selected_rows = st.dataframe(
+                        result_df,
+                        use_container_width=False,
+                        hide_index=False,
+                        selection_mode='single-row',
+                        key='dataframe'
+                    )
+
+                    # Form for plotting the selected row
+                    with st.form("Plot Form"):
                         plot_button = st.form_submit_button("Plot selection")
-                        
+
                         # Check if any row is selected and display the details
                         if plot_button:
-                            if selected_rows and 'rows' in selected_rows.selection:
-                                if selected_rows.selection['rows']:  # Check if any row is actually selected
-                                    selected_index = selected_rows.selection['rows'][0]
+                            if selected_rows and 'selected_rows' in selected_rows:
+                                if selected_rows['selected_rows']:  # Check if any row is actually selected
+                                    selected_index = selected_rows['selected_rows'][0]
                                     selected_row = result_df.iloc[selected_index]
                                     ticker = f"{selected_row['Code']}.{selected_row['Exchange']}"
                                     st.session_state['selected_ticker'] = ticker
                                     st.session_state['trigger_plot'] = True
                                     st.write(f"Selected: {ticker}")
-                                    # Reset the selection
-                                    #st.session_state['df'].at[selected_index, 'selected'] = False
-                                    
+
+                                    # Reset the selection (if needed)
+                                    # st.session_state['df'].at[selected_index, 'selected'] = False
+
                                 else:
                                     st.write("No row selected")
                             else:
                                 st.write("Selection data not available")
-
-                    st.dataframe(result_df)
                 else:
                     st.info("No results found for your search.")
         else:
