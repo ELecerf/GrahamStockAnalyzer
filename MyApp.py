@@ -192,6 +192,7 @@ def search_command():
                         use_container_width=False,
                         hide_index=False,
                         selection_mode='single-row',
+                        on_select='rerun',
                         key='dataframe'
                     )
 
