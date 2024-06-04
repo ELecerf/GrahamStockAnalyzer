@@ -171,10 +171,9 @@ def search_stocks(query):
         return pd.DataFrame()  # Return an empty DataFrame if the query is empty
 
 def search_command():
-    st.title("Stock Search Tool")
-
     # Form for user input and search
     with st.form("Search Form"):
+        st.title("Stock Search Tool")
         query = st.text_input("Enter a stock symbol or name to search:", "")
         search_button = st.form_submit_button("Search")
 
