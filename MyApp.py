@@ -303,26 +303,24 @@ def display_graph():
             st.error(f"An error occurred: your input is not valid. Ticker format is CODE.EXCHANGE")
 
 def salespage():
-    st.header("For deep value investors by a deep value investor")
+    st.header("For deep value investors")
     st.markdown("""
-    - **Discover Great Ideas:** Find hidden gems easily. 💡
     - **Identify Cheap Stocks:** Spot undervalued stocks quickly. 📉
     - **Fast Analysis:** Use our graphs for rapid insights. 🚀
-    - **Save Time:** Skip hours of screening. ⏳
+    - **Save Time:** Skip hours of screening and Excel. ⏳
     """)
 
     st.header("Avoid Investment Pitfalls")
     st.markdown("""
     - **Be Independent:** Stop depending on others for stock picks. 🤝
-    - **Stay Informed:** Understand trends, not just screeners. 📈
+    - **Stay Informed:** Understand the value trend of a company 📈
     - **Seize Opportunities:** Don’t miss out on great investments. 🚪
     """)
 
     st.header("Improve your process")
     st.markdown("""
     - **Proven Approach:** Used by successful value investors. 🏆
-    - **Visualize Safety:** See your margin of safety instantly. 👀
-    - **Be Efficient:** Simplify and acelerate your investment process. 🔧
+    - **Visualize Safety:** See the evolution of margin of safety. 👀
     """)
 
     st.header("Accelerate your process")
@@ -334,7 +332,7 @@ def salespage():
 
     st.header("For You and Your Community")
     st.markdown("""
-    - **Easy Explanations:** Show your choices visually. 👨‍👩‍👧‍👦
+    - **Easy Explanations:** Show your choices visually.  📊
     - **Share Ideas:** Discuss investments with clear graphs. 🗣️
     - **Financial Independence:** Gain confidence and control. 🔒
     """)
@@ -350,6 +348,7 @@ def salespage():
     st.markdown("""
     **Buy your license key today** and unlock the full potential of ValeurGraph. 🗝️
     """)
+    st.link_button("Buy License Key",'https://vysse.gumroad.com/l/ZeUmF')
 
 def main():
     st.set_page_config(page_title="ValeurGraph", page_icon="📈")
