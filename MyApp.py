@@ -480,8 +480,7 @@ def main():
         #components.html(gumcode, height=600)
 
     if st.session_state.get('license_valid', False):
-        with st.form("Search"):
-            search_command()
+        search_command()
         with st.spinner("load dataframe"):
             display_screener()
         with st.form("Plot"):
