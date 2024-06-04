@@ -185,19 +185,18 @@ def search_command():
                 result_df = search_stocks(query)
                 if not result_df.empty:
                     st.write("Search Results:")
-
-                    # Display the dataframe with selectable rows
-                    selected_rows = st.dataframe(
-                        result_df,
-                        use_container_width=False,
-                        hide_index=False,
-                        selection_mode='single-row',
-                        on_select='rerun',
-                        key='dataframe'
-                    )
-
                     # Form for plotting the selected row
                     with st.form("Plot Form"):
+                        # Display the dataframe with selectable rows
+                        selected_rows = st.dataframe(
+                            result_df,
+                            use_container_width=False,
+                            hide_index=False,
+                            selection_mode='single-row',
+                            on_select='rerun',
+                            key='dataframe'
+                        )
+
                         plot_button = st.form_submit_button("Plot selection")
 
                         # Check if any row is selected and display the details
