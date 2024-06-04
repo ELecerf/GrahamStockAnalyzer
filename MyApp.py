@@ -365,7 +365,8 @@ def main():
     st.markdown(hide_default_format, unsafe_allow_html=True)
     st.title('ValeurGraph')
     st.divider()
-    st.header('"The person that turns over the most rocks wins the game."')
+    st.header('The simplest Deep Value app')
+    st.subheader('"The person that turns over the most rocks wins the game."')
     st.divider()
     custom_css = """
     <style>
