@@ -170,7 +170,7 @@ def search_stocks(query):
     else:
         return pd.DataFrame()  # Return an empty DataFrame if the query is empty
 
-def search_command():
+ddef search_command():
     st.title("Stock Search Tool")
 
     # Form for user input and search
@@ -193,7 +193,7 @@ def search_command():
                     key='dataframe'
                 )
 
-                # Store the selected rows in the session state for further processing
+                # Store the DataFrame and selected rows in the session state
                 st.session_state['result_df'] = result_df
                 st.session_state['selected_rows'] = selected_rows
             else:
