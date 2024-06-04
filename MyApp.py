@@ -348,7 +348,7 @@ def salespage():
     st.markdown("""
     **Buy your license key today** and unlock the full potential of ValeurGraph. 🗝️
     """)
-    st.link_button("Buy License Key",'https://vysse.gumroad.com/l/ZeUmF')
+    
 
 def main():
     st.set_page_config(page_title="ValeurGraph", page_icon="📈")
@@ -453,6 +453,7 @@ def main():
     else:
         st.write('Coming soon')
     salespage()
+    st.link_button("Buy License Key",'https://vysse.gumroad.com/l/ZeUmF')
     #components.html(gumcode, height=700)
         
 # Run the app
