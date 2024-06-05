@@ -177,6 +177,7 @@ def search_command():
     with st.form("Search Form"):
         query = st.text_input("Enter a stock symbol or name to search:", "")
         search_button = st.form_submit_button("Search")
+        st.session_state['result_df']=pd.Dataframe()
 
     # If search button is pressed
     if search_button:
@@ -186,44 +187,45 @@ def search_command():
                 st.session_state['result_df'] = result_df 
         else: 
             st.info("Please enter a query to search for stocks.")
+            result_df = pd.Dataframe()
     if 'result_df' in st.session_state:
         result_df = st.session_state['result_df']
-        if not result_df.empty:
-            st.write("Search Results:")
-            # Form for plotting the selected row
-            with st.form("Plot Form"):
-            # Display the dataframe with selectable rows
-                selected_rows = st.dataframe(
-                    result_df,
-                    use_container_width=False,
-                    hide_index=False,
-                    selection_mode='single-row',
-                    on_select='rerun',
-                    key='dataframeSearch'
-                )
+        #if not result_df.empty:
+        st.write("Search Results:")
+        # Form for plotting the selected row
+        with st.form("Plot Form"):
+        # Display the dataframe with selectable rows
+            selected_rows = st.dataframe(
+                result_df,
+                use_container_width=False,
+                hide_index=False,
+                selection_mode='single-row',
+                on_select='rerun',
+                key='dataframeSearch'
+            )
 
-                plot_button = st.form_submit_button("Plot selection")
+            plot_button = st.form_submit_button("Plot selection")
 
-                # Check if any row is selected and display the details
-                if plot_button:
-                    if selected_rows:
-                        st.write('selecetd rows true')
-                        if selected_rows.selection['rows']:  # Check if any row is actually selected
-                            selected_index = selected_rows.selection['rows'][0]
-                            selected_row = result_df.iloc[selected_index]
-                            ticker = f"{selected_row['Code']}.{selected_row['Exchange']}"
-                            st.session_state['selected_ticker'] = ticker
-                            st.session_state['trigger_plot'] = True
-                            st.write(f"Selected: {ticker}")
-                            # Reset the selection
-                            #st.session_state['df'].at[selected_index, 'selected'] = False
-                            
-                        else:
-                            st.write("No row selected")
+            # Check if any row is selected and display the details
+            if plot_button:
+                if selected_rows:
+                    st.write('selecetd rows true')
+                    if selected_rows.selection['rows']:  # Check if any row is actually selected
+                        selected_index = selected_rows.selection['rows'][0]
+                        selected_row = result_df.iloc[selected_index]
+                        ticker = f"{selected_row['Code']}.{selected_row['Exchange']}"
+                        st.session_state['selected_ticker'] = ticker
+                        st.session_state['trigger_plot'] = True
+                        st.write(f"Selected: {ticker}")
+                        # Reset the selection
+                        #st.session_state['df'].at[selected_index, 'selected'] = False
+                        
                     else:
-                        st.write("Selection data not available")
-        else:
-            st.write("No result")
+                        st.write("No row selected")
+                else:
+                    st.write("Selection data not available")
+        #else:
+        #    st.write("No result")
     else:
         st.info("No results found for your search.")
 
