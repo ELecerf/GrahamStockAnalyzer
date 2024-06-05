@@ -183,7 +183,9 @@ def search_command():
         if query:
             with st.spinner("Searching for stocks..."):
                 result_df = search_stocks(query)
-                if not result_df.empty:
+                st.session_state['result_df'] = result_df 
+                if not result_df.empty and 'result_df' in st.session_state:
+                    result_df = st.session_state['df']
                     st.write("Search Results:")
                     # Form for plotting the selected row
                     with st.form("Plot Form"):
