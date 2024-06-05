@@ -490,7 +490,7 @@ def main():
             display_graph()
 
     else:
-        st.write('Coming soon')
+        st.link_button("Buy License Key",'https://vysse.gumroad.com/l/ZeUmF')
     salespage()
     st.link_button("Buy License Key",'https://vysse.gumroad.com/l/ZeUmF')
     #components.html(gumcode, height=700)
