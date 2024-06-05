@@ -186,6 +186,7 @@ def search_command():
                 st.session_state['result_df'] = result_df 
 		else:
 			st.info("Please enter a query to search for stocks.")
+	
 	if not result_df.empty and 'result_df' in st.session_state:
 		result_df = st.session_state['result_df']
 		st.write("Search Results:")
@@ -482,8 +483,8 @@ def main():
 
     if st.session_state.get('license_valid', False):
         search_command()
-        #with st.spinner("load dataframe"):
-        #    display_screener()
+        with st.spinner("load dataframe"):
+            display_screener()
         with st.form("Plot"):
             display_graph()
 
