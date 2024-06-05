@@ -345,7 +345,7 @@ def display_graph():
                 st.bokeh_chart(bokeh_chart, use_container_width=True)
                 st.caption("ValeurGraph can make mistakes. Check important info.")
                 if not st.session_state.get('license_valid', False):
-                    st.markdown(':red[**to display the full value graph, buy a license key**]')    
+                    st.markdown(':red[**To display the full value graph, buy a license key**]')    
         except Exception as e:
             st.error(f"An error occurred: your input is not valid. Ticker format is CODE.EXCHANGE")
 
