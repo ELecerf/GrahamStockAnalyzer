@@ -138,7 +138,7 @@ def get_fundamentals(tick):
     else:
         proxy=['10EPS','BookValuePerShare']
         df = df[proxy]
-	return df
+    return df
 
 
 def get_price_eod(tick):
