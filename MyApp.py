@@ -149,7 +149,7 @@ def get_price_eod(tick):
 	price.index = pd.to_datetime(price.index)
 	price = price[['adjusted_close']]
 	return price
-
+@st.cache_data
 def search_stocks(query):
     """Search stocks using the EOD Historical Data API."""
     if query:
@@ -203,7 +203,8 @@ def search_command():
 
                         # Check if any row is selected and display the details
                         if plot_button:
-                            if selected_rows and 'rows' in selected_rows.selection:
+                            if selected_rows:
+                                st.write('selecetd rows true')
                                 if selected_rows.selection['rows']:  # Check if any row is actually selected
                                     selected_index = selected_rows.selection['rows'][0]
                                     selected_row = result_df.iloc[selected_index]
