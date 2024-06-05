@@ -431,7 +431,7 @@ def main():
     </style>
     """
     st.markdown(hide_default_format, unsafe_allow_html=True)
-    st.title('ValeurGraph. Simple.')
+    st.title('ValeurGraph. \nSimple.')
     st.header('The simplest Deep Value app')
     st.markdown('**"The person that turns over the most rocks wins the game."**')
     st.divider()
