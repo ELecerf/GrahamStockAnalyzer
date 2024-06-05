@@ -225,9 +225,7 @@ def search_command():
                         st.write("No row selected")
                 else:
                     st.write("Selection data not available")
-    elif not query:
-        st.info("Please enter a query to search for stocks.")
-    else:
+    elif query:
         st.info("No result")
         
 
