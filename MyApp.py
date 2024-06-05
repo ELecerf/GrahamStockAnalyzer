@@ -193,7 +193,7 @@ def search_command():
 
     result_df = st.session_state['result_df']
 
-    if not result_df.empty and query:
+    if not result_df.empty:
         st.write("Search Results:")
 
         # Form for plotting the selected row
@@ -225,8 +225,11 @@ def search_command():
                         st.write("No row selected")
                 else:
                     st.write("Selection data not available")
+    elif not query:
+        st.info("Please enter a query to search for stocks.")
     else:
-        st.info("No results found for your search.")
+        st.info("No result")
+        
 
 
 # Main application
