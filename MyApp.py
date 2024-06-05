@@ -435,7 +435,7 @@ def main():
     """
     st.markdown(hide_default_format, unsafe_allow_html=True)
     st.title('ValeurGraph. Simple.')
-    st.header('The simplest app for Deep Value investors')
+    st.header('The simplest app for Deep Value investors 👇')
     st.markdown('**"The person that turns over the most rocks wins the game."**')
     st.divider()
     custom_css = """
@@ -514,12 +514,12 @@ def main():
         #components.html(gumcode, height=600)
 
     #if st.session_state.get('license_valid', False):
-    with st.expander("Explanation of the process"):
+    with st.expander("⚙ Explanation of the process"):
         process_explanation()    
-    with st.expander("Search Stock"):
+    with st.expander("🔎 Search Stock"):
         search_command()
-    with st.expander("Screener"):
-        with st.spinner("load dataframe"):
+    with st.expander("⏳ Screener"):
+        with st.spinner("load data"):
             display_screener()
     with st.form("Plot"):
         display_graph()
