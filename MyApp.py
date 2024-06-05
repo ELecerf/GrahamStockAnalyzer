@@ -196,7 +196,7 @@ def search_command():
                             hide_index=False,
                             selection_mode='single-row',
                             on_select='rerun',
-                            key='dataframe'
+                            key='dataframeSearch'
                         )
 
                         plot_button = st.form_submit_button("Plot selection")
@@ -255,7 +255,7 @@ def display_screener():
                 hide_index=False,
                 selection_mode='single-row',
                 on_select='rerun',
-                key='dataframe'
+                key='dataframeScreener'
             )
             plot_button = st.form_submit_button("Plot selection")
             
