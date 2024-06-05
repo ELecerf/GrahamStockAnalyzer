@@ -133,10 +133,12 @@ def get_fundamentals(tick):
 	#df=df.sort_index(ascending=True)
 	#df=df.iloc[::-1]
 	df=CalcValues(df.astype(float))
-    if not st.session_state.get('license_valid', False):proxy=['Graham_Number','NCAV','10EPS','NTAV','BookValuePerShare']
-    else:proxy=['10EPS','BookValuePerShare']
-        df = df[proxy]
-    return df
+	if not st.session_state.get('license_valid', False):
+		proxy=['Graham_Number','NCAV','10EPS','NTAV','BookValuePerShare']
+	else:
+		proxy=['10EPS','BookValuePerShare']
+		df = df[proxy]
+	return df
 
 
 def get_price_eod(tick):
