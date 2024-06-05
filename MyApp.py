@@ -344,6 +344,7 @@ def display_graph():
 
 def salespage():
     if not st.session_state.get('license_valid', False):
+        st.link_button("Buy License Key",'https://vysse.gumroad.com/l/ZeUmF')
         st.header("For deep value investors")
         st.markdown("""
         - **Identify Cheap Stocks:** Spot undervalued stocks quickly. 📉
@@ -497,9 +498,6 @@ def main():
                 display_screener()
         with st.form("Plot"):
             display_graph()
-
-    else:
-        st.link_button("Buy License Key",'https://vysse.gumroad.com/l/ZeUmF')
     salespage()
     
     #components.html(gumcode, height=700)
