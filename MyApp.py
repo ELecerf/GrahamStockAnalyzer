@@ -185,7 +185,7 @@ def search_command():
                 result_df = search_stocks(query)
                 st.session_state['result_df'] = result_df 
                 if not result_df.empty and 'result_df' in st.session_state:
-                    result_df = st.session_state['df']
+                    result_df = st.session_state['result_df']
                     st.write("Search Results:")
                     # Form for plotting the selected row
                     with st.form("Plot Form"):
