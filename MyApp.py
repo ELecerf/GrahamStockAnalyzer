@@ -133,7 +133,11 @@ def get_fundamentals(tick):
 	#df=df.sort_index(ascending=True)
 	#df=df.iloc[::-1]
 	df=CalcValues(df.astype(float))
-	df = df[['Graham_Number','NCAV','10EPS','NTAV','BookValuePerShare']]
+    if not st.session_state.get('license_valid', False):
+        proxy=['Graham_Number','NCAV','10EPS','NTAV','BookValuePerShare']
+    else:
+        proxy=['10EPS','BookValuePerShare']
+        df = df[proxy]
 	return df
 
 
@@ -490,14 +494,14 @@ def main():
         <a class="gumroad-button" href="https://vysse.gumroad.com/l/ZeUmF" data-gumroad-overlay-checkout="true">Buy on</a>"""
         #components.html(gumcode, height=600)
 
-    if st.session_state.get('license_valid', False):
-        with st.expander("Search Stock"):
-            search_command()
-        with st.expander("Screener"):
-            with st.spinner("load dataframe"):
-                display_screener()
-        with st.form("Plot"):
-            display_graph()
+    #if st.session_state.get('license_valid', False):
+    with st.expander("Search Stock"):
+        search_command()
+    with st.expander("Screener"):
+        with st.spinner("load dataframe"):
+            display_screener()
+    with st.form("Plot"):
+        display_graph()
     salespage()
     
     #components.html(gumcode, height=700)
