@@ -343,6 +343,7 @@ def display_graph():
 
                 bokeh_chart = create_bokeh_chart(name, df_fundamentals, df_stock)
                 st.bokeh_chart(bokeh_chart, use_container_width=True)
+                st.caption("ValeurGraph can make mistakes. Check important info.")
                 if not st.session_state.get('license_valid', False):
                     st.markdown(':red[**to display the full value graph, buy a license key**]')    
         except Exception as e:
