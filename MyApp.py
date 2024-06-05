@@ -184,8 +184,8 @@ def search_command():
             with st.spinner("Searching for stocks..."):
                 result_df = search_stocks(query)
                 st.session_state['result_df'] = result_df 
-		else:
-			st.info("Please enter a query to search for stocks.")
+	else:
+		st.info("Please enter a query to search for stocks.")
 	
 	if not result_df.empty and 'result_df' in st.session_state:
 		result_df = st.session_state['result_df']
