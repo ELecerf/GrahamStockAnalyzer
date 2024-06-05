@@ -109,36 +109,36 @@ def get_earnings(tick):
 
 
 def get_bsy_data(tick):
-	columnOfInterest = ['commonStockSharesOutstanding','totalAssets','totalLiab','totalCurrentAssets','netTangibleAssets','cash','totalStockholderEquity']
-	url = "https://eodhistoricaldata.com/api/fundamentals/%s"%tick
-	params = {'api_token': EOD_API_KEY, 'filter': "Financials::Balance_Sheet",'fmt':'json'}
-	r = requests.get(url, params=params)
-	json=r.json()
-	dfy=pd.DataFrame.from_dict(json['yearly'],orient="index")[columnOfInterest]
-	dfq=pd.DataFrame.from_dict(json['quarterly'],orient="index")[columnOfInterest]
-	dfy.index=pd.to_datetime(dfy.index)
-	dfq.index=pd.to_datetime(dfq.index)
-	df=pd.concat([dfq[:3],dfy])
-	df.index=pd.to_datetime(df.index)
-	df=df.sort_index(ascending=False)
-	df.index.names=['date']
-	return df[:10]
+    columnOfInterest = ['commonStockSharesOutstanding','totalAssets','totalLiab','totalCurrentAssets','netTangibleAssets','cash','totalStockholderEquity']
+    url = "https://eodhistoricaldata.com/api/fundamentals/%s"%tick
+    params = {'api_token': EOD_API_KEY, 'filter': "Financials::Balance_Sheet",'fmt':'json'}
+    r = requests.get(url, params=params)
+    json=r.json()
+    dfy=pd.DataFrame.from_dict(json['yearly'],orient="index")[columnOfInterest]
+    dfq=pd.DataFrame.from_dict(json['quarterly'],orient="index")[columnOfInterest]
+    dfy.index=pd.to_datetime(dfy.index)
+    dfq.index=pd.to_datetime(dfq.index)
+    df=pd.concat([dfq[:3],dfy])
+    df.index=pd.to_datetime(df.index)
+    df=df.sort_index(ascending=False)
+    df.index.names=['date']
+    return df[:10]
 
 
 def get_fundamentals(tick):
-	bsh=get_bsy_data(tick)
-	ist=get_earnings(tick)
-	df=bsh.join(ist).drop_duplicates()
-	df.index=pd.to_datetime(df.index)
-	#df=df.sort_index(ascending=True)
-	#df=df.iloc[::-1]
-	df=CalcValues(df.astype(float))
-	if not st.session_state.get('license_valid', False):
-		proxy=['Graham_Number','NCAV','10EPS','NTAV','BookValuePerShare']
-	else:
-		proxy=['10EPS','BookValuePerShare']
-		df = df[proxy]
-	return df
+    bsh=get_bsy_data(tick)
+    ist=get_earnings(tick)
+    df=bsh.join(ist).drop_duplicates()
+    df.index=pd.to_datetime(df.index)
+    #df=df.sort_index(ascending=True)
+    #df=df.iloc[::-1]
+    df=CalcValues(df.astype(float))
+    if st.session_state.get('license_valid', False):
+        proxy=['Graham_Number','NCAV','10EPS','NTAV','BookValuePerShare']
+    else:
+        proxy=['BookValuePerShare']
+        df = df[proxy]
+    return df
 
 
 def get_price_eod(tick):
@@ -343,6 +343,9 @@ def display_graph():
 
                 bokeh_chart = create_bokeh_chart(name, df_fundamentals, df_stock)
                 st.bokeh_chart(bokeh_chart, use_container_width=True)
+                if not st.session_state.get('license_valid', False):
+                    st.markdown('**to get display the full value graph, buy a license key**')
+                    st.link_button("Buy License Key",'https://vysse.gumroad.com/l/ZeUmF')       
         except Exception as e:
             st.error(f"An error occurred: your input is not valid. Ticker format is CODE.EXCHANGE")
 
