@@ -483,9 +483,11 @@ def main():
         #components.html(gumcode, height=600)
 
     if st.session_state.get('license_valid', False):
-        search_command()
-        with st.spinner("load dataframe"):
-            display_screener()
+        with st.expander("Search Stock"):
+            search_command()
+        with st.expander("Screener"):
+            with st.spinner("load dataframe"):
+                display_screener()
         with st.form("Plot"):
             display_graph()
 
