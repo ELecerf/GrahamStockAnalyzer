@@ -188,6 +188,7 @@ def search_command():
         else: 
             st.info("Please enter a query to search for stocks.")
             result_df = pd.Dataframe()
+            st.session_state['result_df'] = result_df
     if 'result_df' in st.session_state:
         result_df = st.session_state['result_df']
         #if not result_df.empty:
