@@ -343,51 +343,57 @@ def display_graph():
             st.error(f"An error occurred: your input is not valid. Ticker format is CODE.EXCHANGE")
 
 def salespage():
-    st.header("For deep value investors")
-    st.markdown("""
-    - **Identify Cheap Stocks:** Spot undervalued stocks quickly. 📉
-    - **Fast Analysis:** Use our graphs for rapid insights. 🚀
-    - **Save Time:** Skip hours of screening and Excel. ⏳
-    """)
+    if not st.session_state.get('license_valid', False):
+        st.header("For deep value investors")
+        st.markdown("""
+        - **Identify Cheap Stocks:** Spot undervalued stocks quickly. 📉
+        - **Fast Analysis:** Use our graphs for rapid insights. 🚀
+        - **Save Time:** Skip hours of screening and Excel. ⏳
+        """)
 
-    st.header("Avoid Investment Pitfalls")
-    st.markdown("""
-    - **Be Independent:** Stop depending on others for stock picks. 🤝
-    - **Stay Informed:** Understand the value trend of a company 📈
-    - **Seize Opportunities:** Don’t miss out on great investments. 🚪
-    """)
+        st.header("Avoid Investment Pitfalls")
+        st.markdown("""
+        - **Be Independent:** Stop depending on others for stock picks. 🤝
+        - **Stay Informed:** Understand the value trend of a company 📈
+        - **Seize Opportunities:** Don’t miss out on great investments. 🚪
+        """)
 
-    st.header("Improve your process")
-    st.markdown("""
-    - **Proven Approach:** Used by successful value investors. 🏆
-    - **Visualize Safety:** See the evolution of margin of safety. 👀
-    """)
+        st.header("Improve your process")
+        st.markdown("""
+        - **Proven Approach:** Used by successful value investors. 🏆
+        - **Visualize Safety:** See the evolution of margin of safety. 👀
+        """)
 
-    st.header("Accelerate your process")
-    st.markdown("""
-    - **Instant Analysis:** Generate price vs. value graphs in milliseconds. ⚡
-    - **Automated Screening:** Find and focus on bargains quickly. 🔍
-    - **Work Smarter:** Analyze 100 times faster to become autonomous. 🧠
-    """)
+        st.header("Accelerate your process")
+        st.markdown("""
+        - **Instant Analysis:** Generate price vs. value graphs in milliseconds. ⚡
+        - **Automated Screening:** Find and focus on bargains quickly. 🔍
+        - **Work Smarter:** Analyze 100 times faster to become autonomous. 🧠
+        """)
 
-    st.header("For You and Your Community")
-    st.markdown("""
-    - **Easy Explanations:** Show your choices visually.  📊
-    - **Share Ideas:** Discuss investments with clear graphs. 🗣️
-    - **Financial Independence:** Gain confidence and control. 🔒
-    """)
+        st.header("For You and Your Community")
+        st.markdown("""
+        - **Easy Explanations:** Show your choices visually.  📊
+        - **Share Ideas:** Discuss investments with clear graphs. 🗣️
+        - **Financial Independence:** Gain confidence and control. 🔒
+        """)
 
-    st.header("Why Now?")
-    st.markdown("""
-    - **Understand Your Investments:** Learn from past successes and failures. 📚
-    - **Deep Value Investing:** Guide your actions with proven principles. 🧭
-    - **Achieve Quality:** Hit your targets with minimal variation. 🎯
-    """)
+        st.header("Why Now?")
+        st.markdown("""
+        - **Understand Your Investments:** Learn from past successes and failures. 📚
+        - **Deep Value Investing:** Guide your actions with proven principles. 🧭
+        - **Achieve Quality:** Hit your targets with minimal variation. 🎯
+        """)
 
-    st.header("Start now")
-    st.markdown("""
-    **Buy your license key today** and unlock the full potential of ValeurGraph. 🗝️
-    """)
+        st.header("Start now")
+        st.markdown("""
+        **Buy your license key today** and unlock the full potential of ValeurGraph. 🗝️
+        """)
+    else:
+        st.header("Thank you")
+        st.markdown("""
+        **You are an active user** thank you and enjoy ValeurGraph. 🗝️
+        """)
     
 
 def main():
