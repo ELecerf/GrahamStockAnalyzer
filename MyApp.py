@@ -481,8 +481,8 @@ def main():
 
     if st.session_state.get('license_valid', False):
         search_command()
-        with st.spinner("load dataframe"):
-            display_screener()
+        #with st.spinner("load dataframe"):
+        #    display_screener()
         with st.form("Plot"):
             display_graph()
 
