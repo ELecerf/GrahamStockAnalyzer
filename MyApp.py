@@ -177,7 +177,7 @@ def search_command():
     with st.form("Search Form"):
         query = st.text_input("Enter a stock symbol or name to search:", "")
         search_button = st.form_submit_button("Search")
-        st.session_state['result_df']=pd.Dataframe()
+        st.session_state['result_df']=pd.DataFrame()
 
     # If search button is pressed
     if search_button:
@@ -187,7 +187,7 @@ def search_command():
                 st.session_state['result_df'] = result_df 
         else: 
             st.info("Please enter a query to search for stocks.")
-            result_df = pd.Dataframe()
+            result_df = pd.DataFrame()
             st.session_state['result_df'] = result_df
     if 'result_df' in st.session_state:
         result_df = st.session_state['result_df']
