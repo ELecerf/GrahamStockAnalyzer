@@ -351,12 +351,12 @@ def display_graph():
 
 def process_explanation():
     st.markdown("""
-    - **a good process is simple:** quickly find cheap opportunities to analyze more deeply.
-    - Option 1: you want to analyze a specific company with a value graph --> use the Search tool.
-    - Option 2: You want to turn over rocks to find cheap companies --> Use the screener.
+    - **A good process is simple:** quickly find cheap opportunities to analyze further.
+    - **Option 1:** you want to analyze a specific company with a value graph. **Use Search.**
+    - **Option 2:** You want to turn over rocks to find cheap companies. **Use the screener.**
     
     The process I use is simple, I look for companies with a big margin of safety compared to their tangible assets. 
-    --> Net-nets for example. 
+    --> **Net-nets** for example. 
     \nI check if their assets are growing and if they are profitable.
     \nThen I check that they have low debts.
     \nThen I look at the trends of the price vs. main value proxies like net current assets or earnings per share
