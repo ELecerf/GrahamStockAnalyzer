@@ -350,17 +350,19 @@ def display_graph():
 
 def process_explanation():
     st.markdown("""
-    - **a good process is simple:** quickly find cheap opportunities to analyze more deeply
+    - **a good process is simple:** quickly find cheap opportunities to analyze more deeply.
     - Option 1: you want to analyze a specific company with a value graph --> use the Search tool.
-    - Option 2: You want to turn over rocks to find cheap companies --> Use the screener
+    - Option 2: You want to turn over rocks to find cheap companies --> Use the screener.
     
-    The process I use is simple, I look for company with a big margin of safety cmpared to their tangible assets 
-    --> Net-nets for example. I check if their assets are growing and if they are profitable.
-    Then I check that they have low debts.
-    Then I look at the trends of the price vs. main value proxies like net current assets or earnings per share
+    The process I use is simple, I look for companies with a big margin of safety compared to their tangible assets. 
+    --> Net-nets for example. 
+    \nI check if their assets are growing and if they are profitable.
+    \nThen I check that they have low debts.
+    \nThen I look at the trends of the price vs. main value proxies like net current assets or earnings per share
     to visually see where we stand compared to historical ratios.
-    Then I read their financial reports and investigate further to make a case. 
-    Then I discuss it with fellow investors. It has worked very well for me**And you? Give it a try**""")
+    \nThen I read their financial reports and investigate further to make a case. 
+    \nThen I discuss it with fellow investors. It has worked very well for me.
+    \n**And you? Give it a try**""")
 
 def salespage():
     if not st.session_state.get('license_valid', False):
@@ -431,7 +433,7 @@ def main():
     </style>
     """
     st.markdown(hide_default_format, unsafe_allow_html=True)
-    st.title('ValeurGraph. \nSimple.')
+    st.title('ValeurGraph. Simple.')
     st.header('The simplest Deep Value app')
     st.markdown('**"The person that turns over the most rocks wins the game."**')
     st.divider()
