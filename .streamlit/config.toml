@@ -4,24 +4,3 @@ backgroundColor = "#ffffff"
 secondaryBackgroundColor = "#f0f2f6"
 textColor = "#000000"
 font = "Helvetica Neue"
-
-[custom_css]
-css = """
-<style>
-    /* Custom Gradient Background */
-    body {
-        background: linear-gradient(to right, #ff7e5f, #feb47b);
-    }
-
-    /* Adjusting st.title position closer to the top */
-    .element-container:first-child {
-        margin-top: -50px;
-    }
-
-    /* Ensuring the title has some margin for aesthetics */
-    .element-container h1 {
-        margin-top: 0;
-        margin-bottom: 10px;
-    }
-</style>
-"""
