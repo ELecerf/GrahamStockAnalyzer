@@ -202,23 +202,22 @@ def search_command():
                         plot_button = st.form_submit_button("Plot selection")
 
                         # Check if any row is selected and display the details
-                        if plot_button:
-                            if selected_rows and 'selected_rows' in selected_rows:
-                                if selected_rows['selected_rows']:  # Check if any row is actually selected
-                                    selected_index = selected_rows['selected_rows'][0]
-                                    selected_row = result_df.iloc[selected_index]
-                                    ticker = f"{selected_row['Code']}.{selected_row['Exchange']}"
-                                    st.session_state['selected_ticker'] = ticker
-                                    st.session_state['trigger_plot'] = True
-                                    st.write(f"Selected: {ticker}")
-
-                                    # Reset the selection (if needed)
-                                    # st.session_state['df'].at[selected_index, 'selected'] = False
-
-                                else:
-                                    st.write("No row selected")
+                    if plot_button:
+                        if selected_rows and 'rows' in selected_rows.selection:
+                            if selected_rows.selection['rows']:  # Check if any row is actually selected
+                                selected_index = selected_rows.selection['rows'][0]
+                                selected_row = df.iloc[selected_index]
+                                ticker = f"{selected_row['Code']}.{selected_row['Exchange']}"
+                                st.session_state['selected_ticker'] = ticker
+                                st.session_state['trigger_plot'] = True
+                                st.write(f"Selected: {ticker}")
+                                # Reset the selection
+                                #st.session_state['df'].at[selected_index, 'selected'] = False
+                                
                             else:
-                                st.write("Selection data not available")
+                                st.write("No row selected")
+                        else:
+                            st.write("Selection data not available")
                 else:
                     st.info("No results found for your search.")
         else:
