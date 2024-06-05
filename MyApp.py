@@ -206,7 +206,7 @@ def search_command():
                         if selected_rows and 'rows' in selected_rows.selection:
                             if selected_rows.selection['rows']:  # Check if any row is actually selected
                                 selected_index = selected_rows.selection['rows'][0]
-                                selected_row = df.iloc[selected_index]
+                                selected_row = result_df.iloc[selected_index]
                                 ticker = f"{selected_row['Code']}.{selected_row['Exchange']}"
                                 st.session_state['selected_ticker'] = ticker
                                 st.session_state['trigger_plot'] = True
