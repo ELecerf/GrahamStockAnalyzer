@@ -186,15 +186,14 @@ def search_command():
     if search_button:
         if query:
             with st.spinner("Searching for stocks..."):
-                result_df = search_stocks(query)
-                st.session_state['result_df'] = result_df 
+                st.session_state['result_df'] = search_stocks(query)
         else: 
             st.info("Please enter a query to search for stocks.")
             st.session_state['result_df'] = pd.DataFrame()
 
     result_df = st.session_state['result_df']
 
-    if not result_df.empty:
+    if not result_df.empty and query:
         st.write("Search Results:")
 
         # Form for plotting the selected row
