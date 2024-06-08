@@ -109,32 +109,36 @@ def get_earnings(tick):
 
 
 def get_bsy_data(tick):
-	columnOfInterest = ['commonStockSharesOutstanding','totalAssets','totalLiab','totalCurrentAssets','netTangibleAssets','cash','totalStockholderEquity']
-	url = "https://eodhistoricaldata.com/api/fundamentals/%s"%tick
-	params = {'api_token': EOD_API_KEY, 'filter': "Financials::Balance_Sheet",'fmt':'json'}
-	r = requests.get(url, params=params)
-	json=r.json()
-	dfy=pd.DataFrame.from_dict(json['yearly'],orient="index")[columnOfInterest]
-	dfq=pd.DataFrame.from_dict(json['quarterly'],orient="index")[columnOfInterest]
-	dfy.index=pd.to_datetime(dfy.index)
-	dfq.index=pd.to_datetime(dfq.index)
-	df=pd.concat([dfq[:3],dfy])
-	df.index=pd.to_datetime(df.index)
-	df=df.sort_index(ascending=False)
-	df.index.names=['date']
-	return df[:10]
+    columnOfInterest = ['commonStockSharesOutstanding','totalAssets','totalLiab','totalCurrentAssets','netTangibleAssets','cash','totalStockholderEquity']
+    url = "https://eodhistoricaldata.com/api/fundamentals/%s"%tick
+    params = {'api_token': EOD_API_KEY, 'filter': "Financials::Balance_Sheet",'fmt':'json'}
+    r = requests.get(url, params=params)
+    json=r.json()
+    dfy=pd.DataFrame.from_dict(json['yearly'],orient="index")[columnOfInterest]
+    dfq=pd.DataFrame.from_dict(json['quarterly'],orient="index")[columnOfInterest]
+    dfy.index=pd.to_datetime(dfy.index)
+    dfq.index=pd.to_datetime(dfq.index)
+    df=pd.concat([dfq[:3],dfy])
+    df.index=pd.to_datetime(df.index)
+    df=df.sort_index(ascending=False)
+    df.index.names=['date']
+    return df[:10]
 
 
 def get_fundamentals(tick):
-	bsh=get_bsy_data(tick)
-	ist=get_earnings(tick)
-	df=bsh.join(ist).drop_duplicates()
-	df.index=pd.to_datetime(df.index)
-	#df=df.sort_index(ascending=True)
-	#df=df.iloc[::-1]
-	df=CalcValues(df.astype(float))
-	df = df[['Graham_Number','NCAV','10EPS','NTAV','BookValuePerShare']]
-	return df
+    bsh=get_bsy_data(tick)
+    ist=get_earnings(tick)
+    df=bsh.join(ist).drop_duplicates()
+    df.index=pd.to_datetime(df.index)
+    #df=df.sort_index(ascending=True)
+    #df=df.iloc[::-1]
+    df=CalcValues(df.astype(float))
+    if st.session_state.get('license_valid', False):
+        proxy=['Graham_Number','NCAV','10EPS','NTAV','BookValuePerShare']
+    else:
+        proxy=['BookValuePerShare']
+        df = df[proxy]
+    return df
 
 
 def get_price_eod(tick):
@@ -171,58 +175,62 @@ def search_stocks(query):
         return pd.DataFrame()  # Return an empty DataFrame if the query is empty
 
 def search_command():
-    st.title("Stock Search Tool")
-
     # Form for user input and search
     with st.form("Search Form"):
+        st.title("Search company")
         query = st.text_input("Enter a stock symbol or name to search:", "")
         search_button = st.form_submit_button("Search")
+
+    # Initialize result_df in session state if not already present
+    if 'result_df' not in st.session_state:
+        st.session_state['result_df'] = pd.DataFrame()
 
     # If search button is pressed
     if search_button:
         if query:
             with st.spinner("Searching for stocks..."):
-                result_df = search_stocks(query)
-                st.session_state['result_df'] = result_df 
-                if not result_df.empty and 'result_df' in st.session_state:
-                    result_df = st.session_state['result_df']
-                    st.write("Search Results:")
-                    # Form for plotting the selected row
-                    with st.form("Plot Form"):
-                        # Display the dataframe with selectable rows
-                        selected_rows = st.dataframe(
-                            result_df,
-                            use_container_width=False,
-                            hide_index=False,
-                            selection_mode='single-row',
-                            on_select='rerun',
-                            key='dataframeSearch'
-                        )
-
-                        plot_button = st.form_submit_button("Plot selection")
-
-                        # Check if any row is selected and display the details
-                        if plot_button:
-                            if selected_rows:
-                                st.write('selecetd rows true')
-                                if selected_rows.selection['rows']:  # Check if any row is actually selected
-                                    selected_index = selected_rows.selection['rows'][0]
-                                    selected_row = result_df.iloc[selected_index]
-                                    ticker = f"{selected_row['Code']}.{selected_row['Exchange']}"
-                                    st.session_state['selected_ticker'] = ticker
-                                    st.session_state['trigger_plot'] = True
-                                    st.write(f"Selected: {ticker}")
-                                    # Reset the selection
-                                    #st.session_state['df'].at[selected_index, 'selected'] = False
-                                    
-                                else:
-                                    st.write("No row selected")
-                            else:
-                                st.write("Selection data not available")
-                else:
-                    st.info("No results found for your search.")
-        else:
+                st.session_state['result_df'] = search_stocks(query)
+        else: 
             st.info("Please enter a query to search for stocks.")
+            st.session_state['result_df'] = pd.DataFrame()
+
+    result_df = st.session_state['result_df']
+
+    if not result_df.empty:
+        st.write("Search Results:")
+
+        # Form for plotting the selected row
+        with st.form("Plot Form"):
+            # Display the dataframe with selectable rows
+            selected_rows = st.dataframe(
+                result_df,
+                use_container_width=False,
+                hide_index=False,
+                selection_mode='single-row',
+                on_select='rerun',
+                key='dataframeSearch'
+            )
+
+            plot_button = st.form_submit_button("Plot selection")
+
+            # Check if any row is selected and display the details
+            if plot_button:
+                if selected_rows:
+                    if selected_rows.selection['rows']:  # Check if any row is actually selected
+                        selected_index = selected_rows.selection['rows'][0]
+                        selected_row = result_df.iloc[selected_index]
+                        ticker = f"{selected_row['Code']}.{selected_row['Exchange']}"
+                        st.session_state['selected_ticker'] = ticker
+                        st.session_state['trigger_plot'] = True
+                        st.write(f"Selected: {ticker}, see value graph below")
+                    else:
+                        st.write("No row selected")
+                else:
+                    st.write("Selection data not available")
+    elif query:
+        st.info("No result")
+        
+
 
 # Main application
 
@@ -335,55 +343,82 @@ def display_graph():
 
                 bokeh_chart = create_bokeh_chart(name, df_fundamentals, df_stock)
                 st.bokeh_chart(bokeh_chart, use_container_width=True)
+                st.caption("ValeurGraph can make mistakes. Check important info.")
+                if not st.session_state.get('license_valid', False):
+                    st.markdown(':red[**To display the full value graph, buy a license key**]')    
         except Exception as e:
             st.error(f"An error occurred: your input is not valid. Ticker format is CODE.EXCHANGE")
 
+def process_explanation():
+    st.markdown("""
+    - **A good process is simple:** quickly find cheap opportunities to analyze further.
+    - **Option 1:** you want to analyze a specific company with a value graph. **Use Search.**
+    - **Option 2:** You want to turn over rocks to find cheap companies. **Use the screener.**
+    
+    The process I use is simple, I look for companies with a big margin of safety compared to their tangible assets. 
+    --> **Net-nets** for example. 
+    \nI check if their assets are growing and if they are profitable.
+    \nThen I check that they have low debts.
+    \nThen I look at the trends of the price vs. main value proxies like net current assets or earnings per share
+    to visually see where we stand compared to historical ratios.
+    \nThen I read their financial reports and investigate further to make a case. 
+    \nThen I discuss it with fellow investors. It has worked very well for me.
+    \n**And you? Give it a try**""")
+
 def salespage():
-    st.header("For deep value investors")
-    st.markdown("""
-    - **Identify Cheap Stocks:** Spot undervalued stocks quickly. 📉
-    - **Fast Analysis:** Use our graphs for rapid insights. 🚀
-    - **Save Time:** Skip hours of screening and Excel. ⏳
-    """)
+    if not st.session_state.get('license_valid', False):
+        st.link_button("Buy License Key",'https://vysse.gumroad.com/l/ZeUmF')
+        st.header("For deep value investors")
+        st.markdown("""
+        - **Identify Cheap Stocks:** Spot undervalued stocks quickly. 📉
+        - **Fast Analysis:** Use our graphs for rapid insights. 🚀
+        - **Save Time:** Skip hours of screening and Excel. ⏳
+        """)
 
-    st.header("Avoid Investment Pitfalls")
-    st.markdown("""
-    - **Be Independent:** Stop depending on others for stock picks. 🤝
-    - **Stay Informed:** Understand the value trend of a company 📈
-    - **Seize Opportunities:** Don’t miss out on great investments. 🚪
-    """)
+        st.header("Avoid Investment Pitfalls")
+        st.markdown("""
+        - **Be Independent:** Stop depending on others for stock picks. 🤝
+        - **Stay Informed:** Understand the value trend of a company 📈
+        - **Seize Opportunities:** Don’t miss out on great investments. 🚪
+        """)
 
-    st.header("Improve your process")
-    st.markdown("""
-    - **Proven Approach:** Used by successful value investors. 🏆
-    - **Visualize Safety:** See the evolution of margin of safety. 👀
-    """)
+        st.header("Improve your process")
+        st.markdown("""
+        - **Proven Approach:** Used by successful value investors. 🏆
+        - **Visualize Safety:** See the evolution of margin of safety. 👀
+        """)
 
-    st.header("Accelerate your process")
-    st.markdown("""
-    - **Instant Analysis:** Generate price vs. value graphs in milliseconds. ⚡
-    - **Automated Screening:** Find and focus on bargains quickly. 🔍
-    - **Work Smarter:** Analyze 100 times faster to become autonomous. 🧠
-    """)
+        st.header("Accelerate your process")
+        st.markdown("""
+        - **Instant Analysis:** Generate price vs. value graphs in milliseconds. ⚡
+        - **Automated Screening:** Find and focus on bargains quickly. 🔍
+        - **Work Smarter:** Analyze 100 times faster to become autonomous. 🧠
+        """)
 
-    st.header("For You and Your Community")
-    st.markdown("""
-    - **Easy Explanations:** Show your choices visually.  📊
-    - **Share Ideas:** Discuss investments with clear graphs. 🗣️
-    - **Financial Independence:** Gain confidence and control. 🔒
-    """)
+        st.header("For You and Your Community")
+        st.markdown("""
+        - **Easy Explanations:** Show your choices visually.  📊
+        - **Share Ideas:** Discuss investments with clear graphs. 🗣️
+        - **Financial Independence:** Gain confidence and control. 🔒
+        """)
 
-    st.header("Why Now?")
-    st.markdown("""
-    - **Understand Your Investments:** Learn from past successes and failures. 📚
-    - **Deep Value Investing:** Guide your actions with proven principles. 🧭
-    - **Achieve Quality:** Hit your targets with minimal variation. 🎯
-    """)
+        st.header("Why Now?")
+        st.markdown("""
+        - **Understand Your Investments:** Learn from past successes and failures. 📚
+        - **Deep Value Investing:** Guide your actions with proven principles. 🧭
+        - **Achieve Quality:** Hit your targets with minimal variation. 🎯
+        """)
 
-    st.header("Start now")
-    st.markdown("""
-    **Buy your license key today** and unlock the full potential of ValeurGraph. 🗝️
-    """)
+        st.header("Start now")
+        st.markdown("""
+        **Buy your license key today** and unlock the full potential of ValeurGraph. 🗝️
+        """)
+        st.link_button("Buy License Key",'https://vysse.gumroad.com/l/ZeUmF')
+    else:
+        st.header("Thank you")
+        st.markdown("""
+        **You are an active user** thank you and enjoy ValeurGraph. 🗝️
+        """)
     
 
 def main():
@@ -399,10 +434,9 @@ def main():
     </style>
     """
     st.markdown(hide_default_format, unsafe_allow_html=True)
-    st.title('ValeurGraph')
-    st.divider()
-    st.header('The simplest Deep Value app')
-    st.subheader('"The person that turns over the most rocks wins the game."')
+    st.title('ValeurGraph. Simple.')
+    st.header('The simplest app for Deep Value investors 👇')
+    st.markdown('**"The person that turns over the most rocks wins the game."**')
     st.divider()
     custom_css = """
     <style>
@@ -479,17 +513,18 @@ def main():
         <a class="gumroad-button" href="https://vysse.gumroad.com/l/ZeUmF" data-gumroad-overlay-checkout="true">Buy on</a>"""
         #components.html(gumcode, height=600)
 
-    if st.session_state.get('license_valid', False):
+    #if st.session_state.get('license_valid', False):
+    with st.expander("⚙ Explanation of the process"):
+        process_explanation()    
+    with st.expander("🔎 Search Stock"):
         search_command()
-        with st.spinner("load dataframe"):
+    with st.expander("⏳ Screener"):
+        with st.spinner("load data"):
             display_screener()
-        with st.form("Plot"):
-            display_graph()
-
-    else:
-        st.write('Coming soon')
+    with st.form("Plot"):
+        display_graph()
     salespage()
-    st.link_button("Buy License Key",'https://vysse.gumroad.com/l/ZeUmF')
+    
     #components.html(gumcode, height=700)
         
 # Run the app
