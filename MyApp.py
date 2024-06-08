@@ -237,7 +237,7 @@ def search_command():
 def display_screener():
 
     # List of exchanges
-    exchanges = ['PA', 'TSE', 'TO', 'MI', 'MC', 'AS', 'NASDAQ', 'NYSE', 'BR', 'WAR']
+    exchanges = ['PA', 'TSE', 'TO', 'MI', 'MC', 'AS', 'US', 'BR', 'WAR']
     
     # Form for selecting an exchange and loading data
     with st.form("Exchange Selector"):
