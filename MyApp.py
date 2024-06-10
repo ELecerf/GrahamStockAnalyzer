@@ -437,6 +437,8 @@ def main():
     st.title('ValeurGraph. Simple.')
     st.header('The simplest app for Deep Value investors 👇')
     st.markdown('**"The person that turns over the most rocks wins the game."**')
+    st.markdown('''In just a few seconds, Grahamite value investors can compare the evolution of a stock price with fundamental data per share (book value, NCAV, etc.)
+    and check if it qualifies as a deep value opportunity. The screener further accelerate the process, while keeping things as simple as possible.''')
     st.divider()
     custom_css = """
     <style>
