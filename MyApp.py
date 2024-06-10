@@ -345,7 +345,7 @@ def display_graph():
                 st.bokeh_chart(bokeh_chart, use_container_width=True)
                 st.caption("ValeurGraph can make mistakes. Check important info.")
                 if not st.session_state.get('license_valid', False):
-                    st.markdown(':red[**To display the full value graph, buy a license key**]')    
+                    st.markdown(':red[**To display the full value graph, get a license key**]')    
         except Exception as e:
             st.error(f"An error occurred: your input is not valid. Ticker format is CODE.EXCHANGE")
 
@@ -367,7 +367,7 @@ def process_explanation():
 
 def salespage():
     if not st.session_state.get('license_valid', False):
-        st.link_button("Buy License Key",'https://vysse.gumroad.com/l/ZeUmF')
+        st.link_button("Get License Key",'https://vysse.gumroad.com/l/ZeUmF')
         st.header("For deep value investors")
         st.markdown("""
         - **Identify Cheap Stocks:** Spot undervalued stocks quickly. 📉
@@ -411,9 +411,9 @@ def salespage():
 
         st.header("Start now")
         st.markdown("""
-        **Buy your license key today** and unlock the full potential of ValeurGraph. 🗝️
+        **Get your license key (free or paid) today** and unlock the full potential of ValeurGraph. 🗝️
         """)
-        st.link_button("Buy License Key",'https://vysse.gumroad.com/l/ZeUmF')
+        st.link_button("Get License Key",'https://vysse.gumroad.com/l/ZeUmF')
     else:
         st.header("Thank you")
         st.markdown("""
@@ -473,7 +473,7 @@ def main():
     #st.markdown(custom_css, unsafe_allow_html=True)
     with st.sidebar:
         st.header('Settings')
-        st.link_button("Buy License Key",'https://vysse.gumroad.com/l/ZeUmF')
+        st.link_button("Get License Key",'https://vysse.gumroad.com/l/ZeUmF')
     
     # License key check
     if 'license_valid' not in st.session_state:
@@ -510,7 +510,7 @@ def main():
         components.html(twitter_button_html, height=50)
         st.divider()
         gumcode = """<script src="https://gumroad.com/js/gumroad.js"></script>
-        <a class="gumroad-button" href="https://vysse.gumroad.com/l/ZeUmF" data-gumroad-overlay-checkout="true">Buy on</a>"""
+        <a class="gumroad-button" href="https://vysse.gumroad.com/l/ZeUmF" data-gumroad-overlay-checkout="true">Get on</a>"""
         #components.html(gumcode, height=600)
 
     #if st.session_state.get('license_valid', False):
