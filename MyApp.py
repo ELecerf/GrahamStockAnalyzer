@@ -518,13 +518,14 @@ def main():
     #if st.session_state.get('license_valid', False):
     with st.expander("⚙ Explanation of the process"):
         process_explanation()    
+    with st.form("Plot"):
+        display_graph()
     with st.expander("🔎 Search Stock"):
         search_command()
     with st.expander("⏳ Screener"):
         with st.spinner("load data"):
             display_screener()
-    with st.form("Plot"):
-        display_graph()
+    
     salespage()
     
     #components.html(gumcode, height=700)
