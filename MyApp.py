@@ -95,6 +95,7 @@ def CalcValues(df):
 	df['BV%']=round(df['BookValue']/df['totalAssets']*100,1)
 	df['Liab%']=round(df['totalLiab']/df['totalAssets']*100,1)
 	df['Current Assets/2*Current Liab'] = round(df['totalCurrentAssets']/(2*df['totalCurrentLiabilities']),2)
+	df['Current Assets']=df['totalCurrentAssets']
 	return df
 
 
@@ -111,7 +112,7 @@ def get_earnings(tick):
 
 def get_bsy_data(tick):
     columnOfInterest = ['commonStockSharesOutstanding','totalAssets','totalLiab','totalCurrentAssets',
-                        'netTangibleAssets','cash','totalStockholderEquity','totalCurrentLiabilities',]
+                        'netTangibleAssets','cash','totalStockholderEquity','totalCurrentLiabilities','Current Assets']
     url = "https://eodhistoricaldata.com/api/fundamentals/%s"%tick
     params = {'api_token': EOD_API_KEY, 'filter': "Financials::Balance_Sheet",'fmt':'json'}
     r = requests.get(url, params=params)
@@ -136,7 +137,7 @@ def get_fundamentals(tick):
     #df=df.iloc[::-1]
     df=CalcValues(df.astype(float))
     if st.session_state.get('license_valid', False):
-        proxy=['Graham_Number','NCAV','10EPS','NTAV','BookValuePerShare','Current Assets/2*Current Liab']
+        proxy=['Graham_Number','NCAV','10EPS','NTAV','BookValuePerShare','Current Assets/2*Current Liab','Current Assets']
     else:
         proxy=['BookValuePerShare']
     return df[proxy]
