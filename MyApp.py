@@ -96,6 +96,7 @@ def CalcValues(df):
 	df['Liab%']=round(df['totalLiab']/df['totalAssets']*100,1)
 	df['Current Assets/2*Current Liab'] = round(df['totalCurrentAssets']/(2*df['totalCurrentLiabilities']),2)
 	df['Current Assets']=df['totalCurrentAssets']
+	df['Net Current Asset/Non Current Liabilities']=round((df['totalCurrentAssets']-df['totalLiab'])/df['nonCurrentLiabilitiesTotal'],2)
 	return df
 
 
@@ -137,7 +138,7 @@ def get_fundamentals(tick):
     #df=df.iloc[::-1]
     df=CalcValues(df.astype(float))
     if st.session_state.get('license_valid', False):
-        proxy=['Graham_Number','NCAV','10EPS','NTAV','BookValuePerShare','Current Assets/2*Current Liab','Current Assets']
+        proxy=['Graham_Number','NCAV','10EPS','NTAV','BookValuePerShare','Current Assets/2*Current Liab','Current Assets','Net Current Asset/Non Current Liabilities']
     else:
         proxy=['BookValuePerShare']
     return df[proxy]
