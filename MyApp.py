@@ -110,7 +110,8 @@ def get_earnings(tick):
 
 
 def get_bsy_data(tick):
-    columnOfInterest = ['commonStockSharesOutstanding','totalAssets','totalLiab','totalCurrentAssets','netTangibleAssets','cash','totalStockholderEquity']
+    columnOfInterest = ['commonStockSharesOutstanding','totalAssets','totalLiab','totalCurrentAssets',
+                        'netTangibleAssets','cash','totalStockholderEquity','totalCurrentLiabilities',]
     url = "https://eodhistoricaldata.com/api/fundamentals/%s"%tick
     params = {'api_token': EOD_API_KEY, 'filter': "Financials::Balance_Sheet",'fmt':'json'}
     r = requests.get(url, params=params)
@@ -123,7 +124,7 @@ def get_bsy_data(tick):
     df.index=pd.to_datetime(df.index)
     df=df.sort_index(ascending=False)
     df.index.names=['date']
-    return df[:10]
+    return df[:12]
 
 
 def get_fundamentals(tick):
