@@ -94,6 +94,7 @@ def CalcValues(df):
 	df['Graham_Number']=round((22.5*df['BookValuePerShare'].clip(0)*df['EPS3'].clip(0))**0.5,2)
 	df['BV%']=round(df['BookValue']/df['totalAssets']*100,1)
 	df['Liab%']=round(df['totalLiab']/df['totalAssets']*100,1)
+	df['Current Assets/2*Current Liab'] = round(df['totalCurrentAssets'/2*'totalCurrentLiabilities'])
 	return df
 
 
@@ -134,7 +135,7 @@ def get_fundamentals(tick):
     #df=df.iloc[::-1]
     df=CalcValues(df.astype(float))
     if st.session_state.get('license_valid', False):
-        proxy=['Graham_Number','NCAV','10EPS','NTAV','BookValuePerShare']
+        proxy=['Graham_Number','NCAV','10EPS','NTAV','BookValuePerShare','Current Assets/2*Current Liab']
     else:
         proxy=['BookValuePerShare']
     return df[proxy]
