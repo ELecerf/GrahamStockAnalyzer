@@ -125,7 +125,7 @@ def get_bsy_data(tick):
     df.index=pd.to_datetime(df.index)
     df=df.sort_index(ascending=False)
     df.index.names=['date']
-    return df[:10]
+    return df[:13]
 
 
 def get_fundamentals(tick):
