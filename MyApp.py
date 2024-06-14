@@ -94,7 +94,7 @@ def CalcValues(df):
 	df['Graham_Number']=round((22.5*df['BookValuePerShare'].clip(0)*df['EPS3'].clip(0))**0.5,2)
 	df['BV%']=round(df['BookValue']/df['totalAssets']*100,1)
 	df['Liab%']=round(df['totalLiab']/df['totalAssets']*100,1)
-	df['Current Assets/2*Current Liab'] = round(df['totalCurrentAssets']/(2*df['totalCurrentLiabilities')])
+	df['Current Assets/2*Current Liab'] = round(df['totalCurrentAssets']/(2*df['totalCurrentLiabilities']))
 	return df
 
 
