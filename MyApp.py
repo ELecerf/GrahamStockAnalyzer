@@ -107,7 +107,7 @@ def get_earnings(tick):
 	df = pd.DataFrame.from_dict(r,orient='index')[['netIncomeApplicableToCommonShares']]
 	df.index=pd.to_datetime(df.index)
 	df.index.names=['date']
-	return df[:13]
+	return df[:14]
 
 
 def get_bsy_data(tick):
@@ -125,7 +125,7 @@ def get_bsy_data(tick):
     df.index=pd.to_datetime(df.index)
     df=df.sort_index(ascending=False)
     df.index.names=['date']
-    return df[:13]
+    return df[:14]
 
 
 def get_fundamentals(tick):
