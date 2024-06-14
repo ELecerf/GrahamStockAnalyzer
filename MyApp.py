@@ -137,8 +137,7 @@ def get_fundamentals(tick):
         proxy=['Graham_Number','NCAV','10EPS','NTAV','BookValuePerShare']
     else:
         proxy=['BookValuePerShare']
-        df = df[proxy]
-    return df
+    return df[proxy]
 
 
 def get_price_eod(tick):
