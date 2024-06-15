@@ -318,7 +318,7 @@ def create_bokeh_chart(stock,df_fundamentals, df_stock):
 def display_graph():
     ticker = st.session_state.get('selected_ticker', "")
     st.title(f'Value graph')
-    query = st.text_input("Enter a stock ticker", ticker)
+    query = st.text_input("Enter a stock ticker and click on Plot to see the value graph", ticker)
     user_input = query
     if st.session_state.get('trigger_plot', False):
         user_input = ticker
