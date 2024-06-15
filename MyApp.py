@@ -531,7 +531,7 @@ def main():
         action="https://app.gumroad.com/follow_from_embed_form" method="post" id="gumroad-follow-form-embed">
         <input type="hidden" name="seller_id" value="3977192246300"/><input id="gumroad-follow-form-embed-input"
         type="email" placeholder="Your email address" name="email" value=""/><button class="primary" type="submit"
-        id="gumroad-follow-form-embed-button">Follow</button></form>''')
+        id="gumroad-follow-form-embed-button">Follow</button></form>'''
     with st.sidebar:
         st.divider()
         st.markdown("""Screeners just give a snapshot. Value Graphs give trends in the blink of the eye.
@@ -539,7 +539,7 @@ def main():
         st.divider()
         st.header('Social media')
         components.html(twitter_button_html, height=50)
-        components.html(subscribe_html, height=50)
+        components.html(subscribe_html)
         st.divider()
         gumcode = """<script src="https://gumroad.com/js/gumroad.js"></script>
         <a class="gumroad-button" href="https://vysse.gumroad.com/l/ZeUmF" data-gumroad-overlay-checkout="true">Get on</a>"""
