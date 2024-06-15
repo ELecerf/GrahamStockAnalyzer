@@ -418,7 +418,7 @@ def salespage():
         **Get your license key (free or paid) today** and unlock the full potential of ValeurGraph. 🗝️
         """)
         st.link_button("Get License Key",'https://vysse.gumroad.com/l/ZeUmF')
-        st.markdown('''<style>#gumroad-follow-form-embed{margin:
+        components.html('''<style>#gumroad-follow-form-embed{margin:
         0px; padding: 0px; box-sizing: border-box; min-width: 0px; max-width:
         100%; vertical-align: bottom; background-clip: padding-box; display: grid; grid-auto-flow: column;
         row-gap: 0.75rem; column-gap: 0.75rem; grid-template-columns: 1fr; grid-auto-columns: max-content;
