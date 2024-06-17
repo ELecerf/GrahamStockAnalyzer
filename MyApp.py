@@ -94,9 +94,10 @@ def CalcValues(df):
 	df['Graham_Number']=round((22.5*df['BookValuePerShare'].clip(0)*df['EPS3'].clip(0))**0.5,2)
 	df['BV%']=round(df['BookValue']/df['totalAssets']*100,1)
 	df['Liab%']=round(df['totalLiab']/df['totalAssets']*100,1)
-	df['Current Assets/2*Current Liab'] = round(df['totalCurrentAssets']/(2*df['totalCurrentLiabilities']),2)
+	df['Current Assets/2*Current Liab'] = round(100*df['totalCurrentAssets']/(2*df['totalCurrentLiabilities']),2)
 	df['Current Assets']=df['totalCurrentAssets']
-	df['Net Current Asset/Non Current Liabilities']=round((df['totalCurrentAssets']-df['totalLiab'])/df['nonCurrentLiabilitiesTotal'],2)
+	df['Net Current Asset/Non Current Liabilities']=round(100*(df['totalCurrentAssets']-df['totalLiab'])/df['nonCurrentLiabilitiesTotal'],2)
+	df['2*equity/debt']=round(2*100*df['totalAssets']/df['totalLiab'])
 	return df
 
 
@@ -105,7 +106,7 @@ def get_earnings(tick):
 	params = {'api_token': EOD_API_KEY, 'filter': "Financials::Income_Statement::yearly",'fmt':'json'}
 	r = requests.get(url, params=params)
 	r=r.json()
-	df = pd.DataFrame.from_dict(r,orient='index')[['netIncomeApplicableToCommonShares']]
+	df = pd.DataFrame.from_dict(r,orient='index')[['netIncomeApplicableToCommonShares','totalRevenue']]
 	df.index=pd.to_datetime(df.index)
 	df.index.names=['date']
 	return df[:14]
@@ -113,7 +114,7 @@ def get_earnings(tick):
 
 def get_bsy_data(tick):
     columnOfInterest = ['commonStockSharesOutstanding','totalAssets','totalLiab','totalCurrentAssets',
-                        'netTangibleAssets','cash','totalStockholderEquity','totalCurrentLiabilities','nonCurrentLiabilitiesTotal']
+                        'netTangibleAssets','cash','totalStockholderEquity','totalCurrentLiabilities','nonCurrentLiabilitiesTotal',]
     url = "https://eodhistoricaldata.com/api/fundamentals/%s"%tick
     params = {'api_token': EOD_API_KEY, 'filter': "Financials::Balance_Sheet",'fmt':'json'}
     r = requests.get(url, params=params)
@@ -138,7 +139,7 @@ def get_fundamentals(tick):
     #df=df.iloc[::-1]
     df=CalcValues(df.astype(float))
     if st.session_state.get('license_valid', False):
-        proxy=['Graham_Number','NCAV','10EPS','NTAV','BookValuePerShare','Current Assets/2*Current Liab','Current Assets','Net Current Asset/Non Current Liabilities']
+        proxy=['Graham_Number','NCAV','10EPS','NTAV','BookValuePerShare','Current Assets/2*Current Liab','Current Assets','Net Current Asset/Non Current Liabilities','2*equity/debt']
     else:
         proxy=['BookValuePerShare']
     return df[proxy]
