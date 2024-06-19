@@ -19,14 +19,7 @@ EOD_API_KEY = os.getenv("EOD_API_KEY")
 MONGO_DB = os.getenv("MONGO_DB")
 GUMROAD_API_URL = os.getenv("GUMROAD_API_URL")
 PRODUCT_ID = os.getenv("PRODUCT_ID")
-'''
-# API Keys
-FINNHUB_API_KEY = 'your_finnhub_api_key'
-EOD_API_KEY = st.secrets["EOD_API_KEY"]
-MONGO_DB = st.secrets["MONGO_DB"]
-GUMROAD_API_URL = st.secrets["GUMROAD_API_URL"]
-PRODUCT_ID = st.secrets["PRODUCT_ID"]
-'''
+
 
 # Establish a connection to MongoDB
 client = MongoClient(MONGO_DB)
