@@ -11,6 +11,8 @@ import os
 from PIL import Image
 import streamlit.components.v1 as components
 
+st.set_page_config(page_title="ValeurGraph", page_icon="📈")
+
 # API Keys
 FINNHUB_API_KEY = 'your_finnhub_api_key'
 EOD_API_KEY = os.getenv("EOD_API_KEY")
@@ -433,7 +435,7 @@ def salespage():
     
 
 def main():
-    st.set_page_config(page_title="ValeurGraph", page_icon="📈")
+    
     hide_default_format = """
     <style>
     #MainMenu {visibility: hidden; }
