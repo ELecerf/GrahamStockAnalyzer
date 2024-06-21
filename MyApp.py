@@ -11,14 +11,22 @@ import os
 from PIL import Image
 import streamlit.components.v1 as components
 
-
-
+st.set_page_config(page_title="ValeurGraph", page_icon="📈")
+'''
+# API Keys
+FINNHUB_API_KEY = 'your_finnhub_api_key'
+EOD_API_KEY = os.getenv("EOD_API_KEY")
+MONGO_DB = os.getenv("MONGO_DB")
+GUMROAD_API_URL = os.getenv("GUMROAD_API_URL")
+PRODUCT_ID = os.getenv("PRODUCT_ID")
+'''
 # API Keys
 FINNHUB_API_KEY = 'your_finnhub_api_key'
 EOD_API_KEY = st.secrets["EOD_API_KEY"]
 MONGO_DB = st.secrets["MONGO_DB"]
 GUMROAD_API_URL = st.secrets["GUMROAD_API_URL"]
 PRODUCT_ID = st.secrets["PRODUCT_ID"]
+
 
 # Establish a connection to MongoDB
 client = MongoClient(MONGO_DB)
@@ -301,7 +309,7 @@ def create_bokeh_chart(stock,df_fundamentals, df_stock):
 
     # Add glyphs
     p.line('date', 'adjusted_close', source=s2, legend_label='Close price', color='midnightblue', alpha=0.8)
-    p.circle('date', 'BookValuePerShare', source=s1, legend_label='Book Value per share', color='red', line_width=1)
+    p.line('date', 'BookValuePerShare', source=s1, legend_label='Book Value per share', color='red', line_width=1)
     p.y('date', 'NCAV', source=s1, legend_label='Net Current Asset Value per share', color='blue', line_width=1, size=10)
     p.circle('date', 'Graham_Number', source=s1, legend_label='Graham Number', color='green', line_width=1)
     p.circle('date', 'NTAV', source=s1, legend_label='Net Tangible Asset Value per share', color='black', line_width=1)
@@ -427,7 +435,7 @@ def salespage():
     
 
 def main():
-    st.set_page_config(page_title="ValeurGraph", page_icon="📈")
+    
     hide_default_format = """
     <style>
     #MainMenu {visibility: hidden; }
