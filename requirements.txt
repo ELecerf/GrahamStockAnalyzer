@@ -3,4 +3,5 @@ pandas
 requests
 pymongo
 datetime
+numpy
 bokeh==2.4.3
