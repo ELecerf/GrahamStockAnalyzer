@@ -328,34 +328,32 @@ def display_graph():
         user_input = ticker
     if st.form_submit_button("Plot")or st.session_state.get('trigger_plot', False):
         st.session_state['trigger_plot'] = False
-        try:
-            with st.spinner('Loading graph...'):
-                data = fetch_financials(user_input)
+        
+        with st.spinner('Loading graph...'):
+            data = fetch_financials(user_input)
                 
-                if not data or 'General' not in data or not data['General'].get('Name'):
-                    raise ValueError("Invalid ticker or data not found")
+            if not data or 'General' not in data or not data['General'].get('Name'):
+                raise ValueError("Invalid ticker or data not found")
 
-                # Basic data display
-                name = data['General'].get('Name')
-                st.write("Company Name:", name)
-                ex = data['General'].get('Exchange')
-                st.write("Exchange:", ex)
+            # Basic data display
+            name = data['General'].get('Name')
+            st.write("Company Name:", name)
+            ex = data['General'].get('Exchange')
+            st.write("Exchange:", ex)
 
-                # Plotting stock price
-                df_stock = get_price_eod(user_input)
-                df_fundamentals = get_fundamentals(user_input)
+            # Plotting stock price
+            df_stock = get_price_eod(user_input)
+            df_fundamentals = get_fundamentals(user_input)
 
-                if df_stock.empty or df_fundamentals.empty:
-                    raise ValueError("No stock or fundamental data found")
+            if df_stock.empty or df_fundamentals.empty:
+                raise ValueError("No stock or fundamental data found")
 
-                bokeh_chart = create_bokeh_chart(name, df_fundamentals, df_stock)
-                st.bokeh_chart(bokeh_chart, use_container_width=True)
-                st.caption("ValeurGraph can make mistakes. Check important info.")
-                if not st.session_state.get('license_valid', False):
-                    st.markdown(':red[**To display the full value graph, get a license key**]')
-                st.dataframe(df_fundamentals)
-        #except Exception as e:
-            #st.error(f"An error occurred: your input is not valid. Ticker format is CODE.EXCHANGE")
+            bokeh_chart = create_bokeh_chart(name, df_fundamentals, df_stock)
+            st.bokeh_chart(bokeh_chart, use_container_width=True)
+            st.caption("ValeurGraph can make mistakes. Check important info.")
+            if not st.session_state.get('license_valid', False):
+                st.markdown(':red[**To display the full value graph, get a license key**]')
+            st.dataframe(df_fundamentals)
 
 def process_explanation():
     st.markdown("""
