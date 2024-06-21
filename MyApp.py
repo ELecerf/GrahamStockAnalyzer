@@ -12,7 +12,14 @@ from PIL import Image
 import streamlit.components.v1 as components
 
 st.set_page_config(page_title="ValeurGraph", page_icon="📈")
-
+'''
+# API Keys
+FINNHUB_API_KEY = 'your_finnhub_api_key'
+EOD_API_KEY = os.getenv("EOD_API_KEY")
+MONGO_DB = os.getenv("MONGO_DB")
+GUMROAD_API_URL = os.getenv("GUMROAD_API_URL")
+PRODUCT_ID = os.getenv("PRODUCT_ID")
+'''
 # API Keys
 FINNHUB_API_KEY = 'your_finnhub_api_key'
 EOD_API_KEY = st.secrets["EOD_API_KEY"]
@@ -242,7 +249,7 @@ def search_command():
 def display_screener():
 
     # List of exchanges
-    exchanges = ['PA', 'TSE', 'TO', 'MI', 'MC', 'AS', 'US', 'BR', 'WAR']
+    exchanges = ['AS','BR','HK','MC','MI','PA','TO','TSE','US','WAR']
     
     # Form for selecting an exchange and loading data
     with st.form("Exchange Selector"):
