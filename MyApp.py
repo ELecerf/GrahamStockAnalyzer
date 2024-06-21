@@ -310,11 +310,11 @@ def create_bokeh_chart(stock,df_fundamentals, df_stock):
     # Add glyphs
     p.line('date', 'adjusted_close', source=s2, legend_label='Close price', color='midnightblue', alpha=0.8)
     p.line('date', 'BookValuePerShare', source=s1, legend_label='Book Value per share', color='red', line_width=1)
-    p.y('date', 'NCAV', source=s1, legend_label='Net Current Asset Value per share', color='blue', line_width=1, size=10)
-    p.circle('date', 'Graham_Number', source=s1, legend_label='Graham Number', color='green', line_width=1)
-    p.circle('date', 'NTAV', source=s1, legend_label='Net Tangible Asset Value per share', color='black', line_width=1)
-    p.x('date', 'Cash', source=s1, legend_label='Cash', color='black', line_width=1, size=10)
-    p.triangle('date', '10EPS', source=s1, legend_label='10*EPS', color='orange', line_width=1, size=10)
+    p.Scatter('date', 'NCAV', source=s1, legend_label='Net Current Asset Value per share', color='blue', line_width=1, size=10, marker='y')
+    p.Scatter('date', 'Graham_Number', source=s1, legend_label='Graham Number', color='green', line_width=1, marker='circle')
+    p.Scatter('date', 'NTAV', source=s1, legend_label='Net Tangible Asset Value per share', color='black', line_width=1,marker='circle')
+    p.Scatter('date', 'Cash', source=s1, legend_label='Cash', color='black', line_width=1, size=10,marker='x')
+    p.Scatter('date', '10EPS', source=s1, legend_label='10*EPS', color='orange', line_width=1, size=10,marker='triangle')
 
     p.toolbar.logo = None
     p.axis.minor_tick_in = -3
