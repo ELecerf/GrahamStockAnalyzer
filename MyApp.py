@@ -354,8 +354,8 @@ def display_graph():
                 if not st.session_state.get('license_valid', False):
                     st.markdown(':red[**To display the full value graph, get a license key**]')
                 st.dataframe(df_fundamentals)
-        except Exception as e:
-            st.error(f"An error occurred: your input is not valid. Ticker format is CODE.EXCHANGE")
+        #except Exception as e:
+            #st.error(f"An error occurred: your input is not valid. Ticker format is CODE.EXCHANGE")
 
 def process_explanation():
     st.markdown("""
