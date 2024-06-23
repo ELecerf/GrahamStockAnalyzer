@@ -98,7 +98,7 @@ def netnetmap(df):
         locations="CountryISO",
         color="StockCount",
         hover_name="Country",  # Use country names for hover
-        hover_data={"StockCount": True, "CountryISO": False},  # Show StockCount, hide ISO codes
+        hover_data={"Net-Nets": True, "CountryISO": False},  # Show StockCount, hide ISO codes
         color_continuous_scale=px.colors.sequential.Plasma
     )
 
