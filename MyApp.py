@@ -11,6 +11,7 @@ import geopandas as gpd
 import folium
 import plotly
 import country_converter as coco
+import plotly.express as px
 
 
 from PIL import Image
