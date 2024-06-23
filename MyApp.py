@@ -88,7 +88,7 @@ def create_map(country_stock_count):
         name='choropleth',
         data=merged,
         columns=[merged.index, 'StockCount'],
-        key_on='feature.properties.name',
+        key_on='feature.id',
         fill_color='YlGn',
         fill_opacity=0.7,
         line_opacity=0.2,
