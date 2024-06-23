@@ -7,6 +7,9 @@ import datetime
 from bokeh.plotting import figure
 from bokeh.models import ColumnDataSource
 import os
+import geopandas as gpd
+import folium
+from streamlit_folium import st_folium
 
 from PIL import Image
 import streamlit.components.v1 as components
@@ -50,6 +53,60 @@ def load_data(exchanges=['TSE']):
         df = pd.DataFrame(list(cursor))
         columns = ['Name', 'Exchange', 'Code', 'close', 'GrahamNumberToPrice', 'NCAV_0toMarketCap']
         return df[columns]
+@st.cache_data
+def load_data_NCAV():
+    with st.spinner('Loading data'):
+        # Create a query filter to select documents where NCAV_0toMarketCap > 100
+        query = {'NCAV_0toMarketCap': {'$gt': 100}}
+        
+        # Use the find method with the query
+        cursor = Collection.find(query)
+        df = pd.DataFrame(list(cursor))
+        
+        # Define the necessary columns
+        columns = ['Name', 'Exchange', 'Code', 'close', 'GrahamNumberToPrice', 'NCAV_0toMarketCap', 'Country']
+        df = df[columns]
+        
+        return df
+
+def create_map(country_stock_count):
+    # Load the world map shapefile
+    world = gpd.read_file(gpd.datasets.get_path('naturalearth_lowres'))
+    
+    # Merge with the country stock count data
+    merged = world.set_index('name').join(country_stock_count.set_index('Country'))
+    
+    # Fill NaN values with 0
+    merged['StockCount'] = merged['StockCount'].fillna(0)
+    
+    # Create a folium map
+    m = folium.Map(location=[0, 0], zoom_start=2)
+    
+    # Add the choropleth layer
+    folium.Choropleth(
+        geo_data=merged,
+        name='choropleth',
+        data=merged,
+        columns=[merged.index, 'StockCount'],
+        key_on='feature.properties.name',
+        fill_color='YlGn',
+        fill_opacity=0.7,
+        line_opacity=0.2,
+        legend_name='Number of Stocks with NCAV > 100'
+    ).add_to(m)
+    
+    # Add layer control
+    folium.LayerControl().add_to(m)
+    
+    # Display the map in Streamlit
+    st_data = st._arrow_folium(m, width=700, height=500)
+    return st_data
+
+
+def stocks_per_country(df):
+    # Group by 'Country' and count the number of stocks
+    country_stock_count = df.groupby('Country').size().reset_index(name='StockCount')
+    return country_stock_count
 
 # License check
 def check_license(key):
@@ -563,6 +620,17 @@ def main():
     with st.form("Plot"):
         display_graph()
     salespage()
+    st.title("Stocks with NCAV to Market Price > 100")
+
+    # Load and filter the data
+    filtered_data = load_data_NCAV()
+
+    # Get the number of stocks per country
+    country_stock_count = stocks_per_country(filtered_data)
+
+    # Create and display the map
+    map_figure = create_map(country_stock_count)
+    st_folium(map_figure, width=700, height=500)
     
     #components.html(gumcode, height=700)
         
