@@ -621,22 +621,22 @@ def main():
     with st.expander("⏳ Screener"):
         with st.spinner("load data"):
             display_screener()
+    with st.expander("net-net map"):
+        # Load and filter the data
+        filtered_data = load_data_NCAV()
+
+        # Get the number of stocks per country
+        country_stock_count = stocks_per_country(filtered_data)
+
+        # Create and display the map
+        st.title("Number of net-nets by Country")
+        st.plotly_chart(netnetmap(country_stock_count), use_container_width=True, config={
+        'displayModeBar': False  # Hide the mode bar which contains the Plotly logo
+        })      
     with st.form("Plot"):
         display_graph()
     salespage()
-    st.title("Stocks with NCAV to Market Price > 100")
 
-    # Load and filter the data
-    filtered_data = load_data_NCAV()
-
-    # Get the number of stocks per country
-    country_stock_count = stocks_per_country(filtered_data)
-
-    # Create and display the map
-    st.title("Number of net-nets by Country")
-    st.plotly_chart(netnetmap(country_stock_count), use_container_width=True, config={
-    'displayModeBar': False  # Hide the mode bar which contains the Plotly logo
-    })
     #components.html(gumcode, height=700)
         
 # Run the app
