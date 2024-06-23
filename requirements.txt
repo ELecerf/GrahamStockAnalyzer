@@ -7,3 +7,4 @@ streamlit==1.35.0
 geopandas
 folium
 plotly
+country_converter
