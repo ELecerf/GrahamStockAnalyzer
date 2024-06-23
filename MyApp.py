@@ -81,7 +81,7 @@ def stocks_per_country(df):
     country_stock_count["CountryISO"]=cc.convert(names = some_names, to = 'ISO3')
     return country_stock_count
 
-def netnetmap(data):
+def netnetmap(df):
     """
     Generate a Plotly figure for the given data.
 
@@ -94,7 +94,7 @@ def netnetmap(data):
 
     # Create the choropleth map
     fig = px.choropleth(
-        country_stock_count,
+        df,
         locations="CountryISO",
         color="StockCount",
         hover_name="Country",  # Use country names for hover
