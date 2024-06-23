@@ -96,7 +96,7 @@ def netnetmap(df):
     fig = px.choropleth(
         df,
         locations="CountryISO",
-        color="StockCount",
+        color="Net-Nets",
         hover_name="Country",  # Use country names for hover
         hover_data={"Net-Nets": True, "CountryISO": False},  # Show StockCount, hide ISO codes
         color_continuous_scale=px.colors.sequential.Plasma
@@ -107,7 +107,7 @@ def netnetmap(df):
         title_text='Number of Net Nets',
         title_x=0.5,  # Center the title
         margin={"r":0,"t":50,"l":0,"b":0},  # Adjust margins for better visualization
-        coloraxis_colorbar=dict(title="Stock Count")  # Title for the color bar
+        coloraxis_colorbar=dict(title="Number of Net-Nets")  # Title for the color bar
     )
     return fig
 
