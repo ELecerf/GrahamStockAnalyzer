@@ -108,7 +108,7 @@ def netnetmap(df):
         geo=dict(
             fitbounds="locations",
             visible=True),
-        coloraxis_colorbar=dict(title="Number of Net-Nets")  # Title for the color bar
+        coloraxis_colorbar=dict(title="Net-Nets")  # Title for the color bar
     )
     return fig
 
