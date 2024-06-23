@@ -104,7 +104,11 @@ def netnetmap(df):
 
     # Update layout to remove Plotly logo and add title
     fig.update_layout(
-        title_x=0.5,  # Center the title
+        dragmode=False,
+        geo=dict(
+            fitbounds="locations",
+            visible=True
+            )
         margin={"r":0,"t":50,"l":0,"b":0},  # Adjust margins for better visualization
         coloraxis_colorbar=dict(title="Number of Net-Nets")  # Title for the color bar
     )
