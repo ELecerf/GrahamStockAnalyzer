@@ -310,7 +310,7 @@ def search_command():
 def display_screener():
 
     # List of exchanges
-    exchanges = ['AS','BR','HK','MC','MI','PA','TO','TSE','US','WAR']
+    exchanges = ['PA', 'TSE', 'TO', 'MI', 'MC', 'US', 'AS', 'BR','WAR','F','LS']
     
     # Form for selecting an exchange and loading data
     with st.form("Exchange Selector"):
