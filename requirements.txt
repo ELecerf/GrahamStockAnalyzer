@@ -4,3 +4,5 @@ pymongo
 datetime
 bokeh==2.4.3
 streamlit==1.35.0
+geopandas
+folium
