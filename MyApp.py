@@ -9,7 +9,9 @@ from bokeh.models import ColumnDataSource
 import os
 import geopandas as gpd
 import folium
-from streamlit_folium import st_folium
+import plotly
+import country_converter as coco
+
 
 from PIL import Image
 import streamlit.components.v1 as components
@@ -68,51 +70,45 @@ def load_data_NCAV():
         df = df[columns]
         
         return df
-
-def create_map(country_stock_count):
-    # Load the world map shapefile
-    world = gpd.read_file(gpd.datasets.get_path('naturalearth_lowres'))
-    
-    # Ensure country names match by making both indices strings
-    world.index = world.index.astype(str)
-    country_stock_count['Country'] = country_stock_count['Country'].astype(str)
-    
-    # Merge with the country stock count data
-    merged = world.set_index('name').join(country_stock_count.set_index('Country'))
-    
-    # Fill NaN values with 0
-    merged['StockCount'] = merged['StockCount'].fillna(0)
-    
-    # Create a folium map
-    m = folium.Map(location=[0, 0], zoom_start=2)
-    
-    # Add the choropleth layer
-    folium.Choropleth(
-        geo_data=merged.__geo_interface__,
-        name='choropleth',
-        data=merged,
-        columns=[merged.index, 'StockCount'],
-        key_on='feature.id',
-        fill_color='YlGn',
-        fill_opacity=0.7,
-        line_opacity=0.2,
-        legend_name='Number of Stocks with NCAV > 100'
-    ).add_to(m)
-    
-    # Add layer control
-    folium.LayerControl().add_to(m)
-    
-    # Save map to HTML file
-    map_path = '/tmp/map.html'
-    m.save(map_path)
-    
-    return map_path
-
-
+@st.cache_data
 def stocks_per_country(df):
     # Group by 'Country' and count the number of stocks
-    country_stock_count = df.groupby('Country').size().reset_index(name='StockCount')
+    country_stock_count = df.groupby('Country').size().reset_index(name='Net-Nets')
+    cc = coco.CountryConverter()
+    some_names = country_stock_count["Country"]
+    standard_names = cc.convert(names = some_names, to = 'ISO3')
+    country_stock_count["CountryISO"]=cc.convert(names = some_names, to = 'ISO3')
     return country_stock_count
+
+def netnetmap(data):
+    """
+    Generate a Plotly figure for the given data.
+
+    Args:
+    data (dict): Dictionary containing 'Country', 'StockCount', 'CountryISO', 'Latitude', and 'Longitude' lists.
+
+    Returns:
+    plotly.graph_objs._figure.Figure: The generated Plotly figure.
+    """
+
+    # Create the choropleth map
+    fig = px.choropleth(
+        country_stock_count,
+        locations="CountryISO",
+        color="StockCount",
+        hover_name="Country",  # Use country names for hover
+        hover_data={"StockCount": True, "CountryISO": False},  # Show StockCount, hide ISO codes
+        color_continuous_scale=px.colors.sequential.Plasma
+    )
+
+    # Update layout to remove Plotly logo and add title
+    fig.update_layout(
+        title_text='Number of Net Nets',
+        title_x=0.5,  # Center the title
+        margin={"r":0,"t":50,"l":0,"b":0},  # Adjust margins for better visualization
+        coloraxis_colorbar=dict(title="Stock Count")  # Title for the color bar
+    )
+    return fig
 
 # License check
 def check_license(key):
@@ -635,9 +631,10 @@ def main():
     country_stock_count = stocks_per_country(filtered_data)
 
     # Create and display the map
-    map_file = create_map(country_stock_count)
-    components.iframe(src=map_file, width=700, height=500)
-    
+    st.title("Number of net-nets by Country")
+    st.plotly_chart(netnetmap(country_stock_count), use_container_width=True, config={
+    'displayModeBar': False  # Hide the mode bar which contains the Plotly logo
+    })
     #components.html(gumcode, height=700)
         
 # Run the app
