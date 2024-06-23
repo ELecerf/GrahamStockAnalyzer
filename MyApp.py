@@ -636,7 +636,7 @@ def main():
 
     # Create and display the map
     map_file = create_map(country_stock_count)
-    iframe(src=map_file, width=700, height=500)
+    components.iframe(src=map_file, width=700, height=500)
     
     #components.html(gumcode, height=700)
         
