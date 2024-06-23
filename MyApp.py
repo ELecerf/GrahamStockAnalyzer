@@ -73,6 +73,10 @@ def create_map(country_stock_count):
     # Load the world map shapefile
     world = gpd.read_file(gpd.datasets.get_path('naturalearth_lowres'))
     
+    # Ensure country names match by making both indices strings
+    world.index = world.index.astype(str)
+    country_stock_count['Country'] = country_stock_count['Country'].astype(str)
+    
     # Merge with the country stock count data
     merged = world.set_index('name').join(country_stock_count.set_index('Country'))
     
@@ -84,7 +88,7 @@ def create_map(country_stock_count):
     
     # Add the choropleth layer
     folium.Choropleth(
-        geo_data=merged,
+        geo_data=merged.__geo_interface__,
         name='choropleth',
         data=merged,
         columns=[merged.index, 'StockCount'],
@@ -98,9 +102,11 @@ def create_map(country_stock_count):
     # Add layer control
     folium.LayerControl().add_to(m)
     
-    # Display the map in Streamlit
-    st_data = st._arrow_folium(m, width=700, height=500)
-    return st_data
+    # Save map to HTML file
+    map_path = '/tmp/map.html'
+    m.save(map_path)
+    
+    return map_path
 
 
 def stocks_per_country(df):
@@ -629,8 +635,8 @@ def main():
     country_stock_count = stocks_per_country(filtered_data)
 
     # Create and display the map
-    map_figure = create_map(country_stock_count)
-    st_folium(map_figure, width=700, height=500)
+    map_file = create_map(country_stock_count)
+    iframe(src=map_file, width=700, height=500)
     
     #components.html(gumcode, height=700)
         
