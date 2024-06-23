@@ -621,7 +621,7 @@ def main():
     with st.expander("⏳ Screener"):
         with st.spinner("load data"):
             display_screener()
-    with st.expander("net-net map"):
+    with st.expander("🌍 Net-net map"):
         # Load and filter the data
         filtered_data = load_data_NCAV()
 
