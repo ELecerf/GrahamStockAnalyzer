@@ -356,7 +356,7 @@ def display_screener():
                     # Reset the selection
                     #st.session_state['df'].at[selected_index, 'selected'] = False
 
-def evaluate_company(data):
+def evaluate_company(data, price):
     score = 0
 
     # Ensure there is at least one row to check
@@ -373,6 +373,15 @@ def evaluate_company(data):
     cleaned_eps = data['10EPS'].dropna()
     if not cleaned_eps.empty and cleaned_eps.min() >= 0:
         score += 1
+
+    if not data.empty and not price.empty:
+        # Current assets should be at least twice current liabilities.
+        if data.iloc[0]['NCAV']/price.iloc[0]['adjusted_close''] >= 100:
+            score += 1
+        
+        # Long-term debt should not exceed the net current assets.
+        if data.iloc[0]['Net Current Asset/Non Current Liabilities'] >= 100:
+            score += 1
 
     return score
 
@@ -438,7 +447,7 @@ def display_graph():
                 if not st.session_state.get('license_valid', False):
                     st.markdown(':red[**To display the full value graph, get a license key**]')
                 st.dataframe(df_fundamentals)
-                score = evaluate_company(df_fundamentals)
+                score = evaluate_company(df_fundamentals, df_stock)
                 st.markdown(f'**Score: {score}**')
         except Exception as e:
             st.error(f"An error occurred: your input is not valid. Ticker format is CODE.EXCHANGE")
