@@ -386,6 +386,8 @@ def evaluate_company(data, price):
         if not cleaned_eps.empty and (cleaned_eps.iloc[0]/10)*15/price.iloc[-1]['adjusted_close'] >= 1:
             score += 1
 
+        if data.iloc[0]['BookValuePerShare']*1.5/price.iloc[-1]['adjusted_close'] >= 1:
+            score += 1
     return score
 
 
