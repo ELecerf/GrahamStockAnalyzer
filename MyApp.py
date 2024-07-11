@@ -154,6 +154,7 @@ def CalcValues(df):
 	df['10EPS']=round(df['netIncomeApplicableToCommonShares']*10/df['commonStockSharesOutstanding'],2)
 	df['EPS3']=df['EPS'].rolling(1).mean()
 	df['Graham_Number']=round((22.5*df['BookValuePerShare'].clip(0)*df['EPS3'].clip(0))**0.5,2)
+	df['Sales']=round((df['totalRevenue'])/df['commonStockSharesOutstanding'],2)
 	df['BV%']=round(df['BookValue']/df['totalAssets']*100,1)
 	df['Liab%']=round(df['totalLiab']/df['totalAssets']*100,1)
 	df['Current Assets/2*Current Liab'] = round(100*df['totalCurrentAssets']/(2*df['totalCurrentLiabilities']),2)
@@ -201,7 +202,8 @@ def get_fundamentals(tick):
     #df=df.iloc[::-1]
     df=CalcValues(df.astype(float))
     if st.session_state.get('license_valid', False):
-        proxy=['Graham_Number','NCAV','10EPS','NTAV','BookValuePerShare','Current Assets/2*Current Liab','Current Assets','Net Current Asset/Non Current Liabilities','2*equity/debt']
+        proxy=['Graham_Number','NCAV','10EPS','Sales','NTAV','BookValuePerShare','Current Assets/2*Current Liab',
+               'Current Assets','Net Current Asset/Non Current Liabilities','2*equity/debt']
     else:
         proxy=['BookValuePerShare']
     return df[proxy]
@@ -370,6 +372,7 @@ def create_bokeh_chart(stock,df_fundamentals, df_stock):
     p.scatter('date', 'NTAV', source=s1, legend_label='Net Tangible Asset Value per share', color='black',marker='circle')
     p.scatter('date', 'Cash', source=s1, legend_label='Cash', color='black',  size=10,marker='x')
     p.scatter('date', '10EPS', source=s1, legend_label='10*EPS', color='orange', size=10,marker='triangle')
+    p.scatter('date', 'Sales', source=s1, legend_label='10*EPS', color='green', size=10,marker='triangle')
 
     p.toolbar.logo = None
     p.axis.minor_tick_in = -3
