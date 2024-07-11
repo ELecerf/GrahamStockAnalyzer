@@ -439,7 +439,7 @@ def display_graph():
                     st.markdown(':red[**To display the full value graph, get a license key**]')
                 st.dataframe(df_fundamentals)
                 score = evaluate_company(df_fundamentals)
-                st.markdown('**Score: {score}**')
+                st.markdown(f'**Score: {score}**')
         except Exception as e:
             st.error(f"An error occurred: your input is not valid. Ticker format is CODE.EXCHANGE")
 
