@@ -383,7 +383,7 @@ def evaluate_company(data, price):
         if data.iloc[0]['Net Current Asset/Non Current Liabilities'] >= 100:
             score += 1
 
-    return price.iloc[0]['adjusted_close']
+    return price.iloc[-1]['adjusted_close']
 
 
 def create_bokeh_chart(stock,df_fundamentals, df_stock):
