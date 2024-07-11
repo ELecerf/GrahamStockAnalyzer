@@ -356,6 +356,30 @@ def display_screener():
                     # Reset the selection
                     #st.session_state['df'].at[selected_index, 'selected'] = False
 
+def evaluate_company(data):
+    scores = []
+
+    for index, row in data.iterrows():
+        score = 0
+
+        # Current assets should be at least twice current liabilities.
+        if row['Current Assets/2*Current Liab'] >= 100:
+            score += 1
+
+        # Long-term debt should not exceed the net current assets.
+        if row['Net Current Asset/Non Current Liabilities'] >= 100:
+            score += 1
+
+        # Some earnings for the common stock in each of the past ten years.
+        # Assuming '10EPS' represents the average EPS over the past ten years.
+        if row['10EPS'] > 0:
+            score += 1
+
+        scores.append(score)
+
+    data['Score'] = scores
+    return data
+
 def create_bokeh_chart(stock,df_fundamentals, df_stock):
     # Prepare data sources
     s1 = ColumnDataSource(df_fundamentals)
