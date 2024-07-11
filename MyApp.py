@@ -372,7 +372,7 @@ def create_bokeh_chart(stock,df_fundamentals, df_stock):
     p.scatter('date', 'NTAV', source=s1, legend_label='Net Tangible Asset Value per share', color='black',marker='circle')
     p.scatter('date', 'Cash', source=s1, legend_label='Cash', color='black',  size=10,marker='x')
     p.scatter('date', '10EPS', source=s1, legend_label='10*EPS', color='orange', size=10,marker='triangle')
-    p.scatter('date', 'Sales', source=s1, legend_label='Sales', color='green', size=10,marker='triangle')
+    #p.scatter('date', 'Sales', source=s1, legend_label='Sales', color='green', size=10,marker='triangle')
 
     p.toolbar.logo = None
     p.axis.minor_tick_in = -3
