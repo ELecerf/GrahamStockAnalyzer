@@ -357,28 +357,25 @@ def display_screener():
                     #st.session_state['df'].at[selected_index, 'selected'] = False
 
 def evaluate_company(data):
-    scores = []
+    score = 0
 
-    for index, row in data.iterrows():
-        score = 0
-
+    # Ensure there is at least one row to check
+    if not data.empty:
         # Current assets should be at least twice current liabilities.
-        if row['Current Assets/2*Current Liab'] >= 100:
+        if data.iloc[0]['Current Assets/2*Current Liab'] >= 100:
             score += 1
-
+        
         # Long-term debt should not exceed the net current assets.
-        if row['Net Current Asset/Non Current Liabilities'] >= 100:
+        if data.iloc[0]['Net Current Asset/Non Current Liabilities'] >= 100:
             score += 1
 
-        # Some earnings for the common stock in each of the past ten years.
-        # Assuming '10EPS' represents the average EPS over the past ten years.
-        if row['10EPS'] > 0:
-            score += 1
+    # Check for earnings in the past ten years
+    cleaned_eps = data['10EPS'].dropna()
+    if not cleaned_eps.empty and cleaned_eps.min() >= 0:
+        score += 1
 
-        scores.append(score)
+    return score
 
-    data['Score'] = scores
-    return data
 
 def create_bokeh_chart(stock,df_fundamentals, df_stock):
     # Prepare data sources
@@ -430,7 +427,7 @@ def display_graph():
 
                 # Plotting stock price
                 df_stock = get_price_eod(user_input)
-                df_fundamentals = evaluate_company(get_fundamentals(user_input))
+                df_fundamentals = get_fundamentals(user_input)
 
                 if df_stock.empty or df_fundamentals.empty:
                     raise ValueError("No stock or fundamental data found")
@@ -441,6 +438,8 @@ def display_graph():
                 if not st.session_state.get('license_valid', False):
                     st.markdown(':red[**To display the full value graph, get a license key**]')
                 st.dataframe(df_fundamentals)
+                score = evaluate_company(df_fundamentals)
+                st.markdown('**Score: {score}**')
         except Exception as e:
             st.error(f"An error occurred: your input is not valid. Ticker format is CODE.EXCHANGE")
 
