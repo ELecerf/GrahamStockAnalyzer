@@ -383,7 +383,7 @@ def evaluate_company(data, price):
         if data.iloc[0]['Net Current Asset/Non Current Liabilities'] >= 100:
             score += 1
 
-        if not cleaned_eps.empty and (cleaned_eps.iloc[0]/10)*15/price.iloc[-1]['adjusted_close'] >= 100:
+        if not cleaned_eps.empty and (cleaned_eps.iloc[0]/10)*15/price.iloc[-1]['adjusted_close'] >= 1:
             score += 1
 
     return score
