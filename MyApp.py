@@ -376,7 +376,7 @@ def evaluate_company(data, price):
 
     if not data.empty and not price.empty:
         # Current assets should be at least twice current liabilities.
-        if data.iloc[0]['NCAV']/price.iloc[0]['adjusted_close'] >= 100:
+        if data.iloc[0]['NCAV']/price.iloc[-1]['adjusted_close'] >= 100:
             score += 1
         
         # Long-term debt should not exceed the net current assets.
