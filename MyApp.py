@@ -430,7 +430,7 @@ def display_graph():
 
                 # Plotting stock price
                 df_stock = get_price_eod(user_input)
-                df_fundamentals = get_fundamentals(user_input)
+                df_fundamentals = evaluate_company(get_fundamentals(user_input))
 
                 if df_stock.empty or df_fundamentals.empty:
                     raise ValueError("No stock or fundamental data found")
