@@ -198,7 +198,7 @@ def get_fundamentals(tick):
     ist=get_earnings(tick)
     df=bsh.join(ist, how='outer').drop_duplicates()
     df.index=pd.to_datetime(df.index)
-    df=df.sort_index(ascending=True)
+    df=df.sort_index(ascending=False)
     #df=df.iloc[::-1]
     df=CalcValues(df.astype(float))
     if st.session_state.get('license_valid', False):
