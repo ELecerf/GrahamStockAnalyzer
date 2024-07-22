@@ -363,8 +363,8 @@ def evaluate_company(data, price):
         'Net Current Asset/Non Current Liabilities': 0,
         'Positive Earnings for 10 Years': 0,
         'NCAV/Price': 0,
-        'EPS Growth': 0,
-        'Book Value Per Share': 0,
+        'Price/EPS < 15': 0,
+        'Price/Book Value Per Share < 1.5': 0,
     }
 
     # Ensure there is at least one row to check
@@ -391,16 +391,16 @@ def evaluate_company(data, price):
             score += 1
             score_details['Net Current Asset/Non Current Liabilities'] = data.iloc[0]['Net Current Asset/Non Current Liabilities']/100
 
-        if not cleaned_eps.empty and (cleaned_eps.iloc[0]/10)*15/price.iloc[-1]['adjusted_close'] >= 1:
+        if not cleaned_eps.empty and price.iloc[-1]['adjusted_close']/(cleaned_eps.iloc[0]/10) <= 15:
             score += 1
-            score_details['15 EPS/Price'] = (cleaned_eps.iloc[0]/10)*15/price.iloc[-1]['adjusted_close']
+            score_details['Price/EPS < 15'] = price.iloc[-1]['adjusted_close']/(cleaned_eps.iloc[0]/10)
 
-        if data.iloc[0]['BookValuePerShare']*1.5/price.iloc[-1]['adjusted_close'] >= 1:
+        if price.iloc[-1]['adjusted_close']/data.iloc[0]['BookValuePerShare'] <= 1.5:
             score += 1
-            score_details['1,5 Book Value Per Share/Price'] = data.iloc[0]['BookValuePerShare']*1.5/price.iloc[-1]['adjusted_close']
+            score_details['Price/Book Value Per Share < 1.5'] = price.iloc[-1]['adjusted_close']/data.iloc[0]['BookValuePerShare']
 
     # Print detailed score using Streamlit
-    st.markdown("##Graham scoring")
+    st.markdown("## Graham scoring")
     for criterion, criterion_score in score_details.items():
         st.markdown(f"**{criterion}:** {criterion_score}")
     
