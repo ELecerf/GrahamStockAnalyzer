@@ -379,8 +379,8 @@ def evaluate_company(data, price):
     if not cleaned_eps.empty and cleaned_eps.min() >= 0:
         score += 1
         score_details['Positive Earnings for 10 Years'] = 'True'
-        else:
-            score_details['Positive Earnings for 10 Years'] = 'False'
+    else:
+        score_details['Positive Earnings for 10 Years'] = 'False'
             
 
     if not data.empty and not price.empty:
