@@ -358,37 +358,59 @@ def display_screener():
 
 def evaluate_company(data, price):
     score = 0
+    score_details = {
+        'Current Assets/2*Current Liab': 0,
+        'Net Current Asset/Non Current Liabilities': 0,
+        'Positive Earnings for 10 Years': 0,
+        'NCAV/Price': 0,
+        'EPS Growth': 0,
+        'Book Value Per Share': 0,
+    }
 
     # Ensure there is at least one row to check
     if not data.empty:
         # Current assets should be at least twice current liabilities.
         if data.iloc[0]['Current Assets/2*Current Liab'] >= 100:
             score += 1
-            st.markdown(f'**Score: {score}**')
+            score_details['Current Assets/2*Current Liab'] = 1
         
         # Long-term debt should not exceed the net current assets.
         if data.iloc[0]['Net Current Asset/Non Current Liabilities'] >= 100:
             score += 1
+            score_details['Net Current Asset/Non Current Liabilities'] = 1
 
     # Check for earnings in the past ten years
     cleaned_eps = data['10EPS'].dropna()
     if not cleaned_eps.empty and cleaned_eps.min() >= 0:
         score += 1
+        score_details['Positive Earnings for 10 Years'] = 1
 
     if not data.empty and not price.empty:
         # Current assets should be at least twice current liabilities.
         if data.iloc[0]['NCAV']/price.iloc[-1]['adjusted_close'] >= 1:
             score += 1
+            score_details['NCAV/Price'] = 1
         
         # Long-term debt should not exceed the net current assets.
         if data.iloc[0]['Net Current Asset/Non Current Liabilities'] >= 100:
             score += 1
+            score_details['Net Current Asset/Non Current Liabilities'] = 1
 
         if not cleaned_eps.empty and (cleaned_eps.iloc[0]/10)*15/price.iloc[-1]['adjusted_close'] >= 1:
             score += 1
+            score_details['EPS Growth'] = 1
 
         if data.iloc[0]['BookValuePerShare']*1.5/price.iloc[-1]['adjusted_close'] >= 1:
             score += 1
+            score_details['Book Value Per Share'] = 1
+
+    # Print detailed score using Streamlit
+    st.markdown("## Evaluation Details")
+    for criterion, criterion_score in score_details.items():
+        st.markdown(f"**{criterion}:** {'Pass' if criterion_score == 1 else 'Fail'}")
+    
+    st.markdown(f"**Total Score: {score}**")
+
     return score
 
 
