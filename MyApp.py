@@ -364,6 +364,7 @@ def evaluate_company(data, price):
         # Current assets should be at least twice current liabilities.
         if data.iloc[0]['Current Assets/2*Current Liab'] >= 100:
             score += 1
+            st.markdown(f'**Score: {score}**')
         
         # Long-term debt should not exceed the net current assets.
         if data.iloc[0]['Net Current Asset/Non Current Liabilities'] >= 100:
