@@ -188,7 +188,7 @@ def get_bsy_data(tick):
     dfq.index=pd.to_datetime(dfq.index)
     df = pd.concat([dfq[:3],dfy])
     df.index=pd.to_datetime(df.index)
-    df=df.sort_index(ascending=True)
+    df=df.sort_index(ascending=False)
     df.index.names=['date']
     return df[:14]
 
@@ -698,4 +698,3 @@ def main():
 # Run the app
 if __name__ == "__main__":
     main()
-
