@@ -372,7 +372,7 @@ def evaluate_company(data, price):
         # Current assets should be at least twice current liabilities.
         if data.iloc[0]['Current Assets/2*Current Liab'] >= 100:
             score += 1
-            score_details['Current Assets/2*Current Liab'] = data.iloc[0]['Current Assets/2*Current Liab']/100
+            score_details['Current Assets/2*Current Liab'] = round(data.iloc[0]['Current Assets/2*Current Liab']/100,2)
 
     # Check for earnings in the past ten years
     cleaned_eps = data['10EPS'].dropna()
@@ -384,27 +384,27 @@ def evaluate_company(data, price):
         # Current assets should be at least twice current liabilities.
         if data.iloc[0]['NCAV']/price.iloc[-1]['adjusted_close'] >= 1:
             score += 1
-            score_details['NCAV/Price'] = data.iloc[0]['NCAV']/price.iloc[-1]['adjusted_close']
+            score_details['NCAV/Price'] = round(data.iloc[0]['NCAV']/price.iloc[-1]['adjusted_close'],2)
         
         # Long-term debt should not exceed the net current assets.
         if data.iloc[0]['Net Current Asset/Non Current Liabilities'] >= 100:
             score += 1
-            score_details['Net Current Asset/Non Current Liabilities'] = data.iloc[0]['Net Current Asset/Non Current Liabilities']/100
+            score_details['Net Current Asset/Non Current Liabilities'] = round(data.iloc[0]['Net Current Asset/Non Current Liabilities']/100,2)
 
         if not cleaned_eps.empty and price.iloc[-1]['adjusted_close']/(cleaned_eps.iloc[0]/10) <= 15:
             score += 1
-            score_details['Price/EPS < 15'] = price.iloc[-1]['adjusted_close']/(cleaned_eps.iloc[0]/10)
+            score_details['Price/EPS < 15'] = round(price.iloc[-1]['adjusted_close']/(cleaned_eps.iloc[0]/10),2)
 
         if price.iloc[-1]['adjusted_close']/data.iloc[0]['BookValuePerShare'] <= 1.5:
             score += 1
-            score_details['Price/Book Value Per Share < 1.5'] = price.iloc[-1]['adjusted_close']/data.iloc[0]['BookValuePerShare']
+            score_details['Price/Book Value Per Share < 1.5'] = round(price.iloc[-1]['adjusted_close']/data.iloc[0]['BookValuePerShare'],2)
 
     # Print detailed score using Streamlit
     st.markdown("## Graham scoring")
     for criterion, criterion_score in score_details.items():
         st.markdown(f"**{criterion}:** {criterion_score}")
     
-    st.markdown(f"**Total Score: {score}**")
+    st.markdown(f"**Total Score: {score}/6**")
 
     return score
 
