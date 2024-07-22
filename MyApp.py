@@ -186,17 +186,19 @@ def get_bsy_data(tick):
     dfq=pd.DataFrame.from_dict(json['quarterly'],orient="index")[columnOfInterest]
     dfy.index=pd.to_datetime(dfy.index)
     dfq.index=pd.to_datetime(dfq.index)
-    df=pd.concat([dfq[:3],dfy])
-    df.index=pd.to_datetime(df.index)
-    df=df.sort_index(ascending=False)
-    df.index.names=['date']
-    return df[:14]
+    # Combine data, prioritize the latest quarters
+    combined_df = pd.concat([dfq, dfy[~dfy.index.isin(dfq.index)]])
+    
+    # Sort and truncate to the latest 14 entries
+    combined_df = combined_df.sort_index(ascending=False)
+    combined_df.index.names = ['date']
+    return combined_df[:14]
 
 
 def get_fundamentals(tick):
     bsh=get_bsy_data(tick)
     ist=get_earnings(tick)
-    df=bsh.join(ist).drop_duplicates()
+    df=bsh.join(ist, how='outer').drop_duplicates()
     df.index=pd.to_datetime(df.index)
     #df=df.sort_index(ascending=True)
     #df=df.iloc[::-1]
