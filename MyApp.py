@@ -379,25 +379,28 @@ def evaluate_company(data, price):
     if not cleaned_eps.empty and cleaned_eps.min() >= 0:
         score += 1
         score_details['Positive Earnings for 10 Years'] = 'True'
+        else:
+            score_details['Positive Earnings for 10 Years'] = 'False'
+            
 
     if not data.empty and not price.empty:
         # Current assets should be at least twice current liabilities.
         if data.iloc[0]['NCAV']/price.iloc[-1]['adjusted_close'] >= 1:
             score += 1
-            score_details['NCAV/Price'] = round(data.iloc[0]['NCAV']/price.iloc[-1]['adjusted_close'],2)
+        score_details['NCAV/Price'] = round(data.iloc[0]['NCAV']/price.iloc[-1]['adjusted_close'],2)
         
         # Long-term debt should not exceed the net current assets.
         if data.iloc[0]['Net Current Asset/Non Current Liabilities'] >= 100:
             score += 1
-            score_details['Net Current Asset/Non Current Liabilities'] = round(data.iloc[0]['Net Current Asset/Non Current Liabilities']/100,2)
+        score_details['Net Current Asset/Non Current Liabilities'] = round(data.iloc[0]['Net Current Asset/Non Current Liabilities']/100,2)
 
         if not cleaned_eps.empty and price.iloc[-1]['adjusted_close']/(cleaned_eps.iloc[0]/10) <= 15:
             score += 1
-            score_details['Price/EPS < 15'] = round(price.iloc[-1]['adjusted_close']/(cleaned_eps.iloc[0]/10),2)
+        score_details['Price/EPS < 15'] = round(price.iloc[-1]['adjusted_close']/(cleaned_eps.iloc[0]/10),2)
 
         if price.iloc[-1]['adjusted_close']/data.iloc[0]['BookValuePerShare'] <= 1.5:
             score += 1
-            score_details['Price/Book Value Per Share < 1.5'] = round(price.iloc[-1]['adjusted_close']/data.iloc[0]['BookValuePerShare'],2)
+        score_details['Price/Book Value Per Share < 1.5'] = round(price.iloc[-1]['adjusted_close']/data.iloc[0]['BookValuePerShare'],2)
 
     # Print detailed score using Streamlit
     st.markdown("## Graham scoring")
