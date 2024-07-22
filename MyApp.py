@@ -372,42 +372,37 @@ def evaluate_company(data, price):
         # Current assets should be at least twice current liabilities.
         if data.iloc[0]['Current Assets/2*Current Liab'] >= 100:
             score += 1
-            score_details['Current Assets/2*Current Liab'] = 1
-        
-        # Long-term debt should not exceed the net current assets.
-        if data.iloc[0]['Net Current Asset/Non Current Liabilities'] >= 100:
-            score += 1
-            score_details['Net Current Asset/Non Current Liabilities'] = 1
+            score_details['Current Assets/2*Current Liab'] = data.iloc[0]['Current Assets/2*Current Liab']/100
 
     # Check for earnings in the past ten years
     cleaned_eps = data['10EPS'].dropna()
     if not cleaned_eps.empty and cleaned_eps.min() >= 0:
         score += 1
-        score_details['Positive Earnings for 10 Years'] = 1
+        score_details['Positive Earnings for 10 Years'] = 'True'
 
     if not data.empty and not price.empty:
         # Current assets should be at least twice current liabilities.
         if data.iloc[0]['NCAV']/price.iloc[-1]['adjusted_close'] >= 1:
             score += 1
-            score_details['NCAV/Price'] = 1
+            score_details['NCAV/Price'] = data.iloc[0]['NCAV']/price.iloc[-1]['adjusted_close']
         
         # Long-term debt should not exceed the net current assets.
         if data.iloc[0]['Net Current Asset/Non Current Liabilities'] >= 100:
             score += 1
-            score_details['Net Current Asset/Non Current Liabilities'] = 1
+            score_details['Net Current Asset/Non Current Liabilities'] = data.iloc[0]['Net Current Asset/Non Current Liabilities']/100
 
         if not cleaned_eps.empty and (cleaned_eps.iloc[0]/10)*15/price.iloc[-1]['adjusted_close'] >= 1:
             score += 1
-            score_details['EPS Growth'] = 1
+            score_details['15 EPS/Price'] = (cleaned_eps.iloc[0]/10)*15/price.iloc[-1]['adjusted_close']
 
         if data.iloc[0]['BookValuePerShare']*1.5/price.iloc[-1]['adjusted_close'] >= 1:
             score += 1
-            score_details['Book Value Per Share'] = 1
+            score_details['1,5 Book Value Per Share/Price'] = data.iloc[0]['BookValuePerShare']*1.5/price.iloc[-1]['adjusted_close']
 
     # Print detailed score using Streamlit
-    st.markdown("## Evaluation Details")
+    st.markdown("##Graham scoring")
     for criterion, criterion_score in score_details.items():
-        st.markdown(f"**{criterion}:** {'Pass' if criterion_score == 1 else 'Fail'}")
+        st.markdown(f"**{criterion}:** {criterion_score}")
     
     st.markdown(f"**Total Score: {score}**")
 
@@ -474,9 +469,8 @@ def display_graph():
                 st.caption("ValeurGraph can make mistakes. Check important info.")
                 if not st.session_state.get('license_valid', False):
                     st.markdown(':red[**To display the full value graph, get a license key**]')
+                evaluate_company(df_fundamentals, df_stock)
                 st.dataframe(df_fundamentals)
-                score = evaluate_company(df_fundamentals, df_stock)
-                st.markdown(f'**Score: {score}**')
         except Exception as e:
             st.error(f"An error occurred: your input is not valid. Ticker format is CODE.EXCHANGE")
 
