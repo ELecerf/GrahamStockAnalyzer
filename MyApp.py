@@ -305,7 +305,7 @@ def search_command():
 def display_screener():
 
     # List of exchanges
-    exchanges = ['PA', 'TSE', 'TO', 'MI', 'MC', 'US', 'AS', 'BR','WAR',
+    exchanges = ['PA', 'F','TSE', 'TO', 'MI', 'MC', 'US', 'AS', 'BR','WAR',
                'OL','CO','ST','KLSE']  
     
     # Form for selecting an exchange and loading data
