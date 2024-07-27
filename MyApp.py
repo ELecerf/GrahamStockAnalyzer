@@ -306,7 +306,7 @@ def display_screener():
 
     # List of exchanges
     exchanges = ['PA', 'XETRA','TSE', 'TO', 'MI', 'MC', 'US', 'AS', 'BR','WAR',
-               'OL','CO','ST','KLSE', 'VI']  
+               'OL','CO','ST','KLSE', 'PR']  
     
     # Form for selecting an exchange and loading data
     with st.form("Exchange Selector"):
