@@ -372,7 +372,7 @@ def evaluate_company(data, price):
         # Current assets should be at least twice current liabilities.
         if data.iloc[0]['Current Assets/2*Current Liab'] >= 100:
             score += 1
-            score_details['Current Assets > 2*Current Liab'] = round(data.iloc[0]['Current Assets/2*Current Liab']/100,2)
+        score_details['Current Assets > 2*Current Liab'] = round(data.iloc[0]['Current Assets/2*Current Liab']/100,2)
 
     # Check for earnings in the past ten years
     cleaned_eps = data['10EPS'].dropna()
