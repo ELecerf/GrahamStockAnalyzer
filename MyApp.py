@@ -676,7 +676,10 @@ def main():
         search_command()
     with st.expander("⏳ Screener"):
         with st.spinner("load data"):
-            display_screener()
+            display_screener()      
+    with st.form("Plot"):
+        display_graph()
+    salespage()
     with st.expander("🌍 Net-net map"):
         # Load and filter the data
         filtered_data = load_data_NCAV()
@@ -688,10 +691,7 @@ def main():
         st.title("Number of net-nets by Country")
         st.plotly_chart(netnetmap(country_stock_count), use_container_width=True, config={
         'displayModeBar': False  # Hide the mode bar which contains the Plotly logo
-        })      
-    with st.form("Plot"):
-        display_graph()
-    salespage()
+        })
 
     #components.html(gumcode, height=700)
         
