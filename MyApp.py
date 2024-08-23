@@ -480,66 +480,66 @@ def display_graph():
 def process_explanation():
     st.markdown("""
     - **A good process is simple:** quickly find cheap opportunities to analyze further.
-    - **Option 1:** you want to analyze a specific company with a value graph. **Use Search.**
-    - **Option 2:** You want to turn over rocks to find cheap companies. **Use the screener.**
+    - **Option 1:** you want to search for a specific company and check the value graph. **Use Search.**
+    - **Option 2:** You want to turn over rocks to find potentially undervalued companies. **Use the screener.**
     
-    The process I use is simple, I look for companies with a big margin of safety compared to their tangible assets. 
+    You can look for companies with a big margin of safety compared to their tangible assets. 
     --> **Net-nets** for example. 
     \nI check if their assets are growing and if they are profitable.
-    \nThen I check that they have low debts.
-    \nThen I look at the trends of the price vs. main value proxies like net current assets or earnings per share
-    to visually see where we stand compared to historical ratios.
-    \nThen I read their financial reports and investigate further to make a case. 
-    \nThen I discuss it with fellow investors. It has worked very well for me.
-    \n**And you? Give it a try**""")
+    \nThen Check that they have low debts.
+    \nThen Look at the trends of the price vs. main value proxies like net current assets or earnings per share
+    to visually see where it stands compared to historical ratios.
+    \nThen Read their financial reports and investigate further to make a case. 
+    \nThen Continue to explore.
+    \n**Give it a try**""")
 
 def salespage():
     if not st.session_state.get('license_valid', False):
         st.link_button("Get License Key",'https://vysse.gumroad.com/l/ZeUmF')
-        st.header("For deep value investors")
+        st.header("For Deep Value")
         st.markdown("""
-        - **Identify Cheap Stocks:** Spot undervalued stocks quickly. 📉
+        - **Cheap or Not:** Spot undervalued stocks quickly. 📉
         - **Fast Analysis:** Use our graphs for rapid insights. 🚀
-        - **Save Time:** Skip hours of screening and Excel. ⏳
+        - **Save Time:** Quickly explore opportunities before deep dive. ⏳
         """)
 
         st.header("Avoid Investment Pitfalls")
         st.markdown("""
-        - **Be Independent:** Stop depending on others for stock picks. 🤝
-        - **Stay Informed:** Understand the value trend of a company 📈
-        - **Seize Opportunities:** Don’t miss out on great investments. 🚪
+        - **Be Independent:** Stop depending on others. 🤝
+        - **Stay Informed:** Understand the value trend. 📈
+        - **Seize Opportunities:** Don’t miss out on great opportunities. 🚪
         """)
 
         st.header("Improve your process")
         st.markdown("""
-        - **Proven Approach:** Used by successful value investors. 🏆
-        - **Visualize Safety:** See the evolution of margin of safety. 👀
+        - **A learning opportunity:** Learn with graphs. 🏆
+        - **Visualize Safety:** See the evolution of the margin of safety. 👀
         """)
 
         st.header("Accelerate your process")
         st.markdown("""
-        - **Instant Analysis:** Generate price vs. value graphs in milliseconds. ⚡
-        - **Automated Screening:** Find and focus on bargains quickly. 🔍
-        - **Work Smarter:** Analyze 100 times faster to become autonomous. 🧠
+        - **Instant Analysis:** Generate price vs. value graphs quickly. ⚡
+        - **Simple Screening:** Find and focus on potential bargains quickly. 🔍
+        - **Work Smarter:** Explore 100 times faster to become autonomous. 🧠
         """)
 
         st.header("For You and Your Community")
         st.markdown("""
-        - **Easy Explanations:** Show your choices visually.  📊
-        - **Share Ideas:** Discuss investments with clear graphs. 🗣️
-        - **Financial Independence:** Gain confidence and control. 🔒
+        - **Easy Explanations:** Save your graphs.  📊
+        - **Share Ideas:** Discuss cases with clear graphs. 🗣️
+        - **Independence:** Gain confidence and control. 🔒
         """)
 
         st.header("Why Now?")
         st.markdown("""
-        - **Understand Your Investments:** Learn from past successes and failures. 📚
-        - **Deep Value Investing:** Guide your actions with proven principles. 🧭
+        - **Understand Your Process:** Learn from past successes and failures. 📚
+        - **Deep Value:** Guide your actions with proven principles. 🧭
         - **Achieve Quality:** Hit your targets with minimal variation. 🎯
         """)
 
         st.header("Start now")
         st.markdown("""
-        **Get your license key (free or paid) today** and unlock the full potential of ValeurGraph. 🗝️
+        **Get your license key today** and unlock the full potential of ValeurGraph. 🗝️
         """)
         st.link_button("Get License Key",'https://vysse.gumroad.com/l/ZeUmF')
     else:
