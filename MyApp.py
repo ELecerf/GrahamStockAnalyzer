@@ -305,8 +305,8 @@ def search_command():
 def display_screener():
 
     # List of exchanges
-    exchanges = ['PA', 'XETRA','TSE', 'TO', 'MI', 'MC', 'US', 'AS', 'BR','WAR',
-               'OL','CO','ST','KLSE', 'HK']  
+    exchanges = sorted(['PA', 'XETRA','TSE', 'TO', 'MI', 'MC', 'US', 'AS', 'BR','WAR',
+               'OL','CO','ST','KLSE', 'HK'])
     
     # Form for selecting an exchange and loading data
     with st.form("Exchange Selector"):
