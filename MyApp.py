@@ -202,7 +202,7 @@ def get_fundamentals(tick):
     #df=df.iloc[::-1]
     df=CalcValues(df.astype(float))
     if st.session_state.get('license_valid', False):
-        proxy=['Graham_Number','NCAV','10EPS','Sales','NTAV','BookValuePerShare','Current Assets/2*Current Liab',
+        proxy=['Graham_Number','NCAV','Cash','10EPS','Sales','NTAV','BookValuePerShare','Current Assets/2*Current Liab',
                'Current Assets','Net Current Asset/Non Current Liabilities','2*equity/debt']
     else:
         proxy=['BookValuePerShare']
