@@ -28,7 +28,7 @@ PRODUCT_ID = st.secrets["PRODUCT_ID"]
 
 
 # Establish a connection to MongoDB
-client = MongoClient(MONGO_DB)
+client = MongoClient("mongodb+srv://vysse36:VaLeUrGrApH78@cluster0.sdoby.mongodb.net/valeurgraphDB?retryWrites=true&w=majority")
 db = client.valeurgraphDB
 
 Collection = db["data"]
@@ -47,7 +47,7 @@ def load_data(exchanges=['TSE']):
         # Use the find method with the query
         cursor = Collection.find(query)
         df = pd.DataFrame(list(cursor))
-        columns = ['Name', 'Exchange', 'Code', 'close', 'GrahamNumberToPrice', 'NCAV_0toMarketCap']
+        columns = ['Name', 'Exchange', 'Code', 'close', 'GrahamNumberToPrice', 'NCAV_0toMarketCap', 'Country']
         return df[columns]
 @st.cache_data
 def load_data_NCAV():
