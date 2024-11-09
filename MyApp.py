@@ -28,7 +28,7 @@ PRODUCT_ID = st.secrets["PRODUCT_ID"]
 
 
 # Establish a connection to MongoDB
-client = MongoClient(MONGO_DB)
+client = MongoClient("mongodb+srv://vysse36:VaLeUrGrApH78@cluster0.sdoby.mongodb.net/valeurgraphDB?retryWrites=true&w=majority")
 db = client.valeurgraphDB
 
 Collection = db["data"]
@@ -150,8 +150,8 @@ def CalcValues(df):
 	df['NTAV']=round((df['netTangibleAssets'])/df['commonStockSharesOutstanding'],2)
 	df['BookValue']=round(df['totalStockholderEquity'],2)
 	df['BookValuePerShare']=round(df['BookValue']/df['commonStockSharesOutstanding'],2)
-	df['EPS']=round(df['netIncomeApplicableToCommonShares']/df['commonStockSharesOutstanding'],2)
-	df['10EPS']=round(df['netIncomeApplicableToCommonShares']*10/df['commonStockSharesOutstanding'],2)
+	df['EPS']=round(df['netIncome']/df['commonStockSharesOutstanding'],2)
+	df['10EPS']=round(df['netIncome']*10/df['commonStockSharesOutstanding'],2)
 	df['EPS3']=df['EPS'].rolling(1).mean()
 	df['Graham_Number']=round((22.5*df['BookValuePerShare'].clip(0)*df['EPS3'].clip(0))**0.5,2)
 	df['Sales']=round((df['totalRevenue'])/df['commonStockSharesOutstanding'],2)
@@ -169,7 +169,7 @@ def get_earnings(tick):
 	params = {'api_token': EOD_API_KEY, 'filter': "Financials::Income_Statement::yearly",'fmt':'json'}
 	r = requests.get(url, params=params)
 	r=r.json()
-	df = pd.DataFrame.from_dict(r,orient='index')[['netIncomeApplicableToCommonShares','totalRevenue']]
+	df = pd.DataFrame.from_dict(r,orient='index')[['netIncome','totalRevenue']]
 	df.index=pd.to_datetime(df.index)
 	df.index.names=['date']
 	return df[:14]
