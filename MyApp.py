@@ -145,7 +145,7 @@ def fetch_financials(ticker):
     data = response.json()
     return data
 def CalcValues(df):
-	df['Net Cash']=round((df['cash']-df['totalLiab'])/df['commonStockSharesOutstanding'],2)
+	df['Cash']=round((df['cash'])/df['commonStockSharesOutstanding'],2)
 	df['NCAV']=round((df['totalCurrentAssets']-df['totalLiab'])/df['commonStockSharesOutstanding'],2)
 	df['NTAV']=round((df['netTangibleAssets'])/df['commonStockSharesOutstanding'],2)
 	df['BookValue']=round(df['totalStockholderEquity'],2)
@@ -202,7 +202,7 @@ def get_fundamentals(tick):
     #df=df.iloc[::-1]
     df=CalcValues(df.astype(float))
     if st.session_state.get('license_valid', False):
-        proxy=['Graham_Number','NCAV','Net Cash','10EPS','Sales','NTAV','BookValuePerShare','Current Assets/2*Current Liab',
+        proxy=['Graham_Number','NCAV','Cash','10EPS','Sales','NTAV','BookValuePerShare','Current Assets/2*Current Liab',
                'Current Assets','Net Current Asset/Non Current Liabilities','2*equity/debt']
     else:
         proxy=['BookValuePerShare']
@@ -426,7 +426,7 @@ def create_bokeh_chart(stock,df_fundamentals, df_stock):
     p.scatter('date', 'NCAV', source=s1, legend_label='Net Current Asset Value per share', color='blue', size=10, marker='y')
     p.scatter('date', 'Graham_Number', source=s1, legend_label='Graham Number', color='green', marker='circle')
     p.scatter('date', 'NTAV', source=s1, legend_label='Net Tangible Asset Value per share', color='black',marker='circle')
-    p.scatter('date', 'Net Cash', source=s1, legend_label='Net Cash per share', color='black',  size=10,marker='x')
+    p.scatter('date', 'Cash', source=s1, legend_label='Cash per share', color='black',  size=10,marker='x')
     p.scatter('date', '10EPS', source=s1, legend_label='10*EPS', color='orange', size=10,marker='triangle')
     #p.scatter('date', 'Sales', source=s1, legend_label='Sales', color='green', size=10,marker='triangle')
 
