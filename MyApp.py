@@ -172,7 +172,7 @@ def get_earnings(tick):
 	df = pd.DataFrame.from_dict(r,orient='index')[['netIncome','totalRevenue']]
 	df.index=pd.to_datetime(df.index)
 	df.index.names=['date']
-	return df[:14]
+	return df
 
 
 def get_bsy_data(tick):
@@ -186,11 +186,11 @@ def get_bsy_data(tick):
     dfq=pd.DataFrame.from_dict(json['quarterly'],orient="index")[columnOfInterest]
     dfy.index=pd.to_datetime(dfy.index)
     dfq.index=pd.to_datetime(dfq.index)
-    df = pd.concat([dfq[:3],dfy])
+    df = pd.concat([dfq,dfy])
     df.index=pd.to_datetime(df.index)
     df=df.sort_index(ascending=False)
     df.index.names=['date']
-    return df[:14]
+    return df
 
 
 def get_fundamentals(tick):
