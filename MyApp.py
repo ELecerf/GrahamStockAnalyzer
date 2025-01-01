@@ -414,14 +414,21 @@ def evaluate_company(data, price):
 
 def create_bokeh_chart(stock,df_fundamentals, df_stock):
     # Prepare data sources
+    df_stock['10_MA'] = df_stock['adjusted_close'].rolling(window=10).mean()
+    df_stock['30_MA'] = df_stock['adjusted_close'].rolling(window=30).mean()
+
+    # Prepare data sources
     s1 = ColumnDataSource(df_fundamentals)
     s2 = ColumnDataSource(df_stock)
 
     # Create a new plot with a title and axis labels
-    p = figure(title = stock, x_axis_type='datetime', height=400, sizing_mode='stretch_width')
+    p = figure(title=stock, x_axis_type='datetime', height=chart_height, sizing_mode=sizing_mode)
 
-    # Add glyphs
-    p.line('date', 'adjusted_close', source=s2, legend_label='Close price', color='midnightblue', alpha=0.8)
+    # Add glyphs for stock prices and moving averages
+    p.line('date', 'adjusted_close', source=s2, legend_label='Close Price', color='midnightblue', alpha=0.8)
+    p.line('date', '10_MA', source=s2, legend_label='10-Day MA', color='orange', alpha=0.8, line_width=0.8)
+    p.line('date', '30_MA', source=s2, legend_label='30-Day MA', color='green', alpha=0.8, line_width=0.8)
+
     p.scatter('date', 'BookValuePerShare', source=s1, legend_label='Book Value per share', color='red',marker='circle')
     p.scatter('date', 'NCAV', source=s1, legend_label='Net Current Asset Value per share', color='blue', size=10, marker='y')
     p.scatter('date', 'Graham_Number', source=s1, legend_label='Graham Number', color='green', marker='circle')
