@@ -413,6 +413,8 @@ def evaluate_company(data, price):
 
 
 def create_bokeh_chart(stock,df_fundamentals, df_stock):
+	df_stock['10_MA'] = df_stock['adjusted_close'].rolling(window=10).mean()
+    df_stock['30_MA'] = df_stock['adjusted_close'].rolling(window=30).mean()
     # Prepare data sources
     s1 = ColumnDataSource(df_fundamentals)
     s2 = ColumnDataSource(df_stock)
