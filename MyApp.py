@@ -55,7 +55,7 @@ def load_data(exchanges=['TSE']):
         # Use the find method with the query
         cursor = Collection.find(query)
         df = pd.DataFrame(list(cursor))
-        columns = ['Name', 'Exchange', 'Code', 'close', 'GrahamNumberToPrice', 'NCAV_0toMarketCap', 'NCAV_1toMarketCap','Country']
+        columns = ['Name', 'Exchange', 'Code', 'close', 'GrahamNumberToPrice', 'NCAV_0toMarketCap', 'Net_Cash_to_MarketCap','NCAV_1toMarketCap','Country']
         return df[columns]
 @st.cache_data
 def load_data_NCAV():
@@ -454,7 +454,7 @@ def create_bokeh_chart(stock,df_fundamentals, df_stock):
 
 def display_graph():
     ticker = st.session_state.get('selected_ticker', "")
-    st.title(f'Value graph')
+    st.title(f'Value graph {ticker}')
     query = st.text_input("Enter a stock ticker and click on Plot to see the value graph", ticker)
     user_input = query
     if st.session_state.get('trigger_plot', False):
