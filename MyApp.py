@@ -55,7 +55,9 @@ def load_data(exchanges=['TSE']):
         # Use the find method with the query
         cursor = Collection.find(query)
         df = pd.DataFrame(list(cursor))
-        columns = ['Name', 'Exchange', 'Code', 'close', 'GrahamNumberToPrice', 'NCAV_0toMarketCap', 'Net_Cash_to_MarketCap','NCAV_1toMarketCap','Country']
+        columns = ['Name', 'Exchange', 'Code', 'close', 'GrahamNumberToPrice', 
+		   'NCAV_0toMarketCap', 'Net_Cash_to_MarketCap','NCAV_1toMarketCap',
+		   'Enterprising_Number','Crieria_Def2A','Country']
         return df[columns]
 @st.cache_data
 def load_data_NCAV():
