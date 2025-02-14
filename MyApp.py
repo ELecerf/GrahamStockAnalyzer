@@ -3,7 +3,7 @@
 """
 Created on Wed Jan  1 19:54:04 2025
 
-@author: etiennelecerf
+@author: elecerf
 """
 
 import streamlit as st
