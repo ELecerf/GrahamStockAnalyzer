@@ -227,13 +227,11 @@ def get_fundamentals(tick):
         return pd.DataFrame()
     
     try:
-        # Process the raw data to calculate per-share values.
         financials = DataProcessor.calculate_values(financials.astype(float))
     except Exception as e:
         st.error(f"Error processing financial data for {tick}: {e}")
         return pd.DataFrame()
     
-    # Select metrics based on license status.
     if st.session_state.get('license_valid', False):
         selected_metrics = [
             'Graham_Number', 'NCAV', 'Cash', '10EPS', 'Sales', 'NTAV',
@@ -244,6 +242,25 @@ def get_fundamentals(tick):
         selected_metrics = ['BookValuePerShare']
     
     return financials[selected_metrics]
+
+def get_full_fundamentals(tick):
+    """
+    Retrieves and processes the complete financials DataFrame without license-based filtering.
+    This is used for plotting so that all necessary metrics are available.
+    """
+    try:
+        financials, country, dividends = fetch_financials_with_country(tick)
+    except Exception as e:
+        st.error(f"Error fetching financials for {tick}: {e}")
+        return pd.DataFrame()
+    
+    try:
+        financials = DataProcessor.calculate_values(financials.astype(float))
+    except Exception as e:
+        st.error(f"Error processing financial data for {tick}: {e}")
+        return pd.DataFrame()
+    
+    return financials
 
 def get_price_eod(tick):
     """
@@ -435,22 +452,21 @@ def display_graph():
     user_input = query
     if st.session_state.get('trigger_plot', False):
         user_input = ticker
+    # For graphing, use the full financials (ignoring license filtering)
     if st.form_submit_button("Plot") or st.session_state.get('trigger_plot', False):
         st.session_state['trigger_plot'] = False
         try:
             with st.spinner('Loading graph...'):
-                data = fetch_financials(user_input)
-                if not data or 'General' not in data or not data['General'].get('Name'):
-                    raise ValueError("Invalid ticker or data not found")
-                name = data['General'].get('Name')
-                st.write("Company Name:", name)
-                ex = data['General'].get('Exchange')
-                st.write("Exchange:", ex)
+                # Use get_full_fundamentals so all needed metrics are available for plotting.
+                df_fundamentals = get_full_fundamentals(user_input)
                 df_stock = get_price_eod(user_input)
-                df_fundamentals = get_fundamentals(user_input)
                 if df_stock.empty or df_fundamentals.empty:
                     raise ValueError("No stock or fundamental data found")
-                bokeh_chart = create_bokeh_chart(name, df_fundamentals, df_stock)
+                # For display purposes, fetch company info from the full financial data.
+                # (Alternatively, you could extract the company name from another source.)
+                financial_data, _, _ = fetch_financials_with_country(user_input)
+                company_name = financial_data.get('Name', user_input)
+                bokeh_chart = create_bokeh_chart(company_name, df_fundamentals, df_stock)
                 st.bokeh_chart(bokeh_chart, use_container_width=True)
                 st.caption("ValeurGraph can make mistakes. Check important info.")
                 if not st.session_state.get('license_valid', False):
@@ -458,7 +474,7 @@ def display_graph():
                 evaluate_company(df_fundamentals, df_stock)
                 st.dataframe(df_fundamentals)
         except Exception as e:
-            st.error(f"An error occurred: your input is not valid. Ticker format is CODE.EXCHANGE")
+            st.error(f"An error occurred: your input is not valid. Ticker format is CODE.EXCHANGE. Details: {e}")
 
 def process_explanation():
     st.markdown("""
@@ -531,25 +547,19 @@ def salespage():
 def evaluate_defensive(financials, price):
     row = financials.iloc[0]
     score = 0
-    # Criterion 1: Annual Sales >= 100M
     if 'AnnualSales' in financials.columns and row['AnnualSales'] >= 100_000_000:
         score += 1
-    # Criterion 2: Current Assets/2*Current Liab >= 100
     if 'Current Assets/2*Current Liab' in financials.columns and row['Current Assets/2*Current Liab'] >= 100:
         score += 1
-    # Criterion 3: Price < NCAV
     if 'NCAV' in financials.columns and not price.empty:
         if row['NCAV'] / price.iloc[-1]['adjusted_close'] >= 1:
             score += 1
-    # Criterion 4: Price < 15 * (EPS average) – using 10EPS as proxy
     if '10EPS' in financials.columns and not price.empty:
         if price.iloc[-1]['adjusted_close'] / (row['10EPS'] / 10) <= 15:
             score += 1
-    # Criterion 5: Price < 1.5 * BookValuePerShare
     if 'BookValuePerShare' in financials.columns and not price.empty:
         if price.iloc[-1]['adjusted_close'] / row['BookValuePerShare'] <= 1.5:
             score += 1
-    # Criterion 6: Net Current Asset/Non Current Liabilities >= 100
     if 'Net Current Asset/Non Current Liabilities' in financials.columns and row['Net Current Asset/Non Current Liabilities'] >= 100:
         score += 1
     summary = f"Defensive Score: {score}/6"
@@ -559,7 +569,6 @@ def evaluate_defensive(financials, price):
 def evaluate_enterprising(financials, price):
     row = financials.iloc[0]
     score = 0
-    # Less stringent criteria for enterprising
     if 'Current Assets/2*Current Liab' in financials.columns and row['Current Assets/2*Current Liab'] >= 75:
         score += 1
     if '10EPS' in financials.columns and not price.empty:
