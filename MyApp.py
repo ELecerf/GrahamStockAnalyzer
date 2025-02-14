@@ -193,21 +193,21 @@ def calculate_values(df):
     """
     df['Cash'] = round(df['cash'] / df['commonStockSharesOutstanding'], 2)
     df['NCAV'] = round((df['totalCurrentAssets'] - df['totalLiab']) / df['commonStockSharesOutstanding'], 2)
-    df['NTAV'] = round(df['netTangibleAssets'] / df['commonStockSharesOutstanding'], 2)
+    df['NTAV'] = round((df['totalCurrentAssets'] + df['propertyPlantAndEquipmentNet']- df['totalLiab']) / df['commonStockSharesOutstanding'], 2)
     df['BookValue'] = round(df['totalStockholderEquity'], 2)
     df['BookValuePerShare'] = round(df['BookValue'] / df['commonStockSharesOutstanding'], 2)
     df['EPS'] = round(df['netIncome'] / df['commonStockSharesOutstanding'], 2)
     df['10EPS'] = round(df['netIncome'] * 10 / df['commonStockSharesOutstanding'], 2)
-    df['EPS3'] = round(df['EPS'][::-1].rolling(window=3, min_periods=1).mean(), 2)[::-1]
+    df['EPS3'] = round(df['EPS'][::-1].rolling(window=3, min_periods=1).mean(),2)[::-1]
     df['Graham_Number'] = round((22.5 * df['BookValuePerShare'].clip(0) * df['EPS3'].clip(0)) ** 0.5, 2)
-    df['Sales'] = round(df['totalRevenue'] / df['commonStockSharesOutstanding'], 2)
+    df['Graham_Number_Entp'] = round((12 * df['NTAV'].clip(0) * df['EPS'].clip(0)) ** 0.5, 2)        df['AnnualSales'] = round(df['totalRevenue'], 2)
     df['BV%'] = round(df['BookValue'] / df['totalAssets'] * 100, 1)
     df['Liab%'] = round(df['totalLiab'] / df['totalAssets'] * 100, 1)
     df['Current Assets/2*Current Liab'] = round(100 * df['totalCurrentAssets'] / (2 * df['totalCurrentLiabilities']), 2)
     df['Current Assets'] = df['totalCurrentAssets']
-    df['Net Current Asset/Non Current Liabilities'] = round(
-        100 * (df['totalCurrentAssets'] - df['totalLiab']) / df['nonCurrentLiabilitiesTotal'], 2)
+    df['Net Current Asset/ Long Term Debt'] = round((df['totalCurrentAssets'] - df['totalLiab']) / df['longTermDebt'], 2)
     df['2*equity/debt'] = round(2 * 100 * df['totalAssets'] / df['totalLiab'])
+        
     return df
 
 class DataProcessor:
