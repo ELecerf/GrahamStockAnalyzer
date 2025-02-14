@@ -200,7 +200,8 @@ def calculate_values(df):
     df['10EPS'] = round(df['netIncome'] * 10 / df['commonStockSharesOutstanding'], 2)
     df['EPS3'] = round(df['EPS'][::-1].rolling(window=3, min_periods=1).mean(),2)[::-1]
     df['Graham_Number'] = round((22.5 * df['BookValuePerShare'].clip(0) * df['EPS3'].clip(0)) ** 0.5, 2)
-    df['Graham_Number_Entp'] = round((12 * df['NTAV'].clip(0) * df['EPS'].clip(0)) ** 0.5, 2)        df['AnnualSales'] = round(df['totalRevenue'], 2)
+    df['Graham_Number_Entp'] = round((12 * df['NTAV'].clip(0) * df['EPS'].clip(0)) ** 0.5, 2)        
+    df['AnnualSales'] = round(df['totalRevenue'], 2)
     df['BV%'] = round(df['BookValue'] / df['totalAssets'] * 100, 1)
     df['Liab%'] = round(df['totalLiab'] / df['totalAssets'] * 100, 1)
     df['Current Assets/2*Current Liab'] = round(100 * df['totalCurrentAssets'] / (2 * df['totalCurrentLiabilities']), 2)
