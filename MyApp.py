@@ -36,7 +36,7 @@ PRODUCT_ID = st.secrets["PRODUCT_ID"]
 
 
 # Establish a connection to MongoDB
-client = MongoClient("mongodb+srv://vysse36:VaLeUrGrApH78@cluster0.sdoby.mongodb.net/valeurgraphDB?retryWrites=true&w=majority")
+client = MongoClient(MONGO_DB)
 db = client.valeurgraphDB
 
 Collection = db["data"]
