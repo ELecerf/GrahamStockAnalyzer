@@ -1237,6 +1237,29 @@ def main():
     with st.form("Plot"):
         display_graph()
         #display_classification()  
+    st.markdown("## Complete Report: Graham’s Criteria Worldwide")
+    st.markdown(
+        """
+        Unlock a comprehensive report featuring all companies that meet Graham’s criteria:
+        - **Defensive**
+        - **Enterprising**
+        - **Net‑Net**
+    
+        This report is designed for intelligent and lazy investors who want to accelerate their process and quickly identify investment opportunities to investigate further.
+        """
+    )
+    st.image("flipbook.gif", caption="Discover the opportunities", use_column_width=True)
+    st.markdown(
+        '''
+        <a href="https://vysse.gumroad.com/l/DefensiveEnterprising?_gl=1*ggl3qx*_ga*MTk2OTk4NTAxNS4xNzM4NzgyNzA1*_ga_6LJN6D94N6*MTczOTYyODg0NC45LjEuMTczOTYyOTgyMS4wLjAuMA.." target="_blank">
+            <button style="background-color: #007BFF; border: none; border-radius: 4px; color: white; padding: 10px 20px; font-size: 16px; cursor: pointer;">
+                Get Complete Report
+            </button>
+        </a>
+        ''',
+        unsafe_allow_html=True
+    )
+
     salespage()
     with st.expander("User Disclaimer", expanded=False):
         disclaimer()
