@@ -18,6 +18,7 @@ import country_converter as coco
 import streamlit.components.v1 as components
 import numpy as np
 import logging
+from typing import Tuple, Any, List
 
 # Set up logging
 logging.basicConfig(level=logging.INFO)
@@ -561,6 +562,30 @@ def salespage():
 # =============================================================================
 # NEW: Sequential Stock Classification (Defensive > Enterprising > Net‑Net)
 # =============================================================================
+def get_first_value(df: pd.DataFrame, col: str, default_value: Any = np.nan) -> Any:
+    if col in df.columns:
+        series = df[col].dropna()
+        if not series.empty:
+            return series.iloc[0]
+    return default_value
+
+# Helper to append an evaluation criterion to the results list.
+def check_and_append(results: List[List[Any]], criterion_name: str, condition: bool, score: Any) -> None:
+    results.append([criterion_name, condition, score])
+
+# Helper to display a value (return the value if not NaN, otherwise 'N/A').
+def display_value(val: Any) -> Any:
+    return val if not pd.isna(val) else 'N/A'
+
+# Helper to compute potential as a percentage difference between a Graham number and the current price.
+def compute_potential(graham: Any, current_price: Any) -> Any:
+    try:
+        if not pd.isna(graham) and not pd.isna(current_price) and current_price > 0:
+            return round((graham - current_price) * 100 / current_price, 0)
+    except Exception as e:
+        logger.error(f"Error computing potential: {e}")
+    return np.nan
+
 def evaluate_defensive(financials, price):
     row = financials.iloc[0]
     score = 0
@@ -601,17 +626,44 @@ def evaluate_enterprising(financials, price):
     is_enterprising = (score == 4)
     return summary, score, is_enterprising
 
-def evaluate_netnet(financials, price):
-    row = financials.iloc[0]
-    score = 0
-    if 'NCAV' in financials.columns and not price.empty:
-        if row['NCAV'] > price.iloc[-1]['adjusted_close']:
-            score += 1
-    if 'netIncome' in financials.columns and row['netIncome'] > 0:
-        score += 1
-    summary = f"Net-Net Score: {score}/2"
-    is_netnet = (score == 2)
-    return summary, score, is_netnet
+def evaluate_netnet(data: pd.DataFrame, price: pd.DataFrame) -> Tuple[int, pd.DataFrame, bool]:
+    """
+    Evaluate whether a stock is a Net-Net (undervalued based on Net Current Asset Value).
+    Returns a 4-tuple: (LaTeX table, total score, evaluation details DataFrame, is_netnet flag)
+    """
+    results_netnet = []
+    columns = data.columns
+
+    # Retrieve key values
+    ncav = get_first_value(data, 'NCAV')
+    current_price = price.iloc[-1]['adjusted_close']
+    diluted_eps_ttm = get_first_value(data, 'netIncome')
+
+    # Criterion 1: Price < NCAV
+    if ncav is not None and current_price is not None:
+        condition = current_price < ncav
+        check_and_append(results_netnet, "Price < NCAV", condition, round(ncav / current_price, 2))
+        logger.debug(f"Price {current_price} < NCAV {ncav}: {condition}")
+    else:
+        check_and_append(results_netnet, "Price < NCAV", False, np.nan)
+        logger.warning("NCAV or Price missing.")
+
+    # Criterion 2: Diluted EPS TTM is positive
+    if diluted_eps_ttm is not None:
+        condition = diluted_eps_ttm > 0
+        check_and_append(results_netnet, "Diluted EPS TTM > 0", condition, diluted_eps_ttm)
+        logger.debug(f"Diluted EPS TTM {diluted_eps_ttm} > 0: {condition}")
+    else:
+        check_and_append(results_netnet, "Diluted EPS TTM > 0", False, np.nan)
+        logger.warning("Diluted EPS TTM missing.")
+
+    # Build evaluation DataFrame and compute score
+    evaluation_df_netnet = pd.DataFrame(results_netnet, columns=['Criterion', 'Result', 'Score'])
+    total_score = int(evaluation_df_netnet['Result'].sum())
+    is_net = (total_score == 2)
+    logger.info(f"Total Net-Net Score: {total_score} out of 2")
+
+    return evaluation_df_netnet, is_net
 
 def display_classification():
     ticker = st.session_state.get('selected_ticker', "")
@@ -638,7 +690,7 @@ def display_classification():
                 net_summary, net_score, is_net = evaluate_netnet(financials, price)
                 if is_net:
                     st.markdown("### Classification: Net‑Net")
-                    st.write(net_summary)
+                    st.table(net_summary)
                 else:
                     st.markdown("### Classification: Does not meet Defensive, Enterprising, or Net‑Net criteria")
 
