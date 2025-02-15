@@ -6,13 +6,6 @@ Created on Sat Feb 15 09:48:35 2025
 @author: etiennelecerf
 """
 
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-Created on Wed Jan  1 19:54:04 2025
-
-@author: elecerf
-"""
 
 import streamlit as st
 import pandas as pd
