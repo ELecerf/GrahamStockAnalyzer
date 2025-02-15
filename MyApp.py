@@ -854,29 +854,48 @@ def evaluate_enterprising(data: pd.DataFrame, diluted_eps_ttm, price: pd.DataFra
         logger.warning("Dividends columns missing for Enterprising Criterion 4.")
 
     # Criterion 4 (Alternate): EPS Growth from 4 Years Ago to Now
+    current_year = datetime.datetime.now().year
     eps_4yr = np.nan
     eps_current = np.nan
-    if 'EPS' in columns:
+    
+    if 'EPS' in data.columns:
         eps_series = data['EPS'].dropna()
+        
         if len(eps_series) >= 8:
             try:
-                eps_4yr = eps_series.iloc[4]
-                eps_current = diluted_eps_ttm
-                growth = (eps_current - eps_4yr) / eps_4yr if eps_4yr > 0 else 0
-                condition_growth = growth >= EPS_GROWTH_THRESHOLD_ENT
-                growth_percentage = round(growth * 100, 2)
-                check_and_append(results_ent, "EPS Growth >= from 4 Years Ago", condition_growth, growth_percentage)
-                logger.debug(f"Enterprising Criterion 4 Alt: Growth from {eps_4yr} to {eps_current} = {growth_percentage}%: {condition_growth}")
+                # Ensure the DataFrame index is datetime formatted
+                data.index = pd.to_datetime(data.index)
+    
+                # Find EPS from 4 years ago
+                eps_4yr_index = data.index[data.index.year == (current_year - 4)]
+                
+                if not eps_4yr_index.empty:
+                    eps_4yr = data.loc[eps_4yr_index[0], 'EPS']  # Use first match
+                    eps_current = diluted_eps_ttm
+                    
+                    # Compute growth
+                    growth = (eps_current - eps_4yr) / eps_4yr if eps_4yr > 0 else 0
+                    condition_growth = growth >= EPS_GROWTH_THRESHOLD_ENT
+                    growth_percentage = round(growth * 100, 2)
+                    
+                    check_and_append(results_ent, "EPS Growth >= from 4 Years Ago", condition_growth, growth_percentage)
+                    logger.debug(f"Enterprising Criterion 4: Growth from {eps_4yr} to {eps_current} = {growth_percentage}%: {condition_growth}")
+                else:
+                    check_and_append(results_ent, "EPS Growth >= from 4 Years Ago", False, np.nan)
+                    logger.warning(f"No EPS data found for year {current_year - 4}.")
+            
             except Exception as e:
                 check_and_append(results_ent, "EPS Growth >= from 4 Years Ago", False, np.nan)
                 logger.error(f"Error evaluating Enterprising EPS Growth: {e}")
+        
         else:
             check_and_append(results_ent, "EPS Growth >= from 4 Years Ago", False, np.nan)
-            logger.warning("Not enough EPS for growth calculation (Enterprising).")
+            logger.warning("Not enough EPS data for growth calculation (Enterprising).")
+    
     else:
         check_and_append(results_ent, "EPS Growth >= from 4 Years Ago", False, np.nan)
         logger.warning("EPS column missing for growth calculation (Enterprising).")
-
+    
     # Criterion 5: Current Price <= 10 * Average EPS (past 3 years)
     if 'EPS' in columns:
         eps_series = data['EPS'].dropna()
@@ -927,7 +946,7 @@ def evaluate_enterprising(data: pd.DataFrame, diluted_eps_ttm, price: pd.DataFra
 
     # Criterion 7: PER * NTAV <= 12
     if 'EPS' in columns and 'NTAV' in columns:
-        eps_value = get_first_value(data, 'EPS')
+        eps_value = diluted_eps_ttm
         ntav = get_first_value(data, 'NTAV')
         if not pd.isna(eps_value) and not pd.isna(ntav):
             try:
