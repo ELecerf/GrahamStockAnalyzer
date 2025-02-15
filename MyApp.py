@@ -901,12 +901,12 @@ def evaluate_enterprising(data: pd.DataFrame, diluted_eps_ttm, price: pd.DataFra
     if diluted_eps_ttm > 0:
         try:
             current_price = price.iloc[-1]['adjusted_close']
+            price_eps_ratio = round(current_price / diluted_eps_ttm, 2)
+            condition = price_eps_ratio <= PRICE_EPS_MULTIPLIER_ENT
         except Exception as e:
             current_price = np.nan
             logger.warning(f"Error retrieving current price for Enterprising Criterion 5: {e}")
         
-            price_eps_ratio = round(current_price / diluted_eps_ttm, 2)
-            condition = price_eps_ratio <= PRICE_EPS_MULTIPLIER_ENT
         else:
             price_eps_ratio = np.nan
             condition = False
