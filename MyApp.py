@@ -897,29 +897,24 @@ def evaluate_enterprising(data: pd.DataFrame, diluted_eps_ttm, price: pd.DataFra
         logger.warning("EPS column missing for growth calculation (Enterprising).")
     
     # Criterion 5: Current Price <= 10 * Average EPS (past 3 years)
-    if 'EPS' in columns:
-        eps_series = data['EPS'].dropna()
-        if len(eps_series) >= 3:
-            avg_eps_3yr = eps_series.head(3).mean()
-            try:
-                current_price = price.iloc[-1]['adjusted_close']
-            except Exception as e:
-                current_price = np.nan
-                logger.warning(f"Error retrieving current price for Enterprising Criterion 5: {e}")
-            if avg_eps_3yr > 0:
-                price_eps_ratio = round(current_price / avg_eps_3yr, 2)
-                condition = price_eps_ratio <= PRICE_EPS_MULTIPLIER_ENT
-            else:
-                price_eps_ratio = np.nan
-                condition = False
-            check_and_append(results_ent, "Price <= 10 * Avg EPS (3yr)", condition, price_eps_ratio)
-            logger.debug(f"Enterprising Criterion 5: Price/EPS ratio: {price_eps_ratio} <= {PRICE_EPS_MULTIPLIER_ENT}: {condition}")
+
+    if diluted_eps_ttm > 0:
+        try:
+            current_price = price.iloc[-1]['adjusted_close']
+        except Exception as e:
+            current_price = np.nan
+            logger.warning(f"Error retrieving current price for Enterprising Criterion 5: {e}")
+        
+            price_eps_ratio = round(current_price / diluted_eps_ttm, 2)
+            condition = price_eps_ratio <= PRICE_EPS_MULTIPLIER_ENT
         else:
-            check_and_append(results_ent, "Price <= 10 * Avg EPS (3yr)", False, np.nan)
-            logger.warning("Not enough EPS for 3-year average (Enterprising).")
+            price_eps_ratio = np.nan
+            condition = False
+        check_and_append(results_ent, "Price <= 10 * Diluted EPS TTM", condition, price_eps_ratio)
+        logger.debug(f"Enterprising Criterion 5: Price/EPS ratio: {price_eps_ratio} <= {PRICE_EPS_MULTIPLIER_ENT}: {condition}")
     else:
-        check_and_append(results_ent, "Price <= 10 * Avg EPS (3yr)", False, np.nan)
-        logger.warning("EPS column missing for Enterprising Criterion 5.")
+        check_and_append(results_ent, "Price <= 10 * Diluted EPS TTM", False, np.nan)
+        logger.warning("Not enough data")
 
     # Criterion 6: Current Price <= 1.2 * NTAV
     if 'NTAV' in columns:
