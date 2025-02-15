@@ -1134,7 +1134,7 @@ def main():
     st.markdown(hide_default_format, unsafe_allow_html=True)
     st.title('ValeurGraph. Simple.')
     st.header("""
-              The simplest app for Deep Value investors applying Benjamin Graham's principles👇
+              The app for Deep Value investors applying Benjamin Graham's principles👇
               """)
     st.markdown('**"The person that turns over the most rocks wins the game."**')
     st.markdown('''In just a few seconds, Grahamite value investors can compare the evolution of a stock price with fundamental data per share (book value, NCAV, etc.)
