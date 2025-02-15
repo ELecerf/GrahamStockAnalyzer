@@ -641,16 +641,16 @@ def evaluate_defensive(data: pd.DataFrame, price: pd.DataFrame, dividends: pd.Da
         logger.warning("Current Assets or Current Liabilities columns missing.")
 
     # Criterion 2B: Net Current Assets >= Long-term Debt
-    if all(col in columns for col in ['Net Current Asset/ Long Term Debt', 'nonCurrentLiabilitiesTotal', 'totalCurrentAssets', 'totalLiab']):
-        net_ratio = get_first_value(data, 'Net Current Asset/ Long Term Debt')
+    if all(col in columns for col in ['Net Current Asset/Non Current Liabilities', 'nonCurrentLiabilitiesTotal', 'totalCurrentAssets', 'totalLiab']):
+        net_ratio = get_first_value(data, 'Net Current Asset/Non Current Liabilities')
         net_current_assets = round(get_first_value(data, 'totalCurrentAssets') - get_first_value(data, 'totalLiab'), 2)
         long_term_debt = get_first_value(data, 'nonCurrentLiabilitiesTotal')
         condition = net_ratio >= 1
-        check_and_append(results_def, "Net Current Assets >= Long-term Debt", condition, round(net_ratio, 2))
+        check_and_append(results_def, "Net Current Assets >= Non Current Liabilities", condition, round(net_ratio, 2))
         logger.debug(f"Net Ratio: {net_ratio} >= 1: {condition}")
     else:
-        check_and_append(results_def, "Net Current Assets >= Long-term Debt", False, np.nan)
-        logger.warning("Required columns for net current assets or long-term debt missing.")
+        check_and_append(results_def, "Net Current Assets >= Non Current Liabilities", False, np.nan)
+        logger.warning("Required columns for net current assets or lNon Current Liabilities missing.")
 
     # Criterion 3 & 5: EPS-related criteria
     if 'EPS' in columns:
