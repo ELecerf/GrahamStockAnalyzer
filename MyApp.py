@@ -179,6 +179,9 @@ def fetch_financials_with_country(ticker):
     # Extract Country Information
     country = data.get('General', {}).get('AddressData', {}).get('Country', 'Unknown')
     
+    # Extract highlights Information
+    diluted_eps_ttm = data.get('Highlights', {}).get('DilutedEpsTTM', np.nan)
+    
     # Combine Financial Data
     financials = balance_sheet_df.join(income_statement_df, how='outer').drop_duplicates()
     financials.index = pd.to_datetime(financials.index)
@@ -186,7 +189,7 @@ def fetch_financials_with_country(ticker):
     financials = financials.apply(pd.to_numeric, errors='coerce')
     financials = financials[:16]
     
-    return financials, country, dividends
+    return financials, country, dividends, diluted_eps_ttm
 
 def calculate_values(df):
     """
@@ -223,7 +226,7 @@ def get_fundamentals(tick):
     processes it to calculate derived metrics, and returns a subset based on license status.
     """
     try:
-        financials, country, dividends = fetch_financials_with_country(tick)
+        financials, country, dividends, diluted_eps_ttm = fetch_financials_with_country(tick)
     except Exception as e:
         st.error(f"Error fetching financials for {tick}: {e}")
         return pd.DataFrame()
@@ -251,7 +254,7 @@ def get_full_fundamentals(tick):
     This is used for plotting so that all necessary metrics are available.
     """
     try:
-        financials, country, dividends = fetch_financials_with_country(tick)
+        financials, country, dividends, diluted_eps_ttm = fetch_financials_with_country(tick)
     except Exception as e:
         st.error(f"Error fetching financials for {tick}: {e}")
         return pd.DataFrame()
@@ -484,7 +487,7 @@ def display_graph():
                     raise ValueError("No stock or fundamental data found")
                 # For display purposes, fetch company info from the full financial data.
                 # (Alternatively, you could extract the company name from another source.)
-                financial_data, _, _ = fetch_financials_with_country(user_input)
+                financial_data, _, _, _ = fetch_financials_with_country(user_input)
                 company_name = financial_data.get('Name', user_input)
                 bokeh_chart = create_bokeh_chart(company_name, df_fundamentals, df_stock)
                 st.bokeh_chart(bokeh_chart, use_container_width=True)
@@ -628,7 +631,7 @@ def evaluate_enterprising(financials, price):
     is_enterprising = (score == 4)
     return summary, score, is_enterprising
 
-def evaluate_netnet(data: pd.DataFrame, price: pd.DataFrame) -> Tuple[int, pd.DataFrame, bool]:
+def evaluate_netnet(data: pd.DataFrame, diluted_eps_ttm, price: pd.DataFrame) -> Tuple[int, pd.DataFrame, bool]:
     """
     Evaluate whether a stock is a Net-Net (undervalued based on Net Current Asset Value).
     Returns a 4-tuple: (LaTeX table, total score, evaluation details DataFrame, is_netnet flag)
@@ -639,7 +642,7 @@ def evaluate_netnet(data: pd.DataFrame, price: pd.DataFrame) -> Tuple[int, pd.Da
     # Retrieve key values
     ncav = get_first_value(data, 'NCAV')
     current_price = price.iloc[-1]['adjusted_close']
-    diluted_eps_ttm = get_first_value(data, 'netIncome')
+    #diluted_eps_ttm = get_first_value(data, 'netIncome')
 
     # Criterion 1: Price < NCAV
     if ncav is not None and current_price is not None:
@@ -675,6 +678,7 @@ def display_classification():
     with st.spinner("Evaluating stock classification..."):
         try:
             financials = get_fundamentals(ticker)
+            diluted_eps_ttm = get_highlights(ticker)
             price = get_price_eod(ticker)
         except Exception as e:
             st.error(f"Error fetching data for classification: {e}")
@@ -689,7 +693,7 @@ def display_classification():
                 st.markdown("### Classification: Enterprising")
                 st.write(ent_summary)
             else:
-                net_summary, is_net = evaluate_netnet(financials, price)
+                net_summary, is_net = evaluate_netnet(financials, diluted_eps_ttm, price)
                 if is_net:
                     st.markdown("### Classification: Net‑Net")
                     st.table(net_summary)
