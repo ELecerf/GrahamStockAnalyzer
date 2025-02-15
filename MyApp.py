@@ -235,8 +235,8 @@ def get_fundamentals(tick):
     
     if st.session_state.get('license_valid', False):
         selected_metrics = [
-            'Graham_Number', 'NCAV', 'Cash', '10EPS', 'AnnualSales', 'NTAV',
-            'BookValuePerShare', 'Current Assets/2*Current Liab',
+            'Graham_Number', 'NCAV', 'Cash', '10EPS', 'AnnualSales', 'netIncome',
+            'NTAV','BookValuePerShare', 'Current Assets/2*Current Liab',
             'Current Assets', 'Net Current Asset/ Long Term Debt'
         ]
     else:
@@ -607,7 +607,7 @@ def evaluate_netnet(financials, price):
     if 'NCAV' in financials.columns and not price.empty:
         if row['NCAV'] > price.iloc[-1]['adjusted_close']:
             score += 1
-    if 'DilutedEpsTTM' in financials.columns and row['DilutedEpsTTM'] > 0:
+    if 'netIncome' in financials.columns and row['netIncome'] > 0:
         score += 1
     summary = f"Net-Net Score: {score}/2"
     is_netnet = (score == 2)
