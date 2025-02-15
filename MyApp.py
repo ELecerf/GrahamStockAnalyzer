@@ -466,39 +466,6 @@ def create_bokeh_chart(stock, df_fundamentals, df_stock):
     return p
 
 
-def display_graph():
-    ticker = st.session_state.get('selected_ticker', "")
-    st.title(f'Value graph {ticker}')
-    query = st.text_input("Enter a stock ticker and click on Plot to see the value graph", ticker)
-    user_input = query
-    if st.session_state.get('trigger_plot', False):
-        user_input = ticker
-    else:
-        st.session_state['selected_ticker'] = query
-    # For graphing, use the full financials (ignoring license filtering)
-    if st.form_submit_button("Plot") or st.session_state.get('trigger_plot', False):
-        st.session_state['trigger_plot'] = False
-        try:
-            with st.spinner('Loading graph...'):
-                # Use get_full_fundamentals so all needed metrics are available for plotting.
-                df_fundamentals = get_full_fundamentals(user_input)
-                df_stock = get_price_eod(user_input)
-                if df_stock.empty or df_fundamentals.empty:
-                    raise ValueError("No stock or fundamental data found")
-                # For display purposes, fetch company info from the full financial data.
-                # (Alternatively, you could extract the company name from another source.)
-                financial_data, _, _, _ = fetch_financials_with_country(user_input)
-                company_name = financial_data.get('Name', user_input)
-                bokeh_chart = create_bokeh_chart(company_name, df_fundamentals, df_stock)
-                st.bokeh_chart(bokeh_chart, use_container_width=True)
-                st.caption("ValeurGraph can make mistakes. Check important info.")
-                if not st.session_state.get('license_valid', False):
-                    st.markdown(':red[**To display the full value graph, get a license key**]')
-                evaluate_company(df_fundamentals, df_stock)
-                st.dataframe(df_fundamentals)
-        except Exception as e:
-            st.error(f"An error occurred: your input is not valid. Ticker format is CODE.EXCHANGE. Details: {e}")
-
 def process_explanation():
     st.markdown("""
     - **A good process is simple:** quickly find cheap opportunities to analyze further.
@@ -643,8 +610,8 @@ def evaluate_defensive(data: pd.DataFrame, price: pd.DataFrame, dividends: pd.Da
     # Criterion 2B: Net Current Assets >= Long-term Debt
     if all(col in columns for col in ['Net Current Asset/Non Current Liabilities', 'nonCurrentLiabilitiesTotal', 'totalCurrentAssets', 'totalLiab']):
         net_ratio = get_first_value(data, 'Net Current Asset/Non Current Liabilities')
-        net_current_assets = round(get_first_value(data, 'totalCurrentAssets') - get_first_value(data, 'totalLiab'), 2)
-        long_term_debt = get_first_value(data, 'nonCurrentLiabilitiesTotal')
+        #net_current_assets = round(get_first_value(data, 'totalCurrentAssets') - get_first_value(data, 'totalLiab'), 2)
+        #long_term_debt = get_first_value(data, 'nonCurrentLiabilitiesTotal')
         condition = net_ratio >= 1
         check_and_append(results_def, "Net Current Assets >= Non Current Liabilities", condition, round(net_ratio, 2))
         logger.debug(f"Net Ratio: {net_ratio} >= 1: {condition}")
@@ -748,7 +715,7 @@ def evaluate_defensive(data: pd.DataFrame, price: pd.DataFrame, dividends: pd.Da
         try:
             # Retrieve results from earlier criteria (if available)
             price_eps_result = next((r for r in results_def if r[0] == "Price <= 15 * Avg EPS (3yr)"), None)
-            price_bv_result = next((r for r in results_def if r[0] == "Price <= 1.5 * Book Value"), None)
+            #price_bv_result = next((r for r in results_def if r[0] == "Price <= 1.5 * Book Value"), None)
             multiplier = price_eps_result[2] if price_eps_result and not pd.isna(price_eps_result[2]) else np.nan
             bvps = get_first_value(data, 'BookValuePerShare')
             current_price = price.iloc[-1]['adjusted_close']
@@ -818,14 +785,8 @@ def evaluate_enterprising(data: pd.DataFrame, diluted_eps_ttm, price: pd.DataFra
     columns = data.columns
 
     # Retrieve key values
-    annual_sales = get_first_value(data, 'AnnualSales')
     ntav = get_first_value(data, 'NTAV')
     graham_Number_Entp = get_first_value(data, 'Graham_Number_Entp')
-    # Other financials as needed
-    shares = get_first_value(data, 'commonStockSharesOutstanding')
-    total_assets = get_first_value(data, 'totalAssets')
-    #intangible_assets = get_first_value(data, 'intangibleAssets')
-    total_liabilities = get_first_value(data, 'totalLiab')
 
 
     # Criterion 1-A: Current Assets >= 1.5 * Current Liabilities
@@ -848,8 +809,8 @@ def evaluate_enterprising(data: pd.DataFrame, diluted_eps_ttm, price: pd.DataFra
     if 'Net Current Asset/Non Current Liabilities' in columns and 'nonCurrentLiabilitiesTotal' in columns:
         try:
             net_ratio = get_first_value(data, 'Net Current Asset/Non Current Liabilities')
-            net_current_assets = round(get_first_value(data, 'totalCurrentAssets') - get_first_value(data, 'totalLiab'), 2)
-            long_term_debt = get_first_value(data, 'nonCurrentLiabilitiesTotal')
+            #net_current_assets = round(get_first_value(data, 'totalCurrentAssets') - get_first_value(data, 'totalLiab'), 2)
+            #long_term_debt = get_first_value(data, 'nonCurrentLiabilitiesTotal')
             condition = net_ratio >= LONG_TERM_DEBT_MULTIPLIER_ENT
             check_and_append(results_ent, "Net Current Asset/Non Current Liabilities Ratio >= 1.1", condition, round(net_ratio, 2))
             logger.debug(f"Enterprising Criterion 1-B: Net Ratio {net_ratio} >= {LONG_TERM_DEBT_MULTIPLIER_ENT}: {condition}")
@@ -1044,8 +1005,8 @@ def evaluate_netnet(data: pd.DataFrame, diluted_eps_ttm, price: pd.DataFrame) ->
 
     return evaluation_df_netnet, is_net
 
-def display_classification():
-    ticker = st.session_state.get('selected_ticker', "")
+def display_classification(ticker):
+    #ticker = st.session_state.get('selected_ticker', "")
     if not ticker:
         st.info("No stock selected for classification.")
         return
@@ -1075,7 +1036,45 @@ def display_classification():
                 else:
                     st.write(round(net_summary,2))
                     st.markdown("### Classification: Does not meet Defensive, Enterprising, or Net‑Net criteria")
+     
+     
+# =============================================================================
+# Display graph and information
+# =============================================================================
         
+
+def display_graph():
+    ticker = st.session_state.get('selected_ticker', "")
+    st.title(f'Value graph {ticker}')
+    query = st.text_input("Enter a stock ticker and click on Plot to see the value graph", ticker)
+    user_input = query
+    if st.session_state.get('trigger_plot', False):
+        user_input = ticker
+    # For graphing, use the full financials (ignoring license filtering)
+    if st.form_submit_button("Plot") or st.session_state.get('trigger_plot', False):
+        st.session_state['trigger_plot'] = False
+        try:
+            with st.spinner('Loading graph...'):
+                # Use get_full_fundamentals so all needed metrics are available for plotting.
+                df_fundamentals = get_full_fundamentals(user_input)
+                df_stock = get_price_eod(user_input)
+                if df_stock.empty or df_fundamentals.empty:
+                    raise ValueError("No stock or fundamental data found")
+                # For display purposes, fetch company info from the full financial data.
+                # (Alternatively, you could extract the company name from another source.)
+                financial_data, _, _, _ = fetch_financials_with_country(user_input)
+                company_name = financial_data.get('Name', user_input)
+                bokeh_chart = create_bokeh_chart(company_name, df_fundamentals, df_stock)
+                st.bokeh_chart(bokeh_chart, use_container_width=True)
+                st.caption("ValeurGraph can make mistakes. Check important info.")
+                if not st.session_state.get('license_valid', False):
+                    st.markdown(':red[**To display the full value graph, get a license key**]')
+                #evaluate_company(df_fundamentals, df_stock)
+                display_classification(user_input)
+                st.dataframe(df_fundamentals)
+        except Exception as e:
+            st.error(f"An error occurred: your input is not valid. Ticker format is CODE.EXCHANGE. Details: {e}")
+     
 # =============================================================================
 # Main Application
 # =============================================================================
