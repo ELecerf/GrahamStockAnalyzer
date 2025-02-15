@@ -469,7 +469,7 @@ def create_bokeh_chart(stock, df_fundamentals, df_stock):
 def process_explanation():
     st.markdown(
     """
-    # Explanation of the Process
+    # Process strictly based on Graham's book The Intelligent Investor
 
     Our approach is built to be both simple and powerful—helping you quickly uncover undervalued stocks for further analysis.
 
