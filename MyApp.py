@@ -1056,7 +1056,7 @@ def display_classification():
         except Exception as e:
             st.error(f"Error fetching data for classification: {e}")
             return
-        def_summary, is_def = evaluate_defensive(financials, price)
+        def_summary, is_def = evaluate_defensive(financials, price, dividends)
         if is_def:
             st.markdown("### Classification: Defensive")
             st.write(def_summary)
