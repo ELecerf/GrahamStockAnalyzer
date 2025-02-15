@@ -1009,40 +1009,48 @@ def evaluate_netnet(data: pd.DataFrame, diluted_eps_ttm, price: pd.DataFrame) ->
 
     return evaluation_df_netnet, is_net, potential
 
-def display_classification(ticker):
-    #ticker = st.session_state.get('selected_ticker', "")
+def display_classification(ticker, financials, price, dividends, diluted_eps_ttm):
+    """Classifies a stock and displays its potential price increase."""
     if not ticker:
         st.info("No stock selected for classification.")
         return
+    
     with st.spinner("Evaluating stock classification..."):
         try:
-            financials, country, dividends, diluted_eps_ttm = get_fundamentals(ticker)
-            price = get_price_eod(ticker)
-        except Exception as e:
-            st.error(f"Error fetching data for classification: {e}")
-            return
-        def_summary, is_def, potential = evaluate_defensive(financials, price, dividends)
-        if is_def:
-            st.markdown("### Classification: Defensive")
-            st.write(def_summary)
-        else:
+            # Evaluate Defensive Classification
+            def_summary, is_def, potential_def = evaluate_defensive(financials, price, dividends)
+            if is_def:
+                st.markdown("### Classification: Defensive")
+                st.write(def_summary)
+                st.markdown(f"**📈 Potential Price Increase:** {round(potential_def * 100, 2)}%")
+                return
+            
             st.markdown("### Why it is not Defensive:")
             st.write(def_summary)
-            ent_summary, is_ent, potential = evaluate_enterprising(financials, diluted_eps_ttm, price, dividends)
+            
+            # Evaluate Enterprising Classification
+            ent_summary, is_ent, potential_ent = evaluate_enterprising(financials, diluted_eps_ttm, price, dividends)
             if is_ent:
-                st.markdown("### Classification: it is Enterprising")
+                st.markdown("### Classification: Enterprising")
                 st.write(ent_summary)
+                st.markdown(f"**📈 Potential Price Increase:** {round(potential_ent * 100, 2)}%")
+                return
+            
+            st.markdown("### Why it is not Enterprising:")
+            st.write(ent_summary)
+            
+            # Evaluate Net-Net Classification
+            net_summary, is_net, potential_net = evaluate_netnet(financials, diluted_eps_ttm, price)
+            if is_net:
+                st.markdown("### Classification: Net‑Net")
+                st.write(round(net_summary, 2))
+                st.markdown(f"**📈 Potential Price Increase:** {round(potential_net * 100, 2)}%")
             else:
-                st.markdown("### Why it is not Enterprising:")
-                st.write(ent_summary)
-                net_summary, is_net, potential = evaluate_netnet(financials, diluted_eps_ttm, price)
-                if is_net:
-                    st.markdown("### Classification: it is a Net‑Net")
-                    st.write(round(net_summary,2))
-                else:
-                    st.write(round(net_summary,2))
-                    st.markdown("### Classification: Does not meet Defensive, Enterprising, or Net‑Net criteria")
-     
+                st.markdown("### Classification: Does not meet Defensive, Enterprising, or Net‑Net criteria")
+                st.write(round(net_summary, 2))
+        except Exception as e:
+            st.error(f"Error during classification: {e}")
+
      
 # =============================================================================
 # Display graph and information
@@ -1050,37 +1058,44 @@ def display_classification(ticker):
         
 
 def display_graph():
+    """Displays the value graph and stock classification for a given ticker."""
     ticker = st.session_state.get('selected_ticker', "")
-    st.title(f'Value graph {ticker}')
+    st.title(f'Value Graph: {ticker}')
+    
     query = st.text_input("Enter a stock ticker and click on Plot to see the value graph", ticker)
-    user_input = query
-    if st.session_state.get('trigger_plot', False):
-        user_input = ticker
-    # For graphing, use the full financials (ignoring license filtering)
+    user_input = query if not st.session_state.get('trigger_plot', False) else ticker
+
     if st.form_submit_button("Plot") or st.session_state.get('trigger_plot', False):
         st.session_state['trigger_plot'] = False
+        
         try:
-            with st.spinner('Loading graph...'):
-                # Use get_full_fundamentals so all needed metrics are available for plotting.
-                df_fundamentals = get_full_fundamentals(user_input)
-                df_stock = get_price_eod(user_input)
-                if df_stock.empty or df_fundamentals.empty:
+            with st.spinner('Loading data...'):
+                # Fetch financials & stock price once, then reuse
+                financials, country, dividends, diluted_eps_ttm = get_fundamentals(user_input)
+                price = get_price_eod(user_input)
+
+                if price.empty or financials.empty:
                     raise ValueError("No stock or fundamental data found")
-                # For display purposes, fetch company info from the full financial data.
-                # (Alternatively, you could extract the company name from another source.)
-                financial_data, _, _, _ = fetch_financials_with_country(user_input)
-                company_name = financial_data.get('Name', user_input)
-                bokeh_chart = create_bokeh_chart(company_name, df_fundamentals, df_stock)
+                
+                # Extract company name
+                company_name = fetch_financials_with_country(user_input)[0].get('Name', user_input)
+                
+                # Generate and display graph
+                bokeh_chart = create_bokeh_chart(company_name, financials, price)
                 st.bokeh_chart(bokeh_chart, use_container_width=True)
+                
                 st.caption("ValeurGraph can make mistakes. Check important info.")
+                
                 if not st.session_state.get('license_valid', False):
                     st.markdown(':red[**To display the full value graph, get a license key**]')
-                #evaluate_company(df_fundamentals, df_stock)
-                display_classification(user_input)
-                st.dataframe(df_fundamentals)
+                
+                # Evaluate classification using pre-fetched data
+                display_classification(user_input, financials, price, dividends, diluted_eps_ttm)
+
+                # Display full financial data
+                st.dataframe(financials)
         except Exception as e:
-            st.error(f"An error occurred: your input is not valid. Ticker format is CODE.EXCHANGE. Details: {e}")
-     
+            st.error(f"An error occurred: Invalid input. Ticker format is CODE.EXCHANGE. Details: {e}")
 # =============================================================================
 # Main Application
 # =============================================================================
