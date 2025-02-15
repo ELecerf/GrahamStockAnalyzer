@@ -1169,7 +1169,7 @@ def main():
     with st.form("Plot"):
         display_graph()
         st.title("🔎 Graham Classification")
-        display_classification()  
+        #display_classification()  
     salespage()
     with st.expander("🌍 Net-net map"):
         filtered_data = load_data_NCAV()
