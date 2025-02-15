@@ -689,7 +689,7 @@ def display_classification():
                 st.markdown("### Classification: Enterprising")
                 st.write(ent_summary)
             else:
-                net_summary, net_score, is_net = evaluate_netnet(financials, price)
+                net_summary, is_net = evaluate_netnet(financials, price)
                 if is_net:
                     st.markdown("### Classification: Net‑Net")
                     st.table(net_summary)
