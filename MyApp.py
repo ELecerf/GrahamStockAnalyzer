@@ -1022,7 +1022,7 @@ def display_classification(ticker, financials, price, dividends, diluted_eps_ttm
             if is_def:
                 st.markdown("### Classification: Defensive")
                 st.write(def_summary)
-                st.markdown(f"**📈 Potential Price Increase:** {round(potential_def * 100, 2)}%")
+                st.markdown(f"**📈 Potential Price Increase:** {potential_def}")
                 return
             
             st.markdown("### Why it is not Defensive:")
@@ -1033,7 +1033,7 @@ def display_classification(ticker, financials, price, dividends, diluted_eps_ttm
             if is_ent:
                 st.markdown("### Classification: Enterprising")
                 st.write(ent_summary)
-                st.markdown(f"**📈 Potential Price Increase:** {round(potential_ent * 100, 2)}%")
+                st.markdown(f"**📈 Potential Price Increase:** {potential_ent}")
                 return
             
             st.markdown("### Why it is not Enterprising:")
@@ -1044,7 +1044,7 @@ def display_classification(ticker, financials, price, dividends, diluted_eps_ttm
             if is_net:
                 st.markdown("### Classification: Net‑Net")
                 st.write(round(net_summary, 2))
-                st.markdown(f"**📈 Potential Price Increase:** {round(potential_net * 100, 2)}%")
+                st.markdown(f"**📈 Potential Price Increase:** {potential_net}")
             else:
                 st.markdown("### Classification: Does not meet Defensive, Enterprising, or Net‑Net criteria")
                 st.write(round(net_summary, 2))
