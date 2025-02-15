@@ -1031,7 +1031,7 @@ def display_classification(ticker, financials, price, dividends, diluted_eps_ttm
             # Evaluate Defensive Classification
             def_summary, is_def, potential_def = evaluate_defensive(financials, price, dividends)
             if is_def:
-                st.markdown("### Classification: Defensive")
+                st.markdown("### Classification: it is Defensive")
                 st.write(def_summary)
                 st.markdown(f"**📈 Potential Price Increase:** {potential_def}")
                 return
@@ -1042,7 +1042,7 @@ def display_classification(ticker, financials, price, dividends, diluted_eps_ttm
             # Evaluate Enterprising Classification
             ent_summary, is_ent, potential_ent = evaluate_enterprising(financials, diluted_eps_ttm, price, dividends)
             if is_ent:
-                st.markdown("### Classification: Enterprising")
+                st.markdown("### Classification: it is Enterprising")
                 st.write(ent_summary)
                 st.markdown(f"**📈 Potential Price Increase:** {potential_ent}")
                 return
@@ -1053,7 +1053,7 @@ def display_classification(ticker, financials, price, dividends, diluted_eps_ttm
             # Evaluate Net-Net Classification
             net_summary, is_net, potential_net = evaluate_netnet(financials, diluted_eps_ttm, price)
             if is_net:
-                st.markdown("### Classification: Net‑Net")
+                st.markdown("### Classification: it is a Net‑Net")
                 st.write(round(net_summary, 2))
                 st.markdown(f"**📈 Potential Price Increase:** {potential_net}")
             else:
