@@ -1135,7 +1135,7 @@ def disclaimer():
         The financial data and company information displayed are sourced from various third-party APIs and data providers. The accuracy, completeness, or timeliness of the data is not guaranteed
         
         **Your Responsibility:**  
-        Use the insights provided by this app as a starting point for your own research. We strongly advise that you consult with professional financial, legal, or intellectual property advisors before making any investment or business decisions.
+        Use the insights provided by this app as a starting point for your own research. We strongly that you consult with professional financial advisors before making any investment or business decisions.
 
         """,
         unsafe_allow_html=True
