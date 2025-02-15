@@ -206,7 +206,7 @@ def calculate_values(df):
     df['Liab%'] = round(df['totalLiab'] / df['totalAssets'] * 100, 1)
     df['Current Assets/2*Current Liab'] = round(100 * df['totalCurrentAssets'] / (2 * df['totalCurrentLiabilities']), 2)
     df['Current Assets'] = df['totalCurrentAssets']
-    df['Net Current Asset/ Long Term Debt'] = round((df['totalCurrentAssets'] - df['totalLiab']) / df['longTermDebt'], 2)
+    df['Net Current Asset/Non Current Liabilities'] = round((df['totalCurrentAssets'] - df['totalLiab']) / df['nonCurrentLiabilitiesTotal'], 2)
     df['2*equity/debt'] = round(2 * 100 * df['totalAssets'] / df['totalLiab'])
         
     return df
@@ -237,7 +237,7 @@ def get_fundamentals(tick):
         selected_metrics = [
             'Graham_Number', 'NCAV', 'Cash', '10EPS', 'AnnualSales', 'netIncome',
             'NTAV','BookValuePerShare', 'Current Assets/2*Current Liab',
-            'Current Assets', 'Net Current Asset/ Long Term Debt'
+            'Current Assets', 'Net Current Asset/Non Current Liabilities'
         ]
     else:
         selected_metrics = ['BookValuePerShare']
