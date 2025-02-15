@@ -815,7 +815,7 @@ def evaluate_enterprising(data: pd.DataFrame, diluted_eps_ttm, price: pd.DataFra
 
     potential_ent = compute_potential(graham_Number_Entp, current_price)
 
-    return evaluation_df_ent, is_ent, potential_ent
+    return evaluation_df_ent, is_ent
 
 
 def evaluate_netnet(data: pd.DataFrame, diluted_eps_ttm, price: pd.DataFrame) -> Tuple[int, pd.DataFrame, bool]:
