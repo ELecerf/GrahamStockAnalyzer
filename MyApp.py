@@ -470,8 +470,8 @@ def display_graph():
     user_input = query
     if st.session_state.get('trigger_plot', False):
         user_input = ticker
-    #else:
-    #    st.session_state['selected_ticker'] = query
+    else:
+        st.session_state['selected_ticker'] = query
     # For graphing, use the full financials (ignoring license filtering)
     if st.form_submit_button("Plot") or st.session_state.get('trigger_plot', False):
         st.session_state['trigger_plot'] = False
