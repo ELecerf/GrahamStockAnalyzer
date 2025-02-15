@@ -642,7 +642,7 @@ def evaluate_netnet(data: pd.DataFrame, diluted_eps_ttm, price: pd.DataFrame) ->
     # Retrieve key values
     ncav = get_first_value(data, 'NCAV')
     current_price = price.iloc[-1]['adjusted_close']
-    diluted_eps_ttm = round(diluted_eps_ttm,2)
+    #diluted_eps_ttm = get_first_value(data, 'netIncome')
 
     # Criterion 1: Price < NCAV
     if ncav is not None and current_price is not None:
@@ -695,7 +695,7 @@ def display_classification():
                 net_summary, is_net = evaluate_netnet(financials, diluted_eps_ttm, price)
                 if is_net:
                     st.markdown("### Classification: Net‑Net")
-                    st.table(round(net_summary,2))
+                    st.write(round(net_summary,2))
                 else:
                     st.markdown("### Classification: Does not meet Defensive, Enterprising, or Net‑Net criteria")
 
