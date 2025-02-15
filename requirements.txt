@@ -8,3 +8,4 @@ geopandas
 folium
 plotly
 country_converter
+Typing
