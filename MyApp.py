@@ -764,10 +764,11 @@ def evaluate_defensive(data: pd.DataFrame, price: pd.DataFrame, dividends: pd.Da
         logger.warning(f"Error retrieving current price: {e}")
 
     potential_def = compute_potential(graham_number, current_price)
+    potential = f"{potential_def} %"
 
-    return evaluation_df_def, is_defensive
+    return evaluation_df_def, is_defensive, potential
 
-def evaluate_enterprising(data: pd.DataFrame, diluted_eps_ttm, price: pd.DataFrame, dividends: pd.DataFrame) -> Tuple[int, pd.DataFrame, bool, Any]:
+def evaluate_enterprising(data: pd.DataFrame, diluted_eps_ttm, price: pd.DataFrame, dividends: pd.DataFrame) -> Tuple[int, pd.DataFrame, str]:
     """
     Evaluate whether a stock is enterprising.
     Returns a 5-tuple: (LaTeX table, total score, evaluation DataFrame, is_enterprising flag, potential)
@@ -962,11 +963,12 @@ def evaluate_enterprising(data: pd.DataFrame, diluted_eps_ttm, price: pd.DataFra
         logger.warning(f"Error retrieving current price (Enterprising): {e}")
 
     potential_ent = compute_potential(graham_Number_Entp, current_price)
+    potential = f"{potential_ent} %"
 
-    return evaluation_df_ent, is_ent
+    return evaluation_df_ent, is_ent, potential
 
 
-def evaluate_netnet(data: pd.DataFrame, diluted_eps_ttm, price: pd.DataFrame) -> Tuple[int, pd.DataFrame, bool]:
+def evaluate_netnet(data: pd.DataFrame, diluted_eps_ttm, price: pd.DataFrame) -> Tuple[int, pd.DataFrame, str]:
     """
     Evaluate whether a stock is a Net-Net (undervalued based on Net Current Asset Value).
     Returns a 4-tuple: (LaTeX table, total score, evaluation details DataFrame, is_netnet flag)
@@ -1001,9 +1003,11 @@ def evaluate_netnet(data: pd.DataFrame, diluted_eps_ttm, price: pd.DataFrame) ->
     evaluation_df_netnet = pd.DataFrame(results_netnet, columns=['Criterion', 'Result', 'Score'])
     total_score = int(evaluation_df_netnet['Result'].sum())
     is_net = (total_score == 2)
+    potential_netnet = compute_potential(ncav, current_price)
+    potential = f"{potential_netnet} %"
     logger.info(f"Total Net-Net Score: {total_score} out of 2")
 
-    return evaluation_df_netnet, is_net
+    return evaluation_df_netnet, is_net, potential
 
 def display_classification(ticker):
     #ticker = st.session_state.get('selected_ticker', "")
@@ -1017,21 +1021,23 @@ def display_classification(ticker):
         except Exception as e:
             st.error(f"Error fetching data for classification: {e}")
             return
-        def_summary, is_def = evaluate_defensive(financials, price, dividends)
+        def_summary, is_def, potential = evaluate_defensive(financials, price, dividends)
         if is_def:
             st.markdown("### Classification: Defensive")
             st.write(def_summary)
         else:
+            st.markdown("### Why it is not Defensive:")
             st.write(def_summary)
-            ent_summary, is_ent = evaluate_enterprising(financials, diluted_eps_ttm, price, dividends)
+            ent_summary, is_ent, potential = evaluate_enterprising(financials, diluted_eps_ttm, price, dividends)
             if is_ent:
-                st.markdown("### Classification: Enterprising")
+                st.markdown("### Classification: it is Enterprising")
                 st.write(ent_summary)
             else:
+                st.markdown("### Why it is not Enterprising:")
                 st.write(ent_summary)
-                net_summary, is_net = evaluate_netnet(financials, diluted_eps_ttm, price)
+                net_summary, is_net, potential = evaluate_netnet(financials, diluted_eps_ttm, price)
                 if is_net:
-                    st.markdown("### Classification: Net‑Net")
+                    st.markdown("### Classification: it is a Net‑Net")
                     st.write(round(net_summary,2))
                 else:
                     st.write(round(net_summary,2))
