@@ -1,11 +1,10 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Sat Feb 15 09:48:35 2025
+Created on Wed Jan  1 19:54:04 2025
 
-@author: etiennelecerf
+@author: elecerf
 """
-
 
 import streamlit as st
 import pandas as pd
@@ -238,7 +237,7 @@ def get_fundamentals(tick):
         selected_metrics = [
             'Graham_Number', 'NCAV', 'Cash', '10EPS', 'Sales', 'NTAV',
             'BookValuePerShare', 'Current Assets/2*Current Liab',
-            'Current Assets', 'Net Current Asset/Non Current Liabilities', '2*equity/debt'
+            'Current Assets', 'Net Current Asset/ Long Term Debt'
         ]
     else:
         selected_metrics = ['BookValuePerShare']
