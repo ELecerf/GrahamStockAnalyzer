@@ -1074,22 +1074,22 @@ def display_graph():
     st.title(f'Value Graph: {ticker}')
     
     query = st.text_input("Enter a stock ticker and click on Plot to see the value graph", ticker)
-    user_input = query if not st.session_state.get('trigger_plot', False) else ticker
+    ticker = query if not st.session_state.get('trigger_plot', False) else ticker
 
     if st.form_submit_button("Plot") or st.session_state.get('trigger_plot', False):
         st.session_state['trigger_plot'] = False
-        
+        st.title(f'Value Graph: {ticker}')
         try:
             with st.spinner('Loading data...'):
                 # Fetch financials & stock price once, then reuse
-                financials, country, dividends, diluted_eps_ttm = get_fundamentals(user_input)
-                price = get_price_eod(user_input)
+                financials, country, dividends, diluted_eps_ttm = get_fundamentals(ticker)
+                price = get_price_eod(ticker)
 
                 if price.empty or financials.empty:
                     raise ValueError("No stock or fundamental data found")
                 
                 # Extract company name
-                company_name = fetch_financials_with_country(user_input)[0].get('Name', user_input)
+                company_name = fetch_financials_with_country(ticker)[0].get('Name', ticker)
                 
                 # Generate and display graph
                 bokeh_chart = create_bokeh_chart(company_name, financials, price)
@@ -1101,7 +1101,7 @@ def display_graph():
                     st.markdown(':red[**To display the full value graph, get a license key**]')
                 
                 # Evaluate classification using pre-fetched data
-                display_classification(user_input, financials, price, dividends, diluted_eps_ttm)
+                display_classification(ticker, financials, price, dividends, diluted_eps_ttm)
 
                 # Display full financial data
                 st.dataframe(financials)
