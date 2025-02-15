@@ -558,7 +558,7 @@ def compute_potential(graham: Any, current_price: Any) -> Any:
         logger.error(f"Error computing potential: {e}")
     return np.nan
 
-def evaluate_defensive(data: pd.DataFrame, price: pd.DataFrame, dividends: pd.DataFrame) -> Tuple[int, pd.DataFrame, bool, Any]:
+def evaluate_defensive(data: pd.DataFrame, price: pd.DataFrame, dividends: pd.DataFrame) -> Tuple[pd.DataFrame, bool, Any]:
     """
     Evaluate whether a stock is defensive.
     Returns a 5-tuple: (LaTeX table, total score, evaluation details DataFrame, is_defensive flag, potential)
@@ -768,7 +768,7 @@ def evaluate_defensive(data: pd.DataFrame, price: pd.DataFrame, dividends: pd.Da
 
     return evaluation_df_def, is_defensive, potential
 
-def evaluate_enterprising(data: pd.DataFrame, diluted_eps_ttm, price: pd.DataFrame, dividends: pd.DataFrame) -> Tuple[int, pd.DataFrame, str]:
+def evaluate_enterprising(data: pd.DataFrame, diluted_eps_ttm, price: pd.DataFrame, dividends: pd.DataFrame) -> Tuple[pd.DataFrame, bool, Any]:
     """
     Evaluate whether a stock is enterprising.
     Returns a 5-tuple: (LaTeX table, total score, evaluation DataFrame, is_enterprising flag, potential)
@@ -968,7 +968,7 @@ def evaluate_enterprising(data: pd.DataFrame, diluted_eps_ttm, price: pd.DataFra
     return evaluation_df_ent, is_ent, potential
 
 
-def evaluate_netnet(data: pd.DataFrame, diluted_eps_ttm, price: pd.DataFrame) -> Tuple[int, pd.DataFrame, str]:
+def evaluate_netnet(data: pd.DataFrame, diluted_eps_ttm, price: pd.DataFrame)  -> Tuple[pd.DataFrame, bool, Any]:
     """
     Evaluate whether a stock is a Net-Net (undervalued based on Net Current Asset Value).
     Returns a 4-tuple: (LaTeX table, total score, evaluation details DataFrame, is_netnet flag)
