@@ -642,7 +642,7 @@ def evaluate_netnet(data: pd.DataFrame, diluted_eps_ttm, price: pd.DataFrame) ->
     # Retrieve key values
     ncav = get_first_value(data, 'NCAV')
     current_price = price.iloc[-1]['adjusted_close']
-    #diluted_eps_ttm = get_first_value(data, 'netIncome')
+    diluted_eps_ttm = round(diluted_eps_ttm,2)
 
     # Criterion 1: Price < NCAV
     if ncav is not None and current_price is not None:
