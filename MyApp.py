@@ -874,18 +874,21 @@ def display_classification():
             st.markdown("### Classification: Defensive")
             st.write(def_summary)
         else:
+            st.write(def_summary)
             ent_summary, is_ent = evaluate_enterprising(financials, diluted_eps_ttm, price, dividends)
             if is_ent:
                 st.markdown("### Classification: Enterprising")
                 st.write(ent_summary)
             else:
+                st.write(ent_summary)
                 net_summary, is_net = evaluate_netnet(financials, diluted_eps_ttm, price)
                 if is_net:
                     st.markdown("### Classification: Net‑Net")
                     st.write(round(net_summary,2))
                 else:
+                    st.write(round(net_summary,2))
                     st.markdown("### Classification: Does not meet Defensive, Enterprising, or Net‑Net criteria")
-
+        
 # =============================================================================
 # Main Application
 # =============================================================================
