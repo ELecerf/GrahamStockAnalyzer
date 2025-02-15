@@ -246,7 +246,7 @@ def get_fundamentals(tick):
     else:
         selected_metrics = ['BookValuePerShare']
     
-    return financials[selected_metrics], diluted_eps_ttm
+    return financials[selected_metrics], country, dividends, diluted_eps_ttm
 
 def get_full_fundamentals(tick):
     """
@@ -613,23 +613,210 @@ def evaluate_defensive(financials, price):
     is_defensive = (score == 6)
     return summary, score, is_defensive
 
-def evaluate_enterprising(financials, price):
-    row = financials.iloc[0]
-    score = 0
-    if 'Current Assets/2*Current Liab' in financials.columns and row['Current Assets/2*Current Liab'] >= 75:
-        score += 1
-    if '10EPS' in financials.columns and not price.empty:
-        if price.iloc[-1]['adjusted_close'] / (row['10EPS'] / 10) <= 10:
-            score += 1
-    if 'NTAV' in financials.columns and not price.empty:
-        if price.iloc[-1]['adjusted_close'] / row['NTAV'] <= 1.2:
-            score += 1
-    if 'BookValuePerShare' in financials.columns and not price.empty:
-        if price.iloc[-1]['adjusted_close'] / row['BookValuePerShare'] <= 1.2:
-            score += 1
-    summary = f"Enterprising Score: {score}/4"
-    is_enterprising = (score == 4)
-    return summary, score, is_enterprising
+def evaluate_enterprising(data: pd.DataFrame, diluted_eps_ttm, price: pd.DataFrame, dividends: pd.DataFrame) -> Tuple[int, pd.DataFrame, bool, Any]:
+    """
+    Evaluate whether a stock is enterprising.
+    Returns a 5-tuple: (LaTeX table, total score, evaluation DataFrame, is_enterprising flag, potential)
+    """
+    # --- Constants for Enterprising Evaluation ---
+    CURRENT_ASSETS_MULTIPLIER_ENT = 1.5
+    LONG_TERM_DEBT_MULTIPLIER_ENT = 1.1
+    EPS_REQUIRED_YEARS_ENT = 5
+    EPS_GROWTH_THRESHOLD_ENT = 0  # no minimal growth required
+    PRICE_EPS_MULTIPLIER_ENT = 10
+    NTAV_PRICE_MULTIPLIER_ENT = 1.2
+    RULE_OF_THUMB_MULTIPLIER_ENT = 12
+
+    results_ent = []
+    columns = data.columns
+
+    # Retrieve key values
+    annual_sales = get_first_value(data, 'AnnualSales')
+    ntav = get_first_value(data, 'NTAV')
+    graham_Number_Entp = get_first_value(data, 'Graham_Number_Entp')
+    # Other financials as needed
+    shares = get_first_value(data, 'commonStockSharesOutstanding')
+    total_assets = get_first_value(data, 'totalAssets')
+    #intangible_assets = get_first_value(data, 'intangibleAssets')
+    total_liabilities = get_first_value(data, 'totalLiab')
+
+
+    # Criterion 1-A: Current Assets >= 1.5 * Current Liabilities
+    if 'totalCurrentAssets' in columns and 'totalCurrentLiabilities' in columns:
+        try:
+            current_assets = get_first_value(data, 'totalCurrentAssets')
+            current_liabilities = get_first_value(data, 'totalCurrentLiabilities')
+            condition = current_assets >= CURRENT_ASSETS_MULTIPLIER_ENT * current_liabilities
+            ratio = round(current_assets / current_liabilities, 2) if current_liabilities != 0 else np.nan
+            check_and_append(results_ent, "Current Assets >= 1.5 * Current Liabilities", condition, ratio)
+            logger.debug(f"Enterprising Criterion 1-A: {current_assets} >= {CURRENT_ASSETS_MULTIPLIER_ENT} * {current_liabilities}: {condition}")
+        except Exception as e:
+            check_and_append(results_ent, "Current Assets >= 1.5 * Current Liabilities", False, np.nan)
+            logger.error(f"Error evaluating Enterprising Criterion 1-A: {e}")
+    else:
+        check_and_append(results_ent, "Current Assets >= 1.5 * Current Liabilities", False, np.nan)
+        logger.warning("Columns for Current Assets or Liabilities missing (Enterprising).")
+
+    # Criterion 1-B: Net Current Asset/ Long Term Debt Ratio >= 1.1
+    if 'Net Current Asset/Non Current Liabilities' in columns and 'nonCurrentLiabilitiesTotal' in columns:
+        try:
+            net_ratio = get_first_value(data, 'Net Current Asset/Non Current Liabilities')
+            net_current_assets = round(get_first_value(data, 'totalCurrentAssets') - get_first_value(data, 'totalLiab'), 2)
+            long_term_debt = get_first_value(data, 'nonCurrentLiabilitiesTotal')
+            condition = net_ratio >= LONG_TERM_DEBT_MULTIPLIER_ENT
+            check_and_append(results_ent, "Net Current Asset/Non Current Liabilities Ratio >= 1.1", condition, round(net_ratio, 2))
+            logger.debug(f"Enterprising Criterion 1-B: Net Ratio {net_ratio} >= {LONG_TERM_DEBT_MULTIPLIER_ENT}: {condition}")
+        except Exception as e:
+            check_and_append(results_ent, "Net Current Asset/Non Current Liabilities Ratio >= 1.1", False, np.nan)
+            logger.error(f"Error evaluating Enterprising Criterion 1-B: {e}")
+    else:
+        check_and_append(results_ent, "Net Current Asset/Non Current Liabilities Ratio >= 1.1", False, np.nan)
+        logger.warning("Required columns missing for Enterprising Criterion 1-B.")
+
+    # Criterion 2: Positive Earnings for the Past 5 Years
+    if 'EPS' in columns:
+        eps_series = data['EPS'].dropna()
+        if len(eps_series) >= EPS_REQUIRED_YEARS_ENT:
+            eps_5yr = eps_series.head(EPS_REQUIRED_YEARS_ENT).min()
+            condition = eps_5yr > 0
+            check_and_append(results_ent, "Positive Earnings for 5 Years", condition, 'Yes' if condition else 'No')
+            logger.debug(f"Enterprising Criterion 2: EPS 5yr min {eps_5yr}: {condition}")
+        else:
+            check_and_append(results_ent, "Positive Earnings for 5 Years", False, np.nan)
+            logger.warning("Not enough EPS for Enterprising Criterion 2.")
+    else:
+        check_and_append(results_ent, "Positive Earnings for 5 Years", False, np.nan)
+        logger.warning("EPS column missing for Enterprising Criterion 2.")
+
+    # Criterion 4: Dividends in the Last 12 Months
+    if {'Year', 'Count'}.issubset(dividends.columns):
+        try:
+            one_year_ago = datetime.datetime.now() - datetime.timedelta(days=365)
+            recent_dividends = dividends.loc[dividends['Year'] >= one_year_ago.year]
+            condition_div = not recent_dividends.empty and (recent_dividends['Count'] > 0).any()
+            dividend_result = "Yes" if condition_div else "No"
+            check_and_append(results_ent, "Dividends in Last 12 Months", condition_div, dividend_result)
+            logger.debug(f"Enterprising Criterion 4: Dividends in last 12 months: {condition_div}")
+        except Exception as e:
+            check_and_append(results_ent, "Dividends in Last 12 Months", False, "No")
+            logger.error(f"Error evaluating Enterprising Criterion 4: {e}")
+    else:
+        check_and_append(results_ent, "Dividends in Last 12 Months", False, "No")
+        logger.warning("Dividends columns missing for Enterprising Criterion 4.")
+
+    # Criterion 4 (Alternate): EPS Growth from 4 Years Ago to Now
+    eps_4yr = np.nan
+    eps_current = np.nan
+    if 'EPS' in columns:
+        eps_series = data['EPS'].dropna()
+        if len(eps_series) >= 8:
+            try:
+                eps_4yr = eps_series.iloc[4]
+                eps_current = diluted_eps_ttm
+                growth = (eps_current - eps_4yr) / eps_4yr if eps_4yr > 0 else 0
+                condition_growth = growth >= EPS_GROWTH_THRESHOLD_ENT
+                growth_percentage = round(growth * 100, 2)
+                check_and_append(results_ent, "EPS Growth >= from 4 Years Ago", condition_growth, growth_percentage)
+                logger.debug(f"Enterprising Criterion 4 Alt: Growth from {eps_4yr} to {eps_current} = {growth_percentage}%: {condition_growth}")
+            except Exception as e:
+                check_and_append(results_ent, "EPS Growth >= from 4 Years Ago", False, np.nan)
+                logger.error(f"Error evaluating Enterprising EPS Growth: {e}")
+        else:
+            check_and_append(results_ent, "EPS Growth >= from 4 Years Ago", False, np.nan)
+            logger.warning("Not enough EPS for growth calculation (Enterprising).")
+    else:
+        check_and_append(results_ent, "EPS Growth >= from 4 Years Ago", False, np.nan)
+        logger.warning("EPS column missing for growth calculation (Enterprising).")
+
+    # Criterion 5: Current Price <= 10 * Average EPS (past 3 years)
+    if 'EPS' in columns:
+        eps_series = data['EPS'].dropna()
+        if len(eps_series) >= 3:
+            avg_eps_3yr = eps_series.head(3).mean()
+            try:
+                current_price = price.iloc[-1]['adjusted_close']
+            except Exception as e:
+                current_price = np.nan
+                logger.warning(f"Error retrieving current price for Enterprising Criterion 5: {e}")
+            if avg_eps_3yr > 0:
+                price_eps_ratio = round(current_price / avg_eps_3yr, 2)
+                condition = price_eps_ratio <= PRICE_EPS_MULTIPLIER_ENT
+            else:
+                price_eps_ratio = np.nan
+                condition = False
+            check_and_append(results_ent, "Price <= 10 * Avg EPS (3yr)", condition, price_eps_ratio)
+            logger.debug(f"Enterprising Criterion 5: Price/EPS ratio: {price_eps_ratio} <= {PRICE_EPS_MULTIPLIER_ENT}: {condition}")
+        else:
+            check_and_append(results_ent, "Price <= 10 * Avg EPS (3yr)", False, np.nan)
+            logger.warning("Not enough EPS for 3-year average (Enterprising).")
+    else:
+        check_and_append(results_ent, "Price <= 10 * Avg EPS (3yr)", False, np.nan)
+        logger.warning("EPS column missing for Enterprising Criterion 5.")
+
+    # Criterion 6: Current Price <= 1.2 * NTAV
+    if 'NTAV' in columns:
+        try:
+            ntav = get_first_value(data, 'NTAV')
+            try:
+                current_price = price.iloc[-1]['adjusted_close']
+            except Exception as e:
+                current_price = np.nan
+                logger.warning(f"Error retrieving current price for Enterprising Criterion 6: {e}")
+            if not pd.isna(ntav) and ntav > 0:
+                ntav_ratio = round(current_price / ntav, 2)
+                condition = ntav_ratio <= NTAV_PRICE_MULTIPLIER_ENT
+                check_and_append(results_ent, "Price <= 1.2 * NTAV", condition, ntav_ratio)
+                logger.debug(f"Enterprising Criterion 6: Price/NTAV: {ntav_ratio} <= {NTAV_PRICE_MULTIPLIER_ENT}: {condition}")
+            else:
+                check_and_append(results_ent, "Price <= 1.2 * NTAV", False, np.nan)
+        except Exception as e:
+            check_and_append(results_ent, "Price <= 1.2 * NTAV", False, np.nan)
+            logger.error(f"Error evaluating Enterprising Criterion 6: {e}")
+    else:
+        check_and_append(results_ent, "Price <= 1.2 * NTAV", False, np.nan)
+        logger.warning("NTAV column missing for Enterprising Criterion 6.")
+
+    # Criterion 7: PER * NTAV <= 12
+    if 'EPS' in columns and 'NTAV' in columns:
+        eps_value = get_first_value(data, 'EPS')
+        ntav = get_first_value(data, 'NTAV')
+        if not pd.isna(eps_value) and not pd.isna(ntav):
+            try:
+                current_price = price.iloc[-1]['adjusted_close']
+            except Exception as e:
+                current_price = np.nan
+                logger.warning(f"Error retrieving current price for Enterprising Criterion 7: {e}")
+            multiplier = current_price / eps_value if eps_value > 0 else np.nan
+            ntav_ratio = current_price / ntav if ntav > 0 else np.nan
+            if not pd.isna(multiplier) and not pd.isna(ntav_ratio):
+                rule_of_thumb = multiplier * ntav_ratio
+                condition = rule_of_thumb <= RULE_OF_THUMB_MULTIPLIER_ENT
+                check_and_append(results_ent, "PER * NTAV <= 12", condition, round(rule_of_thumb, 2))
+                logger.debug(f"Enterprising Criterion 7: Rule of thumb: {rule_of_thumb} <= {RULE_OF_THUMB_MULTIPLIER_ENT}: {condition}")
+            else:
+                check_and_append(results_ent, "PER * NTAV <= 12", False, np.nan)
+        else:
+            check_and_append(results_ent, "PER * NTAV <= 12", False, np.nan)
+            logger.warning("Not enough data for Enterprising Criterion 7.")
+    else:
+        check_and_append(results_ent, "PER * NTAV <= 12", False, np.nan)
+        logger.warning("Required columns missing for Enterprising Criterion 7.")
+
+    evaluation_df_ent = pd.DataFrame(results_ent, columns=['Criterion', 'Result', 'Score'])
+    total_score = int(evaluation_df_ent['Result'].sum())
+    is_ent = (total_score == 8)
+    logger.info(f"Total Enterprising Score: {total_score} out of 8")
+
+    try:
+        current_price = price.iloc[-1]['adjusted_close']
+    except Exception as e:
+        current_price = np.nan
+        logger.warning(f"Error retrieving current price (Enterprising): {e}")
+
+    potential_ent = compute_potential(graham_Number_Entp, current_price)
+
+    return evaluation_df_ent, is_ent, potential_ent
+
 
 def evaluate_netnet(data: pd.DataFrame, diluted_eps_ttm, price: pd.DataFrame) -> Tuple[int, pd.DataFrame, bool]:
     """
@@ -677,7 +864,7 @@ def display_classification():
         return
     with st.spinner("Evaluating stock classification..."):
         try:
-            financials, diluted_eps_ttm = get_fundamentals(ticker)
+            financials, country, dividends, diluted_eps_ttm = get_fundamentals(ticker)
             price = get_price_eod(ticker)
         except Exception as e:
             st.error(f"Error fetching data for classification: {e}")
@@ -687,7 +874,7 @@ def display_classification():
             st.markdown("### Classification: Defensive")
             st.write(def_summary)
         else:
-            ent_summary, ent_score, is_ent = evaluate_enterprising(financials, price)
+            ent_summary, is_ent = evaluate_enterprising(financials, diluted_eps_ttm, price, dividends)
             if is_ent:
                 st.markdown("### Classification: Enterprising")
                 st.write(ent_summary)
