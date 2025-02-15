@@ -467,20 +467,32 @@ def create_bokeh_chart(stock, df_fundamentals, df_stock):
 
 
 def process_explanation():
-    st.markdown("""
-    - **A good process is simple:** quickly find cheap opportunities to analyze further.
-    - **Option 1:** you want to search for a specific company and check the value graph. **Use Search.**
-    - **Option 2:** You want to turn over rocks to find potentially undervalued companies. **Use the screener.**
-    
-    You can look for companies with a big margin of safety compared to their tangible assets. 
-    --> **Net-nets** for example. 
-    \nI check if their assets are growing and if they are profitable.
-    \nThen Check that they have low debts.
-    \nThen Look at the trends of the price vs. main value proxies like net current assets or earnings per share
-    to visually see where it stands compared to historical ratios.
-    \nThen Read their financial reports and investigate further to make a case. 
-    \nThen Continue to explore.
-    \n**Give it a try**""")
+    st.markdown(
+    """
+    # Explanation of the Process
+
+    Our approach is built to be both simple and powerful—helping you quickly uncover undervalued stocks for further analysis.
+
+    ## 1. Choose Your Approach  
+    - **Search:** If you have a specific company in mind, simply enter its ticker to view a detailed value graph that overlays historical price trends with key financial metrics.  
+    - **Screener:** If you’re exploring broadly, use the screener to sift through stocks that offer a significant margin of safety (think “net‑nets”) based on their tangible asset values.
+
+    ## 2. Analyze the Fundamentals  
+    - We check if a company’s assets are growing and if it has a history of profitability.  
+    - We assess debt levels to ensure financial stability.  
+    - Our app visually contrasts the current stock price with key value proxies (such as net current assets, earnings per share, and the Graham number) so you can spot valuation gaps at a glance.
+
+    ## 3. Build Your Investment Case  
+    - Once potential opportunities are flagged, dive into the company’s financial reports for deeper insights.  
+    - Our built-in Graham classification system further evaluates stocks as Defensive, Enterprising, or Net‑Net, providing you with a structured framework to support your decision.
+
+    ## 4. Explore and Decide  
+    - Use these insights to refine your strategy and decide whether to investigate further or explore additional opportunities.
+
+    **Give it a try and start discovering undervalued stocks at record speed!**
+    """,
+    unsafe_allow_html=True)
+
 
 def salespage():
     if not st.session_state.get('license_valid', False):
