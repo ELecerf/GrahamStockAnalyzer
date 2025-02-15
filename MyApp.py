@@ -180,7 +180,7 @@ def fetch_financials_with_country(ticker):
     country = data.get('General', {}).get('AddressData', {}).get('Country', 'Unknown')
     
     # Extract highlights Information
-    diluted_eps_ttm = data.get('Highlights', {}).get('DilutedEpsTTM', np.nan)
+    diluted_eps_ttm = round(data.get('Highlights', {}).get('DilutedEpsTTM', np.nan),2)
     
     # Combine Financial Data
     financials = balance_sheet_df.join(income_statement_df, how='outer').drop_duplicates()
@@ -695,7 +695,7 @@ def display_classification():
                 net_summary, is_net = evaluate_netnet(financials, diluted_eps_ttm, price)
                 if is_net:
                     st.markdown("### Classification: Net‑Net")
-                    st.table(net_summary)
+                    st.table(round(net_summary,2))
                 else:
                     st.markdown("### Classification: Does not meet Defensive, Enterprising, or Net‑Net criteria")
 
