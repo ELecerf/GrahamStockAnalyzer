@@ -907,9 +907,6 @@ def evaluate_enterprising(data: pd.DataFrame, diluted_eps_ttm, price: pd.DataFra
             current_price = np.nan
             logger.warning(f"Error retrieving current price for Enterprising Criterion 5: {e}")
         
-        else:
-            price_eps_ratio = np.nan
-            condition = False
         check_and_append(results_ent, "Price <= 10 * Diluted EPS TTM", condition, price_eps_ratio)
         logger.debug(f"Enterprising Criterion 5: Price/EPS ratio: {price_eps_ratio} <= {PRICE_EPS_MULTIPLIER_ENT}: {condition}")
     else:
