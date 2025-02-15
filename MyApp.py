@@ -246,7 +246,7 @@ def get_fundamentals(tick):
     else:
         selected_metrics = ['BookValuePerShare']
     
-    return financials[selected_metrics]
+    return financials[selected_metrics], diluted_eps_ttm
 
 def get_full_fundamentals(tick):
     """
@@ -677,8 +677,7 @@ def display_classification():
         return
     with st.spinner("Evaluating stock classification..."):
         try:
-            financials = get_fundamentals(ticker)
-            diluted_eps_ttm = get_highlights(ticker)
+            financials, diluted_eps_ttm = get_fundamentals(ticker)
             price = get_price_eod(ticker)
         except Exception as e:
             st.error(f"Error fetching data for classification: {e}")
