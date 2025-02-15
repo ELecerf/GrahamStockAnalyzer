@@ -1071,14 +1071,13 @@ def display_classification(ticker, financials, price, dividends, diluted_eps_ttm
 def display_graph():
     """Displays the value graph and stock classification for a given ticker."""
     ticker = st.session_state.get('selected_ticker', "")
-    st.title(f'Value Graph: {ticker}')
+    st.title(f'Value Graph:')
     
     query = st.text_input("Enter a stock ticker and click on Plot to see the value graph", ticker)
     ticker = query if not st.session_state.get('trigger_plot', False) else ticker
 
     if st.form_submit_button("Plot") or st.session_state.get('trigger_plot', False):
         st.session_state['trigger_plot'] = False
-        st.title(f'Value Graph: {ticker}')
         try:
             with st.spinner('Loading data...'):
                 # Fetch financials & stock price once, then reuse
