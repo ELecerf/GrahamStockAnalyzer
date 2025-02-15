@@ -210,7 +210,7 @@ def calculate_values(df):
     df['Liab%'] = round(df['totalLiab'] / df['totalAssets'] * 100, 1)
     df['Current Assets/2*Current Liab'] = round(100 * df['totalCurrentAssets'] / (2 * df['totalCurrentLiabilities']), 2)
     df['Current Assets'] = df['totalCurrentAssets']
-    df['Net Current Asset/Non Current Liabilities'] = round((df['totalCurrentAssets'] - df['totalLiab']) / df['longTermDebt'], 2)
+    df['Net Current Asset/Non Current Liabilities'] = round((df['totalCurrentAssets'] - df['totalLiab']) / df['nonCurrentLiabilitiesTotal'], 2)
     df['2*equity/debt'] = round(2 * 100 * df['totalAssets'] / df['totalLiab'])
         
     return df
@@ -591,27 +591,214 @@ def compute_potential(graham: Any, current_price: Any) -> Any:
         logger.error(f"Error computing potential: {e}")
     return np.nan
 
-def evaluate_defensive(financials, price):
-    row = financials.iloc[0]
-    score = 0
-    if 'AnnualSales' in financials.columns and row['AnnualSales'] >= 100_000_000:
-        score += 1
-    if 'Current Assets/2*Current Liab' in financials.columns and row['Current Assets/2*Current Liab'] >= 100:
-        score += 1
-    if 'NCAV' in financials.columns and not price.empty:
-        if row['NCAV'] / price.iloc[-1]['adjusted_close'] >= 1:
-            score += 1
-    if '10EPS' in financials.columns and not price.empty:
-        if price.iloc[-1]['adjusted_close'] / (row['10EPS'] / 10) <= 15:
-            score += 1
-    if 'BookValuePerShare' in financials.columns and not price.empty:
-        if price.iloc[-1]['adjusted_close'] / row['BookValuePerShare'] <= 1.5:
-            score += 1
-    if 'Net Current Asset/Non Current Liabilities' in financials.columns and row['Net Current Asset/Non Current Liabilities'] >= 100:
-        score += 1
-    summary = f"Defensive Score: {score}/6"
-    is_defensive = (score == 6)
-    return summary, score, is_defensive
+def evaluate_defensive(data: pd.DataFrame, price: pd.DataFrame, dividends: pd.DataFrame) -> Tuple[int, pd.DataFrame, bool, Any]:
+    """
+    Evaluate whether a stock is defensive.
+    Returns a 5-tuple: (LaTeX table, total score, evaluation details DataFrame, is_defensive flag, potential)
+    """
+    # --- Constants for Defensive Evaluation ---
+    ANNUAL_SALES_THRESHOLD = 100_000_000
+    CURRENT_ASSETS_MULTIPLIER = 2
+    PRICE_EPS_MULTIPLIER = 15
+    PRICE_BV_MULTIPLIER = 1.5
+    RULE_OF_THUMB_THRESHOLD = 22.5
+    EPS_GROWTH_THRESHOLD = 0
+    REQUIRED_EPS_YEARS = 10
+    REQUIRED_DIVIDEND_YEARS = 20
+    AVG_EPS_YEARS = 3
+    EPS_GROWTH_YEARS_START = 7
+
+    results_def = []
+    columns = data.columns
+
+    # Retrieve key values
+    graham_number = get_first_value(data, 'Graham_Number')
+    annual_sales = get_first_value(data, 'AnnualSales', default_value=None)
+
+    # Criterion 1: Annual Sales
+    if annual_sales is not None:
+        condition = annual_sales >= ANNUAL_SALES_THRESHOLD
+        check_and_append(results_def, "Annual Sales >= $100M", condition, annual_sales)
+        logger.debug(f"Annual Sales: {annual_sales} >= {ANNUAL_SALES_THRESHOLD}: {condition}")
+    else:
+        check_and_append(results_def, "Annual Sales >= $100M", False, np.nan)
+        logger.warning("Annual Sales missing.")
+
+    # Criterion 2A: Current Assets >= 2 * Current Liabilities
+    if 'totalCurrentAssets' in columns and 'totalCurrentLiabilities' in columns:
+        current_assets = get_first_value(data, 'totalCurrentAssets')
+        current_liabilities = get_first_value(data, 'totalCurrentLiabilities')
+        if current_assets is not None and current_liabilities is not None and current_liabilities != 0:
+            condition = current_assets >= CURRENT_ASSETS_MULTIPLIER * current_liabilities
+            ratio = round(current_assets / (CURRENT_ASSETS_MULTIPLIER * current_liabilities), 2)
+            check_and_append(results_def, "Current Assets >= 2 * Current Liabilities", condition, ratio)
+            logger.debug(f"Current Assets: {current_assets} >= 2*{current_liabilities}: {condition}")
+        else:
+            check_and_append(results_def, "Current Assets >= 2 * Current Liabilities", False, np.nan)
+            logger.warning("Current Assets or Liabilities missing or zero.")
+    else:
+        check_and_append(results_def, "Current Assets >= 2 * Current Liabilities", False, np.nan)
+        logger.warning("Current Assets or Current Liabilities columns missing.")
+
+    # Criterion 2B: Net Current Assets >= Long-term Debt
+    if all(col in columns for col in ['Net Current Asset/ Long Term Debt', 'nonCurrentLiabilitiesTotal', 'totalCurrentAssets', 'totalLiab']):
+        net_ratio = get_first_value(data, 'Net Current Asset/ Long Term Debt')
+        net_current_assets = round(get_first_value(data, 'totalCurrentAssets') - get_first_value(data, 'totalLiab'), 2)
+        long_term_debt = get_first_value(data, 'nonCurrentLiabilitiesTotal')
+        condition = net_ratio >= 1
+        check_and_append(results_def, "Net Current Assets >= Long-term Debt", condition, round(net_ratio, 2))
+        logger.debug(f"Net Ratio: {net_ratio} >= 1: {condition}")
+    else:
+        check_and_append(results_def, "Net Current Assets >= Long-term Debt", False, np.nan)
+        logger.warning("Required columns for net current assets or long-term debt missing.")
+
+    # Criterion 3 & 5: EPS-related criteria
+    if 'EPS' in columns:
+        eps_series = data['EPS'].dropna().drop_duplicates().sort_index(ascending=False)
+        if len(eps_series) >= REQUIRED_EPS_YEARS:
+            eps_min_10yr = eps_series.iloc[:REQUIRED_EPS_YEARS].min()
+            condition = eps_min_10yr > 0
+            check_and_append(results_def, "Positive Earnings for 10 Years", condition, 'Yes' if condition else 'No')
+            logger.debug(f"EPS 10yr min: {eps_min_10yr} > 0: {condition}")
+            try:
+                eps_start = eps_series.iloc[EPS_GROWTH_YEARS_START:REQUIRED_EPS_YEARS].mean()
+                eps_end = eps_series.iloc[:AVG_EPS_YEARS].mean()
+                growth = (eps_end - eps_start) / eps_start if eps_start > 0 else 0
+                condition_growth = growth >= EPS_GROWTH_THRESHOLD
+                growth_percentage = round(growth * 100, 2)
+                check_and_append(results_def, "EPS Growth >= 1/3 in 10 Years", condition_growth, growth_percentage)
+                logger.debug(f"EPS Growth: {growth_percentage}%: {condition_growth}")
+            except Exception as e:
+                check_and_append(results_def, "EPS Growth >= 1/3 in 10 Years", False, np.nan)
+                logger.error(f"Error calculating EPS growth: {e}")
+        else:
+            check_and_append(results_def, "Positive Earnings for 10 Years", False, np.nan)
+            check_and_append(results_def, "EPS Growth >= 1/3 in 10 Years", False, np.nan)
+            logger.warning("Not enough EPS data for 10-year evaluation.")
+    else:
+        check_and_append(results_def, "Positive Earnings for 10 Years", False, np.nan)
+        check_and_append(results_def, "EPS Growth >= 1/3 in 10 Years", False, np.nan)
+        logger.warning("EPS column missing.")
+
+    # Criterion 4: Uninterrupted dividends for 20 years
+    if {'Year', 'Count'}.issubset(dividends.columns):
+        try:
+            current_year = datetime.datetime.now().year
+            last_20_years = set(range(current_year - REQUIRED_DIVIDEND_YEARS, current_year))
+            dividend_years = set(dividends.loc[dividends['Count'] > 0, 'Year'])
+            missing_years = last_20_years - dividend_years
+            condition = len(missing_years) == 0
+            dividend_result = "Yes" if condition else f'No (Missing {len(missing_years)} years)'
+            check_and_append(results_def, "Uninterrupted Dividends for 20 Years", condition, dividend_result)
+            logger.debug(f"Dividends: missing {len(missing_years)}: {condition}")
+        except Exception as e:
+            check_and_append(results_def, "Uninterrupted Dividends for 20 Years", False, "No")
+            logger.error(f"Error evaluating dividends: {e}")
+    else:
+        check_and_append(results_def, "Uninterrupted Dividends for 20 Years", False, "No")
+        logger.warning("Dividends columns missing.")
+
+    # Criterion 6: Current Price <= 15 * Average EPS (past 3 years)
+    if 'EPS' in columns and not data['EPS'].dropna().empty:
+        try:
+            eps_clean = data['EPS'].dropna().drop_duplicates().sort_index(ascending=False)
+            if len(eps_clean) >= AVG_EPS_YEARS:
+                avg_eps_3yr = eps_clean.iloc[:AVG_EPS_YEARS].mean()
+                current_price = price.iloc[-1]['adjusted_close']
+                if avg_eps_3yr > 0:
+                    price_eps_ratio = round(current_price / avg_eps_3yr, 2)
+                    condition = price_eps_ratio <= PRICE_EPS_MULTIPLIER
+                else:
+                    price_eps_ratio = np.nan
+                    condition = False
+                check_and_append(results_def, "Price <= 15 * Avg EPS (3yr)", condition, price_eps_ratio)
+                logger.debug(f"Price/EPS ratio: {price_eps_ratio} <= {PRICE_EPS_MULTIPLIER}: {condition}")
+            else:
+                check_and_append(results_def, "Price <= 15 * Avg EPS (3yr)", False, np.nan)
+                logger.warning("Not enough EPS for 3-year average.")
+        except Exception as e:
+            check_and_append(results_def, "Price <= 15 * Avg EPS (3yr)", False, np.nan)
+            logger.error(f"Error in Price/EPS criterion: {e}")
+    else:
+        check_and_append(results_def, "Price <= 15 * Avg EPS (3yr)", False, np.nan)
+        logger.warning("EPS data missing for Price/EPS.")
+
+    # Criterion 7: Current Price <= 1.5 * Book Value
+    if 'BookValuePerShare' in columns:
+        try:
+            bvps = get_first_value(data, 'BookValuePerShare')
+            current_price = price.iloc[-1]['adjusted_close']
+            if bvps > 0:
+                price_bv_ratio = round(current_price / bvps, 2)
+                condition = price_bv_ratio <= PRICE_BV_MULTIPLIER
+            else:
+                price_bv_ratio = np.nan
+                condition = False
+            check_and_append(results_def, "Price <= 1.5 * Book Value", condition, price_bv_ratio)
+            logger.debug(f"Price/BV ratio: {price_bv_ratio} <= {PRICE_BV_MULTIPLIER}: {condition}")
+        except Exception as e:
+            check_and_append(results_def, "Price <= 1.5 * Book Value", False, np.nan)
+            logger.error(f"Error evaluating Book Value: {e}")
+    else:
+        check_and_append(results_def, "Price <= 1.5 * Book Value", False, np.nan)
+        logger.warning("BookValuePerShare missing.")
+
+    # Criterion 8: Multiplier * Price/Book <= 22.5
+    if 'BookValuePerShare' in columns and 'EPS' in columns:
+        try:
+            # Retrieve results from earlier criteria (if available)
+            price_eps_result = next((r for r in results_def if r[0] == "Price <= 15 * Avg EPS (3yr)"), None)
+            price_bv_result = next((r for r in results_def if r[0] == "Price <= 1.5 * Book Value"), None)
+            multiplier = price_eps_result[2] if price_eps_result and not pd.isna(price_eps_result[2]) else np.nan
+            bvps = get_first_value(data, 'BookValuePerShare')
+            current_price = price.iloc[-1]['adjusted_close']
+            price_bv_ratio = current_price / bvps if bvps > 0 else np.nan
+            if not pd.isna(multiplier) and not pd.isna(price_bv_ratio):
+                rule_of_thumb = multiplier * price_bv_ratio
+                condition = rule_of_thumb <= RULE_OF_THUMB_THRESHOLD
+            else:
+                rule_of_thumb = np.nan
+                condition = False
+            check_and_append(results_def, "Multiplier * Price/Book <= 22.5", condition, round(rule_of_thumb, 2) if not pd.isna(rule_of_thumb) else np.nan)
+            logger.debug(f"Rule of Thumb: {rule_of_thumb} <= {RULE_OF_THUMB_THRESHOLD}: {condition}")
+        except Exception as e:
+            check_and_append(results_def, "Multiplier * Price/Book <= 22.5", False, np.nan)
+            logger.error(f"Error evaluating Price/Book multiplier: {e}")
+    else:
+        check_and_append(results_def, "Multiplier * Price/Book <= 22.5", False, np.nan)
+        logger.warning("BookValuePerShare or EPS missing for Price/Book multiplier.")
+
+    # Criterion 9: Graham Number Defensive (price <= Graham Number)
+    if 'Graham_Number' in columns:
+        try:
+            graham_number_defensive = graham_number
+            current_price = price.iloc[-1]['adjusted_close']
+            condition = graham_number_defensive / current_price >= 1
+            check_and_append(results_def, "Graham Number / Price >= 1", condition, round(graham_number_defensive / current_price, 2))
+            logger.debug(f"Graham Number Defensive: {graham_number_defensive} / {current_price} >= 1: {condition}")
+        except Exception as e:
+            check_and_append(results_def, "Graham Number / Price >= 1", False, np.nan)
+            logger.error(f"Error evaluating Graham Number Defensive: {e}")
+    else:
+        check_and_append(results_def, "Graham Number / Price >= 1", False, np.nan)
+        logger.warning("Graham_Number missing.")
+
+    # Build evaluation DataFrame and compute score.
+    evaluation_df_def = pd.DataFrame(results_def, columns=['Criterion', 'Result', 'Score'])
+    total_score = int(evaluation_df_def['Result'].sum())
+    is_defensive = (total_score == 10)
+    logger.info(f"Total Defensive Score: {total_score} out of 10")
+
+    # Retrieve current price for potential calculation.
+    try:
+        current_price = price.iloc[-1]['adjusted_close']
+    except Exception as e:
+        current_price = np.nan
+        logger.warning(f"Error retrieving current price: {e}")
+
+    potential_def = compute_potential(graham_number, current_price)
+
+    return evaluation_df_def, is_defensive
 
 def evaluate_enterprising(data: pd.DataFrame, diluted_eps_ttm, price: pd.DataFrame, dividends: pd.DataFrame) -> Tuple[int, pd.DataFrame, bool, Any]:
     """
@@ -869,7 +1056,7 @@ def display_classification():
         except Exception as e:
             st.error(f"Error fetching data for classification: {e}")
             return
-        def_summary, def_score, is_def = evaluate_defensive(financials, price)
+        def_summary, is_def = evaluate_defensive(financials, price)
         if is_def:
             st.markdown("### Classification: Defensive")
             st.write(def_summary)
