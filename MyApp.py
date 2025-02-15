@@ -246,7 +246,7 @@ def get_fundamentals(tick):
     else:
         selected_metrics = ['BookValuePerShare']
     
-    return financials[selected_metrics], country, dividends, diluted_eps_ttm
+    return financials, country, dividends, diluted_eps_ttm
 
 def get_full_fundamentals(tick):
     """
