@@ -235,7 +235,7 @@ def get_fundamentals(tick):
     
     if st.session_state.get('license_valid', False):
         selected_metrics = [
-            'Graham_Number', 'NCAV', 'Cash', '10EPS', 'Sales', 'NTAV',
+            'Graham_Number', 'NCAV', 'Cash', '10EPS', 'AnnualSales', 'NTAV',
             'BookValuePerShare', 'Current Assets/2*Current Liab',
             'Current Assets', 'Net Current Asset/ Long Term Debt'
         ]
