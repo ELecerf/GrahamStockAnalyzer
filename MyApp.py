@@ -1120,6 +1120,28 @@ def display_graph():
         except Exception as e:
             st.error(f"An error occurred: Invalid input. Ticker format is CODE.EXCHANGE. Details: {e}")
 # =============================================================================
+# Disclaimer
+# =============================================================================
+def disclaimer():
+    st.markdown(
+        """
+        **User Disclaimer:**  
+        Please note that all information provided by this application is intended solely for your informational and educational use and does not constitute personalized financial, investment, or legal advice. You are solely responsible for any decisions you make based on this information.
+
+        **Investment Principles:**  
+        The methods and criteria used by this app are based on widely recognized value investing concepts—including those popularized by *The Intelligent Investor*. These ideas are in the public domain and have been adapted for general analysis.
+
+        **Third-Party Data & API Usage:**  
+        The financial data and company information displayed are sourced from various third-party APIs and data providers. The accuracy, completeness, or timeliness of the data is not guaranteed
+        
+        **Your Responsibility:**  
+        Use the insights provided by this app as a starting point for your own research. We strongly advise that you consult with professional financial, legal, or intellectual property advisors before making any investment or business decisions.
+
+        """,
+        unsafe_allow_html=True
+    )
+
+# =============================================================================
 # Main Application
 # =============================================================================
 def main():
@@ -1216,6 +1238,8 @@ def main():
         display_graph()
         #display_classification()  
     salespage()
+    with st.expander("User Disclaimer", expanded=False):
+        disclaimer()
     with st.expander("🌍 Net-net map"):
         filtered_data = load_data_NCAV()
         country_stock_count = stocks_per_country(filtered_data)
