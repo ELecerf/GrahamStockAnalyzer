@@ -1100,6 +1100,7 @@ def display_graph():
                     st.markdown(':red[**To display the full value graph, get a license key**]')
                 
                 # Evaluate classification using pre-fetched data
+                st.title("🔎 Graham Classification")
                 display_classification(ticker, financials, price, dividends, diluted_eps_ttm)
 
                 # Display full financial data
@@ -1199,7 +1200,6 @@ def main():
             display_screener()      
     with st.form("Plot"):
         display_graph()
-        st.title("🔎 Graham Classification")
         #display_classification()  
     salespage()
     with st.expander("🌍 Net-net map"):
