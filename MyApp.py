@@ -134,7 +134,7 @@ def fetch_financials_with_country(ticker):
         response.raise_for_status()
         data = response.json()
     except Exception as e:
-        raise ValueError(f"Error fetching financial data for {ticker}: {e}")
+        raise ValueError(f"Error fetching financial data for {ticker}")
     
     if not data:
         raise ValueError(f"Financial data for ticker {ticker} is not available")
@@ -228,7 +228,7 @@ def get_fundamentals(tick):
     try:
         financials, country, dividends, diluted_eps_ttm = fetch_financials_with_country(tick)
     except Exception as e:
-        st.error(f"Error fetching financials for {tick}: {e}")
+        st.error(f"Error fetching financials for {tick}")
         return pd.DataFrame()
     
     try:
@@ -256,7 +256,7 @@ def get_full_fundamentals(tick):
     try:
         financials, country, dividends, diluted_eps_ttm = fetch_financials_with_country(tick)
     except Exception as e:
-        st.error(f"Error fetching financials for {tick}: {e}")
+        st.error(f"Error fetching financials for {tick}")
         return pd.DataFrame()
     
     try:
@@ -289,7 +289,7 @@ def get_price_eod(tick):
         price = price[['adjusted_close']]
         return price
     except Exception as e:
-        st.error(f"Error fetching price data for {tick}: {e}")
+        st.error(f"Error fetching price data for {tick}")
         return pd.DataFrame()
 
 # =============================================================================
