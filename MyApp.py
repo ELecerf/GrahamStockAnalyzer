@@ -355,7 +355,7 @@ def search_command():
         st.info("No result")
 
 def display_screener():
-    exchanges = sorted(['PA', 'XETRA', 'TSE', 'TO', 'MI', 'MC', 'US', 'AS', 'BR', 'WAR', 'OL', 'CO', 'ST'])
+    exchanges = sorted(['PA', 'XETRA', 'TSE', 'TO', 'MI', 'MC', 'US', 'AS', 'BR', 'WAR', 'OL', 'CO', 'ST','HE','KLSE'])
     with st.form("Exchange Selector"):
         st.title('Screener')
         selected_exchange = st.selectbox('Select an exchange:', exchanges)
