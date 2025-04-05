@@ -635,7 +635,7 @@ def evaluate_defensive(data: pd.DataFrame, price: pd.DataFrame, dividends: pd.Da
     if 'EPS' in columns:
         eps_series = data['EPS'].dropna().drop_duplicates().sort_index(ascending=False)
         if len(eps_series) >= REQUIRED_EPS_YEARS:
-            eps_min_10yr = eps_series.iloc[:REQUIRED_EPS_YEARS].min()
+            eps_min_10yr = eps_series.iloc[:EPS_GROWTH_YEARS_START].min()
             condition = eps_min_10yr > 0
             check_and_append(results_def, "Positive Earnings for 10 Years", condition, 'Yes' if condition else 'No')
             logger.debug(f"EPS 10yr min: {eps_min_10yr} > 0: {condition}")
