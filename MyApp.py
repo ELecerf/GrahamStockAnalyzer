@@ -178,6 +178,9 @@ def fetch_financials_with_country(ticker):
     
     # Extract Country Information
     country = data.get('General', {}).get('AddressData', {}).get('Country', 'Unknown')
+
+    # Extract Currency Information
+    currency = data.get('General', {}).get('CurrencyCode', {})
     
     # Extract highlights Information
     diluted_eps_ttm = round(data.get('Highlights', {}).get('DilutedEpsTTM', np.nan),2)
