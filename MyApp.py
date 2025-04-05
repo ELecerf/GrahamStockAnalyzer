@@ -584,7 +584,7 @@ def evaluate_defensive(data: pd.DataFrame, price: pd.DataFrame, dividends: pd.Da
     PRICE_EPS_MULTIPLIER = 15
     PRICE_BV_MULTIPLIER = 1.5
     RULE_OF_THUMB_THRESHOLD = 22.5
-    EPS_GROWTH_THRESHOLD = 0
+    EPS_GROWTH_THRESHOLD = 0.33
     REQUIRED_EPS_YEARS = 13
     REQUIRED_DIVIDEND_YEARS = 20
     AVG_EPS_YEARS = 3
