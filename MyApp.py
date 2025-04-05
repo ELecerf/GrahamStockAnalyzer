@@ -645,7 +645,7 @@ def evaluate_defensive(data: pd.DataFrame, price: pd.DataFrame, dividends: pd.Da
                 growth = (eps_end - eps_start) / eps_start if eps_start > 0 else 0
                 condition_growth = growth >= EPS_GROWTH_THRESHOLD
                 growth_percentage = round(growth * 100, 2)
-                check_and_append(results_def, "EPS Growth >= 1/3 in 10 Years", condition_growth, eps_start)
+                check_and_append(results_def, "EPS Growth >= 1/3 in 10 Years", condition_growth, growth_percentage)
                 logger.debug(f"EPS Growth: {growth_percentage}%: {condition_growth}")
             except Exception as e:
                 check_and_append(results_def, "EPS Growth >= 1/3 in 10 Years", False, np.nan)
