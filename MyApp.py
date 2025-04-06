@@ -155,7 +155,7 @@ def fetch_financials_with_country(ticker):
     
     df_yearly_bs.index = pd.to_datetime(df_yearly_bs.index)
     df_quarterly_bs.index = pd.to_datetime(df_quarterly_bs.index)
-    balance_sheet_df = pd.concat([df_quarterly_bs[:3], df_yearly_bs]).sort_index(ascending=False)
+    balance_sheet_df = pd.concat([df_quarterly_bs[:1], df_yearly_bs]).sort_index(ascending=False)
     
     # Process Income Statement Data
     income_statement = data.get('Financials', {}).get('Income_Statement', {})
